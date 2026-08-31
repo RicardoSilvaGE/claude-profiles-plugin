@@ -1,0 +1,16 @@
+{
+  "_comment": "Source canonique du hook SessionStart des profils empaquetes en plugin. Copie dans plugins/<profil>/hooks/ par scripts/build-plugin.sh — NE JAMAIS EDITER LA COPIE, elle est ecrasee a chaque generation et comparee par --check. Timeout 10 s : le script ne fait que lire un fichier local et le passer a jq.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/injecter-doctrine.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

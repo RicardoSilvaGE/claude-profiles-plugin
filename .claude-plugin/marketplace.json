@@ -1,0 +1,15 @@
+{
+  "name": "claude-profiles-plugin",
+  "owner": { "name": "RicardoSilvaGE", "url": "https://github.com/RicardoSilvaGE" },
+  "plugins": [
+    {
+      "name": "dev-fullstack",
+      "source": "./plugins/dev-fullstack",
+      "displayName": "Profil dev-fullstack",
+      "description": "Profil Claude Code dev-fullstack : doctrine de travail, sub-agents et skills.",
+      "version": "1.0.0",
+      "repository": "https://github.com/RicardoSilvaGE/claude-profiles-plugin",
+      "category": "workflow"
+    }
+  ]
+}
