@@ -3,6 +3,21 @@
 Marketplace public d'un seul plugin Claude Code : le profil **`dev-fullstack`** — 12 sub-agents,
 8 skills métier, et la doctrine de travail livrée comme skill.
 
+## Avant de t'en servir — trois choses qui surprennent
+
+**1. Les agents `backend` et `frontend` refusent d'écrire du code sans `SPEC.md`.**
+Ce n'est pas un bug : c'est un `HARD GATE` volontaire, posé après un incident. Passe par le skill
+`spec-builder` d'abord, ou demande explicitement de court-circuiter. C'est la première chose sur
+laquelle bute un nouvel utilisateur.
+
+**2. La doctrine est injectée à chaque session** par un hook `SessionStart` — environ
+**11 300 tokens**, y compris dans les sessions où tu ne codes pas. `CLAUDE_DOCTRINE_RESIDENTE=0`
+la coupe sans désinstaller le plugin.
+
+**3. Les commandes `/lc-*` ne sont pas dans le plugin.** La doctrine y renvoie treize fois : ce
+sont des raccourcis liés à un poste et à un dossier d'entreprise, absents d'ici. Ne pas les
+chercher.
+
 ## Installation
 
 ```
