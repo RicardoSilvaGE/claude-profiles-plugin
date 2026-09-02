@@ -1,13 +1,42 @@
 {
-  "_comment": "Source canonique du hook SessionStart des profils empaquetes en plugin. Copie dans plugins/<profil>/hooks/ par scripts/build-plugin.sh — NE JAMAIS EDITER LA COPIE, elle est ecrasee a chaque generation et comparee par --check. Timeout 10 s : le script ne fait que lire un fichier local et le passer a jq.",
+  "_comment": "Source canonique des TROIS hooks des profils empaquetes en plugin. Copies dans plugins/<profil>/hooks/ par scripts/build-plugin.sh — NE JAMAIS EDITER LA COPIE, elle est ecrasee a chaque generation et comparee par --check.",
+
   "hooks": {
     "SessionStart": [
       {
         "hooks": [
           {
+            "_comment": "Rend a la doctrine du profil la RESIDENCE qu'un skill n'a pas. Timeout 10 s : le script ne fait que lire un fichier local et le passer a jq.",
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/injecter-doctrine.sh",
             "timeout": 10
+          }
+        ]
+      }
+    ],
+
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|NotebookEdit",
+        "hooks": [
+          {
+            "_comment": "Regle absolue spec-builder (19.05.2026) rendue opposable en session cloud, ou le hook PowerShell du poste ne peut pas tourner. Decision 'ask' UNIQUEMENT, jamais 'deny', ET additionalContext : hors du mode 'default', 'ask' n'interrompt pas, seul le contexte injecte subsiste. Un seul rappel par session et par depot. Ne voit pas les ecritures faites via Bash.",
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/guard-spec-code.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "_comment": "Filet du PREMIER etage de la regle spec-builder (< 10 lignes : pas de spec, le code doit compiler). Lance tsc --noEmit quand la session a laisse des .ts/.tsx modifies, et bloque la fin de tour avec les erreurs. Un block sur Stop n'est PAS une decision de permission : meme effet en cloud qu'au poste. Timeout 100 s, SUPERIEUR au timeout interne de 90 s du script — l'inverse tuerait le hook avant son verdict. Une seule fois par session et par depot.",
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/check-build-ts.sh",
+            "timeout": 100
           }
         ]
       }

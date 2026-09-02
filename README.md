@@ -1,7 +1,7 @@
 # claude-profiles-plugin
 
 Marketplace public d'un seul plugin Claude Code : le profil **`dev-fullstack`** — 12 sub-agents,
-8 skills métier, et la doctrine de travail livrée comme skill.
+8 skills métier, la doctrine de travail livrée comme skill, et trois hooks.
 
 ## Avant de t'en servir — trois choses qui surprennent
 
@@ -13,6 +13,15 @@ laquelle bute un nouvel utilisateur.
 **2. La doctrine est injectée à chaque session** par un hook `SessionStart` — environ
 **11 300 tokens**, y compris dans les sessions où tu ne codes pas. `CLAUDE_DOCTRINE_RESIDENTE=0`
 la coupe sans désinstaller le plugin.
+
+**2 bis. Deux garde-fous s'interposent pendant que tu codes**, depuis le 02.09.2026 — ce sont
+les hooks du profil sur le poste, portés en bash :
+- `PreToolUse` : écrire un fichier de code dans un dépôt sans `SPEC*.md` récent déclenche une
+  demande de confirmation (mode `default`) et, dans tous les modes, un rappel de la règle des
+  trois étages. Une fois par session et par dépôt. `CLAUDE_GUARD_SPEC=0` le coupe.
+- `Stop` : si des `.ts/.tsx` ont bougé et que le dépôt porte un `tsconfig.json`, `tsc --noEmit`
+  tourne en fin de tour et **bloque** la fin de tour avec les erreurs. Une fois par session et
+  par dépôt. `CLAUDE_CHECK_BUILD_TS=0` le coupe.
 
 **3. Les commandes `/lc-*` ne sont pas dans le plugin.** La doctrine y renvoie treize fois : ce
 sont des raccourcis liés à un poste et à un dossier d'entreprise, absents d'ici. Ne pas les
@@ -46,7 +55,7 @@ après avoir constaté l'inverse pour un marketplace privé.
 | Sub-agents | `architecte`, `backend`, `brainstormer`, `designer`, `frontend`, `growth`, `qa`, `redacteur`, `release`, `reviewer`, `securite`, `ux` |
 | Skills | `a11y-audit`, `debug-investigation`, `framework-upgrade`, `frontend-app-builder`, `librairie-maison`, `perf-audit`, `spec-builder`, `supabase-toolkit` |
 | Doctrine | `doctrine-dev-fullstack` — méthodologie en phases, règle absolue spec-builder, conventions |
-| Hook | `SessionStart`, qui injecte la doctrine en contexte |
+| Hooks | `SessionStart` (doctrine en contexte), `PreToolUse` (règle spec-builder), `Stop` (compilation TypeScript) |
 
 **Le `CLAUDE.md` racine d'un plugin n'est pas chargé** : c'est pour cela que la doctrine est un
 skill. Et comme un skill se charge *à la demande* là où un `CLAUDE.md` de profil est *résident*,
