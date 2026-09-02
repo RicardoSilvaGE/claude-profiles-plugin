@@ -58,13 +58,19 @@ PROJET="${CLAUDE_PROJECT_DIR:-$PWD}"
 [ -f "$PROJET/.claude/profile-CLAUDE.md" ] && exit 0
 
 # --- garde 3 : doctrine deja residente dans le home de config actif ---------------------------
-# Premiere ligne non vide du corps, c'est-a-dire APRES le frontmatter YAML et le preambule
-# d'adaptation : le titre du profil. C'est ce que sync-global.ps1 depose en tete de
-# ~/.claude/CLAUDE.md, donc le seul marqueur commun aux deux chemins de deploiement.
+# Premiere ligne de titre du CORPS, c'est-a-dire APRES le frontmatter YAML (deux `---`) ET
+# APRES le separateur `---` qui clot le preambule d'adaptation : le titre du profil. C'est ce
+# que sync-global.ps1 depose en tete de ~/.claude/CLAUDE.md, donc le seul marqueur commun aux
+# deux chemins de deploiement.
+#
+# CORRIGE LE 02.09.2026, TROUVE EN L'EPROUVANT : la premiere version prenait le premier titre
+# apres le frontmatter — celui du PREAMBULE (« Doctrine du profil ... »), que le CLAUDE.md du
+# poste ne porte pas. Le garde 3 ne pouvait donc JAMAIS se taire sur un vrai poste, et la
+# doctrine y aurait ete chargee deux fois. Le banc etait vert parce qu'il fabriquait le home
+# avec le marqueur calcule par ce meme awk : il testait le hook contre lui-meme.
 MARQUEUR="$(awk '
-    NR==1 && $0=="---" { fm=1; next }
-    fm==1 && $0=="---" { fm=0; next }
-    fm==1 { next }
+    /^---$/ { sep++; next }
+    sep < 3 { next }
     /^#[^#]/ { print; exit }
 ' "$SKILL")"
 
