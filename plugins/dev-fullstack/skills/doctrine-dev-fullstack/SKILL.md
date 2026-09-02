@@ -27,9 +27,14 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 >    **deploiement poste**. Ce plugin **ne les embarque pas** : les onze commands `lc-*`
 >    supposent un dossier bureau Windows, Outlook en COM ou des cles de `.bureau-config`,
 >    tous absents d une session cloud. **Ne pas y router.**
-> 5. **`profil-utilisateur.md`.** Le hook `session-profil-utilisateur.ps1` ne tourne pas
->    ici : le bloc de preferences sera **absent**. La doctrine dit deja quoi en faire —
->    ne pas les inventer, et ne pas prendre l absence pour un accord.
+> 5. **`profil-utilisateur.md`.** Le hook `session-profil-utilisateur.ps1` du poste ne
+>    tourne pas ici ; son pendant `injecter-profil-utilisateur.sh` (SessionStart et
+>    SubagentStart) le remplace, avec les memes marqueurs. Mais la SOURCE n est pas ici :
+>    ce plugin est public, le contenu est personnel. Il est lu dans
+>    `CLAUDE_PROFIL_UTILISATEUR_FICHIER`, `CLAUDE_PROFIL_UTILISATEUR` ou
+>    `~/.claude/profil-utilisateur.md` (depose par le setup script). Si le bloc est absent,
+>    aucune de ces sources n existe : la doctrine dit quoi en faire — ne pas inventer les
+>    preferences, ne pas prendre l absence pour un accord.
 > 6. **Garde-fous PowerShell 5.1.** Ils portent sur le poste Windows. Ils restent vrais
 >    la-bas ; ils sont sans objet dans un conteneur Linux.
 

@@ -77,6 +77,23 @@
 MARKETPLACE="RicardoSilvaGE/claude-profiles-plugin"
 PROFIL="dev-fullstack"
 
+# ----------------------------------------------------------------------------------------------
+# PREFERENCES PERSONNELLES (optionnel). Le plugin porte un hook qui injecte profil-utilisateur.md
+# a chaque session et dans chaque sous-agent — mais le plugin est PUBLIC et le contenu est
+# personnel : la source doit venir d'ici, un champ prive au compte, ou d'une variable
+# d'environnement (CLAUDE_PROFIL_UTILISATEUR, ou CLAUDE_PROFIL_UTILISATEUR_FICHIER). /root
+# survit au cache d'environnement, donc ce fichier aussi. Recopier le contenu de
+# <BUREAU>/exemples-individuels/<USERNAME>/profil-utilisateur.md ou de ~/.claude/profil-utilisateur.md
+# du poste entre les deux marqueurs, et decommenter. Sous 1 700 octets : au-dela, la fin du bloc
+# tombe hors de l'apercu du hook ; au-dela de 2 500, il n'est plus injecte dans les sous-agents.
+#
+# mkdir -p /root/.claude
+# cat > /root/.claude/profil-utilisateur.md <<'PREFERENCES'
+# # Preferences de <Prenom Nom>
+# ...
+# PREFERENCES
+# ----------------------------------------------------------------------------------------------
+
 export PATH="/opt/node22/bin:$PATH"
 
 {
