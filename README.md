@@ -1,7 +1,7 @@
 # claude-profiles-plugin
 
 Marketplace public d'un seul plugin Claude Code : le profil **`dev-fullstack`** — 12 sub-agents,
-8 skills métier, la doctrine de travail livrée comme skill, et cinq hooks.
+8 skills métier, la doctrine de travail livrée comme skill, et six hooks.
 
 ## Avant de t'en servir — trois choses qui surprennent
 
@@ -36,6 +36,12 @@ ton environnement cloud — ou `~/.claude/profil-utilisateur.md`, que tu dépose
 script (bloc commenté dans `setup-script-cloud.sh`). Sous 1 700 octets. Sans source, une ligne
 d'invitation, rien d'autre.
 
+**2 quater. Chaque délégation à un sous-agent est journalisée**, en silence, dans
+`~/Documents/Claude/usage-agents/invocations.csv` du conteneur — une ligne
+`horodatage;agent;profil;projet;session;source`, format d'un tableur. Ce fichier survit au cache
+de l'environnement, pas au-delà, et personne d'autre ne le voit : c'est à toi de le lire
+(`cat` dans une session) si tu veux la mesure. `CLAUDE_USAGE_AGENTS=0` le coupe.
+
 **3. Les commandes `/lc-*` ne sont pas dans le plugin.** La doctrine y renvoie treize fois : ce
 sont des raccourcis liés à un poste et à un dossier d'entreprise, absents d'ici. Ne pas les
 chercher.
@@ -68,7 +74,7 @@ après avoir constaté l'inverse pour un marketplace privé.
 | Sub-agents | `architecte`, `backend`, `brainstormer`, `designer`, `frontend`, `growth`, `qa`, `redacteur`, `release`, `reviewer`, `securite`, `ux` |
 | Skills | `a11y-audit`, `debug-investigation`, `framework-upgrade`, `frontend-app-builder`, `librairie-maison`, `perf-audit`, `spec-builder`, `supabase-toolkit` |
 | Doctrine | `doctrine-dev-fullstack` — méthodologie en phases, règle absolue spec-builder, conventions |
-| Hooks | `SessionStart` (doctrine en contexte, puis préférences personnelles), `SubagentStart` (préférences), `PreToolUse` (règle spec-builder), `Stop` (compilation TypeScript), `PreToolUse` sur `Bash` (push direct sur `main` refusé) |
+| Hooks | `SessionStart` (doctrine en contexte, puis préférences personnelles), `SubagentStart` (préférences), `PreToolUse` (règle spec-builder), `Stop` (compilation TypeScript), `PreToolUse` sur `Bash` (push direct sur `main` refusé), `PostToolUse` sur `Agent` (journal d'usage) |
 
 **Le `CLAUDE.md` racine d'un plugin n'est pas chargé** : c'est pour cela que la doctrine est un
 skill. Et comme un skill se charge *à la demande* là où un `CLAUDE.md` de profil est *résident*,

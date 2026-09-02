@@ -1,5 +1,5 @@
 {
-  "_comment": "Source canonique des CINQ hooks des profils empaquetes en plugin. Copies dans plugins/<profil>/hooks/ par scripts/build-plugin.sh — NE JAMAIS EDITER LA COPIE, elle est ecrasee a chaque generation et comparee par --check.",
+  "_comment": "Source canonique des SIX hooks des profils empaquetes en plugin. Copies dans plugins/<profil>/hooks/ par scripts/build-plugin.sh — NE JAMAIS EDITER LA COPIE, elle est ecrasee a chaque generation et comparee par --check.",
 
   "hooks": {
     "SessionStart": [
@@ -53,6 +53,20 @@
             "_comment": "Regle 0 de guard-poste.ps1 : deny sur tout git push direct vers main/master (reference explicite, refspec, --all/--mirror, push nu depuis main). Meme decision qu'au poste, meme effet dans tous les modes. Exemptions par ~/.claude/.push-main-allowed. Ne voit que l'outil Bash.",
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/guard-push-main.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+
+    "PostToolUse": [
+      {
+        "matcher": "Agent",
+        "hooks": [
+          {
+            "_comment": "Journalise chaque invocation de sous-agent dans ~/Documents/Claude/usage-agents/invocations.csv, au format EXACT du poste (action A2.2 du 17.08.2026). Silencieux par construction : aucune sortie dans le contexte. Le prefixe de plugin (dev-fullstack:backend) est retire et l'etiquette de profil est celle du backfill, sinon chaque agent serait scinde en deux agregats. Le CSV vit dans le conteneur : orphelin tant qu'il n'est pas rapatrie.",
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/log-agent-usage.sh",
             "timeout": 10
           }
         ]
