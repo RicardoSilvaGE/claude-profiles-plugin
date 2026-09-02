@@ -18,7 +18,9 @@ la coupe sans désinstaller le plugin.
 les hooks du profil sur le poste, portés en bash :
 - `PreToolUse` : écrire un fichier de code dans un dépôt sans `SPEC*.md` récent déclenche une
   demande de confirmation (mode `default`) et, dans tous les modes, un rappel de la règle des
-  trois étages. Une fois par session et par dépôt. `CLAUDE_GUARD_SPEC=0` le coupe.
+  trois étages. **En session non interactive, la première écriture est refusée** avec ce rappel
+  pour motif — la relancer passe. Une fois par session et par dépôt. `CLAUDE_GUARD_SPEC=0` le
+  coupe.
 - `Stop` : si des `.ts/.tsx` ont bougé et que le dépôt porte un `tsconfig.json`, `tsc --noEmit`
   tourne en fin de tour et **bloque** la fin de tour avec les erreurs. Une fois par session et
   par dépôt. `CLAUDE_CHECK_BUILD_TS=0` le coupe.

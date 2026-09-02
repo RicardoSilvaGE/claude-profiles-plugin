@@ -54,6 +54,14 @@
 # LE CONTROLE QUI FAIT FOI N'EST PAS LE JOURNAL, C'EST `claude plugin list` : il dit l'etat reel,
 # la ou l'absence d'un journal est ambigue (script non rejoue ? journal efface ?).
 #
+# ET LA VERSION AFFICHEE PAR `claude plugin list` EST CE QUI COMPTE. `install` et `update` ne
+# comparent que le numero de version du plugin, jamais son contenu : mesure le 02.09.2026, trois
+# hooks publies, « already installed » et « already at the latest version (1.0.0) ». Un plugin
+# modifie sans bump de version est invisible d'un environnement en cache. D'ou, dans
+# build-plugin.sh, la regle : bumper VERSION_PLUGIN a chaque changement. Et dans une session
+# d'un environnement en cache, le geste de rattrapage est `claude plugin update <plugin>` — qui
+# ne fait quelque chose que si la version a bouge.
+#
 # ----------------------------------------------------------------------------------------------
 # LE BIAIS DE MESURE A CONNAITRE AVANT DE TESTER QUOI QUE CE SOIT ICI. Trois affirmations fausses
 # ont ete livrees le 31.08.2026 — « /plugin marche partout », « le PATH est la cause », « le clone
