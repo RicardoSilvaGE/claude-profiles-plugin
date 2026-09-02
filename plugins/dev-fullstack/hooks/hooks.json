@@ -1,5 +1,5 @@
 {
-  "_comment": "Source canonique des QUATRE hooks des profils empaquetes en plugin. Copies dans plugins/<profil>/hooks/ par scripts/build-plugin.sh — NE JAMAIS EDITER LA COPIE, elle est ecrasee a chaque generation et comparee par --check.",
+  "_comment": "Source canonique des CINQ hooks des profils empaquetes en plugin. Copies dans plugins/<profil>/hooks/ par scripts/build-plugin.sh — NE JAMAIS EDITER LA COPIE, elle est ecrasee a chaque generation et comparee par --check.",
 
   "hooks": {
     "SessionStart": [
@@ -9,6 +9,25 @@
             "_comment": "Rend a la doctrine du profil la RESIDENCE qu'un skill n'a pas. Timeout 10 s : le script ne fait que lire un fichier local et le passer a jq.",
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/injecter-doctrine.sh",
+            "timeout": 10
+          },
+          {
+            "_comment": "APRES la doctrine, comme au poste. Preferences personnelles de la personne (profil-utilisateur.md), lues dans une cascade de sources privees au compte : CLAUDE_PROFIL_UTILISATEUR_FICHIER, CLAUDE_PROFIL_UTILISATEUR, ~/.claude/profil-utilisateur.md. Jamais CLAUDE_CONFIG_DIR, jamais le depot de travail. Invitation courte si aucune source.",
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/injecter-profil-utilisateur.sh SessionStart",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "_comment": "PARITE avec SessionStart, et rien de plus : ce qu'injecte un hook SessionStart n'arrive PAS dans un sous-agent (mesure du 24.08.2026), alors que la doctrine y arrive en entier. Le script refuse d'injecter au-dela de 2 500 octets et le dit sur stderr.",
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/injecter-profil-utilisateur.sh SubagentStart",
             "timeout": 10
           }
         ]
