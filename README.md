@@ -1,7 +1,7 @@
 # claude-profiles-plugin
 
 Marketplace public d'un seul plugin Claude Code : le profil **`dev-fullstack`** — 12 sub-agents,
-8 skills métier, la doctrine de travail livrée comme skill, et trois hooks.
+8 skills métier, la doctrine de travail livrée comme skill, et quatre hooks.
 
 ## Avant de t'en servir — trois choses qui surprennent
 
@@ -14,7 +14,7 @@ laquelle bute un nouvel utilisateur.
 **11 300 tokens**, y compris dans les sessions où tu ne codes pas. `CLAUDE_DOCTRINE_RESIDENTE=0`
 la coupe sans désinstaller le plugin.
 
-**2 bis. Deux garde-fous s'interposent pendant que tu codes**, depuis le 02.09.2026 — ce sont
+**2 bis. Trois garde-fous s'interposent pendant que tu codes**, depuis le 02.09.2026 — ce sont
 les hooks du profil sur le poste, portés en bash :
 - `PreToolUse` : écrire un fichier de code dans un dépôt sans `SPEC*.md` récent déclenche une
   demande de confirmation (mode `default`) et, dans tous les modes, un rappel de la règle des
@@ -24,6 +24,10 @@ les hooks du profil sur le poste, portés en bash :
 - `Stop` : si des `.ts/.tsx` ont bougé et que le dépôt porte un `tsconfig.json`, `tsc --noEmit`
   tourne en fin de tour et **bloque** la fin de tour avec les erreurs. Une fois par session et
   par dépôt. `CLAUDE_CHECK_BUILD_TS=0` le coupe.
+- `PreToolUse` sur `Bash` : tout `git push` direct vers `main`/`master` est **refusé** (référence
+  explicite, refspec, `--all`/`--mirror`, push nu depuis `main`), avec le flux branche + PR en
+  réponse. Dans tous les modes. Pour un dépôt où c'est légitime : `~/.claude/.push-main-allowed`,
+  une ligne `owner/repo`, joker `*` admis. `CLAUDE_GUARD_PUSH_MAIN=0` le coupe.
 
 **3. Les commandes `/lc-*` ne sont pas dans le plugin.** La doctrine y renvoie treize fois : ce
 sont des raccourcis liés à un poste et à un dossier d'entreprise, absents d'ici. Ne pas les
@@ -57,7 +61,7 @@ après avoir constaté l'inverse pour un marketplace privé.
 | Sub-agents | `architecte`, `backend`, `brainstormer`, `designer`, `frontend`, `growth`, `qa`, `redacteur`, `release`, `reviewer`, `securite`, `ux` |
 | Skills | `a11y-audit`, `debug-investigation`, `framework-upgrade`, `frontend-app-builder`, `librairie-maison`, `perf-audit`, `spec-builder`, `supabase-toolkit` |
 | Doctrine | `doctrine-dev-fullstack` — méthodologie en phases, règle absolue spec-builder, conventions |
-| Hooks | `SessionStart` (doctrine en contexte), `PreToolUse` (règle spec-builder), `Stop` (compilation TypeScript) |
+| Hooks | `SessionStart` (doctrine en contexte), `PreToolUse` (règle spec-builder), `Stop` (compilation TypeScript), `PreToolUse` sur `Bash` (push direct sur `main` refusé) |
 
 **Le `CLAUDE.md` racine d'un plugin n'est pas chargé** : c'est pour cela que la doctrine est un
 skill. Et comme un skill se charge *à la demande* là où un `CLAUDE.md` de profil est *résident*,

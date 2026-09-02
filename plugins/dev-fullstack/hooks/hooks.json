@@ -1,5 +1,5 @@
 {
-  "_comment": "Source canonique des TROIS hooks des profils empaquetes en plugin. Copies dans plugins/<profil>/hooks/ par scripts/build-plugin.sh — NE JAMAIS EDITER LA COPIE, elle est ecrasee a chaque generation et comparee par --check.",
+  "_comment": "Source canonique des QUATRE hooks des profils empaquetes en plugin. Copies dans plugins/<profil>/hooks/ par scripts/build-plugin.sh — NE JAMAIS EDITER LA COPIE, elle est ecrasee a chaque generation et comparee par --check.",
 
   "hooks": {
     "SessionStart": [
@@ -23,6 +23,17 @@
             "_comment": "Regle absolue spec-builder (19.05.2026) rendue opposable en session cloud, ou le hook PowerShell du poste ne peut pas tourner. Decision 'ask' UNIQUEMENT, jamais 'deny', ET additionalContext : hors du mode 'default', 'ask' n'interrompt pas, seul le contexte injecte subsiste. Un seul rappel par session et par depot. Ne voit pas les ecritures faites via Bash.",
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/guard-spec-code.sh",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "_comment": "Regle 0 de guard-poste.ps1 : deny sur tout git push direct vers main/master (reference explicite, refspec, --all/--mirror, push nu depuis main). Meme decision qu'au poste, meme effet dans tous les modes. Exemptions par ~/.claude/.push-main-allowed. Ne voit que l'outil Bash.",
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/guard-push-main.sh",
             "timeout": 10
           }
         ]
