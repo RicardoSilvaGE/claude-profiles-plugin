@@ -17,10 +17,14 @@
 # LA LIMITE A CONNAITRE AVANT DE S'Y FIER. La documentation Claude Code est explicite : « A hook
 # with no decision, or with permissionDecision "allow" or "ask", doesn't block; the tool call
 # continues through the normal permission flow. » En mode `default` l'utilisateur est donc
-# reellement interrompu, comme au poste. En `auto`, `dontAsk` ou `bypassPermissions` — modes
-# courants en session cloud — il ne l'est pas, et seul l'additionalContext subsiste. Le hook
-# REPORTE le mode qu'il a recu dans son message, pour que cet ecart se mesure au lieu de se
-# supposer. Il n'emet JAMAIS `deny` : reprise textuelle de l'en-tete du hook PowerShell, « un
+# reellement interrompu, comme au poste. MESURE le 02.09.2026 a travers le harness, en session
+# `claude -p --permission-mode acceptEdits` sur un depot jetable : un `ask` sans personne pour y
+# repondre vaut REFUS — le premier Write est rejete (`permission_denied`, raison = ce message),
+# le modele recoit le message comme resultat d'outil, relance l'ecriture, et le marqueur « une
+# fois par session » la laisse passer. Ce n'est donc ni « interrompt » ni « n'interrompt pas » :
+# c'est un refus unique suivi d'un passage, et le message le dit desormais. En `auto`, `dontAsk`
+# ou `bypassPermissions` interactifs, le comportement n'a PAS ete mesure. Le hook REPORTE le mode
+# qu'il a recu dans son message, pour que cet ecart se mesure au lieu de se supposer. Il n'emet JAMAIS `deny` : reprise textuelle de l'en-tete du hook PowerShell, « un
 # faux positif bloquant sur une tache urgente detruit la confiance dans tout le dispositif ».
 #
 # CE QU'IL NE VOIT PAS (exclusions volontaires, cf. la regle elle-meme) :
@@ -184,8 +188,10 @@ Trois sorties legitimes :
   3. Cas hors perimetre de la regle (docs, migration SQL manuelle, configuration du harness) :
      le dire en une ligne et passer.
 
-Mode de permission de cette session : $MODE. Hors du mode 'default', ce rappel n'interrompt pas
-l'ecriture : il l'accompagne.
+Mode de permission de cette session : $MODE. Selon ce mode, ce rappel a INTERROMPU l'ecriture
+(default : une confirmation t'est demandee), l'a REFUSEE une fois (session non interactive : le
+'ask' n'a personne a qui s'adresser et vaut refus), ou l'accompagne. Si l'ecriture a ete
+refusee : situer la tache, puis la relancer — ce rappel ne reviendra pas.
 
 Ce rappel n'apparait qu'une fois par session et par depot."
 
