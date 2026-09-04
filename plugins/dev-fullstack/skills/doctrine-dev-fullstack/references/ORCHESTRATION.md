@@ -87,7 +87,7 @@ Le contrôle prend quelques secondes ; ne pas le faire transfère à l'utilisate
 | `architecte`, `ux`, `designer`, `qa`, `growth`, `brainstormer` | Le fichier annoncé dans `docs/` existe et couvre le périmètre du brief |
 | `backend`, `frontend` | Le diff existe ; le build ou `tsc --noEmit` passe ; les fichiers « DEHORS » n'ont pas bougé (`git status`) |
 | `redacteur` | Aucune clé présente dans une seule locale |
-| `reviewer` | Le verdict cite des `fichier:ligne` réels |
+| `reviewer` | Chaque finding pointe un fichier et une ligne qui existent |
 | `securite` | Chaque finding pointe un fichier existant ; les CRITIQUE sont traités ou explicitement acceptés |
 | `release` | La commande annoncée a été exécutée et sa sortie est citée, pas résumée |
 
