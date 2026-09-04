@@ -80,7 +80,7 @@ Citer en bullets ce qui a été lu :
 4. `android/variables.gradle` : `minSdkVersion`, `compileSdkVersion`, `targetSdkVersion`.
 5. `android/app/src/main/AndroidManifest.xml` : permissions, `intent-filter`, `allowBackup`, `dataExtractionRules`.
 6. `android/keystore.properties.example` et `.gitignore` : ce qui est exclu (`*.keystore`, `*.jks`, `keystore.properties`, `google-services.json`, `local.properties`).
-7. `package.json` : scripts `cap:sync`, `android:build`, `android:build:bundle`, `version`.
+7. `package.json` : scripts `npm run cap:sync`, `npm run android:build`, `npm run android:build:bundle`, `version`.
 8. `docs/play-store/` s'il existe : procédure, checklists, Data Safety, IARC, fiches — **ne pas les réécrire, les compléter**.
 9. `public/manifest.json` et `index.html` : `theme_color` / `background_color` cohérents avec `capacitor.config.json` `android.backgroundColor`.
 
@@ -115,7 +115,7 @@ Checklist mesurée sur le dépôt de référence, à passer **avant** de bumper 
 ### Phase 4 — Bump, build, signature
 
 1. **Bump** dans `android/app/build.gradle` : `versionCode` +1, `versionName` semver ; aligner `package.json.version`. C'est la seule modification autorisée de ce fichier sans SPEC, **parce que la procédure de release est cette demande explicite**.
-2. **Build web + sync** : `npm run build && npx cap sync android` (script `cap:sync`). Le skill peut le faire s'il a l'outillage ; il s'arrête là.
+2. **Build web + sync** : `npm run build && npx cap sync android` (script `npm run cap:sync`). Le skill peut le faire s'il a l'outillage ; il s'arrête là.
 3. **AAB, pas APK, pour le store** : `gradlew bundleRelease` → `android/app/build/outputs/bundle/release/app-release.aab`. Garder `assembleRelease` dans un script **séparé** pour le sideload de test (`adb install`).
 4. **Signature** — deux voies, la seconde est celle du dépôt mesuré :
    - Android Studio → *Generate Signed Bundle*, keystore existant, V1 + V2 ;
