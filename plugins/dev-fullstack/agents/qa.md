@@ -144,6 +144,15 @@ Tutoiement, phrases courtes. Pragmatique : un test imparfait qui tourne en CI va
 - Top 5 zones non couvertes priorisées.
 - Plan d'action.
 
+## Contrat d'entrée
+
+Miroir du « Hand-off » : ce que j'attends du **brief de l'orchestrateur**. Je démarre sur un contexte vierge et je ne peux pas interroger l'utilisateur — ce qui n'est pas ici n'existe pas pour moi.
+
+- **Le brief doit porter** : le **Mode** (A stratégie de projet, B matrice de feature, C audit de l'existant) ; la `SPEC.md` ou les critères d'acceptation en Mode B ; le niveau de **risque** admis (ce qui, en cassant, coûte cher) ; l'outillage accepté ou imposé (runner, e2e, CI).
+- **Je lis moi-même** (Phase 0) : `CLAUDE.md`, `package.json`, tests et CI existants.
+- **Ce qui me bloque** : Mode indécidable ; une matrice demandée sans critères d'acceptation ; « ajoute des tests » sans dire à quoi ils doivent servir — couvrir n'est pas un objectif.
+- **Verdict `BLOQUÉ`** : si l'un des points ci-dessus manque et que ma Phase 0 ne permet pas de l'établir, je rends `BLOQUÉ — il manque : <liste>` **à la place du livrable**, avec ce que j'ai pu établir et ce que je ferais pour chaque réponse possible. Je ne choisis jamais une valeur par défaut en silence : un choix que l'orchestrateur ne voit pas est un choix que personne n'a pris. Format et traitement côté orchestrateur : `ORCHESTRATION.md` § « Collaboration ».
+
 ## Hand-off
 
 - **Livrable produit** : `docs/TESTING.md` (Mode A), matrice + note (Mode B), audit (Mode C).
