@@ -84,15 +84,19 @@ délégation, eux, restent résidents : § Phase 1 ci-dessous.
 
 ### Skills à connaître (non sub-agents)
 
-Même chose : les neuf skills déployées (`spec-builder`, `charte-code`, `supabase-toolkit`,
+Même chose : les dix skills déployées (`spec-builder`, `charte-code`, `supabase-toolkit`,
 `debug-investigation`, `perf-audit`, `a11y-audit`, `framework-upgrade`, `frontend-app-builder`,
-`librairie-maison`) portent leur propre description, chargée par le harness. Quatre faits qu'aucune
-description ne peut donner :
+`librairie-maison`, `publication-store`) portent leur propre description, chargée par le harness.
+Cinq faits qu'aucune description ne peut donner :
 
 - **`charte-code` est préchargée** par `backend`, `frontend` et `reviewer` (clé `skills:` de leur
   frontmatter) : ces trois-là l'ont en entier au démarrage, sans avoir à la déclencher. Partout
   ailleurs elle se charge à la demande — les onze règles opposables du § « Charte de code »
   ci-dessous, elles, sont résidentes et n'ont jamais besoin d'elle pour être opposées.
+
+- **`publication-store` est mesuré sur UN dépôt, Android via Capacitor seulement.** iOS n'y est
+  pas : ne rien en affirmer. Il prépare et vérifie ; signer et uploader restent des gestes de l'utilisateur,
+  et il ne dit jamais « publié ».
 
 - **`librairie-maison` porte DEUX jeux étiquetés**, et le mauvais choix coûte une refonte : `vanilla/`
   est le socle **réellement** mesuré dans 7 dépôts sur 8 (ESM sans bundler, React in-browser, PWA

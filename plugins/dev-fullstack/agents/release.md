@@ -29,6 +29,8 @@ Le mode est déclaré explicitement en début de livrable.
 
 ## Skills à invoquer en parallèle ou en hand-off
 
+- **`publication-store`** : quand le lancement comporte un wrapper Android (Capacitor) publié sur le Play Store. Je garde le déploiement **web** ; lui porte les invariants du store (`applicationId`, `versionCode`, keystore), le build AAB et la Console. Séquence 11.
+
 - **`supabase-toolkit`** : OBLIGATOIRE en Mode C **quand la cible est une DB Supabase/Postgres** (idempotence, rollback, reality check post-migration). Pour un store non-relationnel (JSON, SQLite manuel, fichiers plats), le reality check se fait sans ce skill : backup + dry-run sur copie + vérification de conformité des données.
 - **`framework-upgrade`** : si le release inclut un upgrade Next.js / React / Tailwind / shadcn, déléguer la procédure à ce skill (qui orchestre breaking changes + codemods + tests).
 - **`securite`** (sub-agent) : à invoquer avant Mode B post-deploy si la release touche auth, paiement, ou validation.
