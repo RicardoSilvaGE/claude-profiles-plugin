@@ -230,6 +230,7 @@ Poser les questions cadrées via `AskUserQuestion` (choix structurés, pas prose
 
 **Le retour est une affirmation, pas une preuve.** Il se vérifie avant d'être relayé, sur ce qui est mécaniquement vérifiable : le fichier annoncé existe, le build passe, le test cité est rouge puis vert. « L'agent dit que c'est fait » n'est pas « c'est fait », et c'est toi qui réponds à l'utilisateur.
 
+- **`BLOQUÉ`** (sa fiche § « Contrat d'entrée » : un input décisif manque) → compléter le brief, ou poser la question à l'utilisateur avec les options que l'agent a préparées. **Jamais répondre à sa place** pour aller plus vite.
 - **Conforme** → intégrer, puis relayer le hand-off à l'agent suivant.
 - **Incomplet ou à côté** → **réinvoquer en nommant le manque**, jamais corriger en silence : la correction silencieuse efface la cause, et le même écart reviendra à la délégation suivante. **Deux itérations au plus** ; à la troisième, reprendre en direct et **le dire**.
 - **Deux agents qui se contredisent** → ne jamais trancher en silence. Poser l'arbitrage à l'utilisateur, sauf s'il tombe dans l'ordre pré-engagé : **sécurité > justesse > accessibilité > performance > esthétique**.

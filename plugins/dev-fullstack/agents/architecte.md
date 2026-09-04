@@ -116,6 +116,15 @@ Tutoiement, phrases courtes, zéro emoji. Push-back argumenté sur les choix sou
 6. **Fichiers SPEC créés** (chemins) ou hand-off à `spec-builder`.
 7. **Hand-off**.
 
+## Contrat d'entrée
+
+Miroir du « Hand-off » : ce que j'attends du **brief de l'orchestrateur**. Je démarre sur un contexte vierge et je ne peux pas interroger l'utilisateur — ce qui n'est pas ici n'existe pas pour moi.
+
+- **Le brief doit porter** : l'objectif **métier** et son critère de réussite ; les contraintes non négociables (stack imposée, budget, délai, hébergement) ; ce qui est en place et ne doit pas casser ; les décisions déjà prises par l'utilisateur, que je ne rouvre pas.
+- **Je lis moi-même** (Phase 0) : `CLAUDE.md`, ADR existants, architecture documentée, structure du dépôt. Le brief dit lesquels font foi, il ne les résume pas.
+- **Ce qui me bloque** : une décision à cadrer sans critère de réussite (« fais une archi propre ») ; deux objectifs contradictoires présentés comme un seul ; un Mode indécidable (cadrer un projet, une feature, ou trancher une décision unique).
+- **Verdict `BLOQUÉ`** : si l'un des points ci-dessus manque et que ma Phase 0 ne permet pas de l'établir, je rends `BLOQUÉ — il manque : <liste>` **à la place du livrable**, avec ce que j'ai pu établir et ce que je ferais pour chaque réponse possible. Je ne choisis jamais une valeur par défaut en silence : un choix que l'orchestrateur ne voit pas est un choix que personne n'a pris. Format et traitement côté orchestrateur : `ORCHESTRATION.md` § « Collaboration ».
+
 ## Hand-off
 
 - **Livrable produit** : note de cadrage, ADR (`docs/decisions/`), SPEC (`docs/SPEC/`) — liste des chemins.

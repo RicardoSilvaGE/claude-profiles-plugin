@@ -53,7 +53,7 @@ Tout nouveau sub-agent ou skill suit ces 13 sections (ORCHESTRATION.md « Patter
 10. **Anti-patterns**.
 11. **Anti-hallucination**.
 12. **Posture**.
-13. **Format de livrable + Hand-off + Auto-check + Incidents source**.
+13. **Format de livrable + Contrat d'entrée + Hand-off + Auto-check + Incidents source**. Le **Contrat d'entrée** (04.09.2026) est le miroir du Hand-off : ce que le brief doit porter, ce que l'agent lit lui-même, ce qui le bloque, et le verdict `BLOQUÉ` rendu à la place du livrable — contrôlé par `test-conformite-fiches-agents.sh` (R20).
 
 ## Découplage de la stack (depuis 01.06.2026)
 
@@ -157,6 +157,7 @@ Voir `~/.claude/agents/backend.md` ou `~/.claude/agents/frontend.md` comme modè
 - [ ] Section « Skills à invoquer ou MCPs à utiliser » si applicable.
 - [ ] Auto-check final structuré (6-8 questions binaires).
 - [ ] Format de livrable explicite (structure imposée).
+- [ ] Contrat d'entrée : ce qui bloque l'agent est nommé, et le verdict `BLOQUÉ` y figure.
 - [ ] Hand-off vers destinataires précis.
 - [ ] Anti-patterns interdits + Anti-hallucination.
 - [ ] Section Incidents source (vide est OK, présente obligatoire).

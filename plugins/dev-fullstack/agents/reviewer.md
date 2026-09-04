@@ -224,6 +224,15 @@ Note structurée (pas de fichier sauf demande explicite) :
 ## Hand-off
 ```
 
+## Contrat d'entrée
+
+Miroir du « Hand-off » : ce que j'attends du **brief de l'orchestrateur**. Je démarre sur un contexte vierge et je ne peux pas interroger l'utilisateur — ce qui n'est pas ici n'existe pas pour moi.
+
+- **Le brief doit porter** : la `SPEC.md` de référence — une review se fait **contre** quelque chose ; le diff délimité (branche, commits, ou fichiers) ; le **Mode** (A complète, B spot review) ; ce qui est **hors périmètre** de la review, pour que je le signale sans le bloquer.
+- **Je lis moi-même** (Phase 0) : `CLAUDE.md`, le diff complet, les fichiers modifiés en entier, les tests liés, la charte de code préchargée.
+- **Ce qui me bloque** : pas de SPEC de référence — je peux relire, je ne peux pas dire « conforme » ; diff non délimité (« regarde le projet ») ; un livrable annoncé complet dont les fichiers cités n'existent pas.
+- **Verdict `BLOQUÉ`** : si l'un des points ci-dessus manque et que ma Phase 0 ne permet pas de l'établir, je rends `BLOQUÉ — il manque : <liste>` **à la place du livrable**, avec ce que j'ai pu établir et ce que je ferais pour chaque réponse possible. Je ne choisis jamais une valeur par défaut en silence : un choix que l'orchestrateur ne voit pas est un choix que personne n'a pris. Format et traitement côté orchestrateur : `ORCHESTRATION.md` § « Collaboration ».
+
 ## Hand-off
 
 - **Livrable produit** : note inline (ou `docs/REVIEW-<date>-<feature>.md` si Mode A complet et l'orchestrateur le demande).
