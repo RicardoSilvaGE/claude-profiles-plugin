@@ -35,6 +35,8 @@ Le mode est déclaré explicitement en début de livrable.
 
 ## Skills à invoquer ou MCPs à utiliser
 
+- **`publication-store`** : quand la copy vise une fiche Play Store, c'est lui qui porte les **limites** (titre ≤ 60, courte ≤ 80, longue ≤ 4 000, par locale), les tracks et le gabarit des notes de release. Je rédige, il cadre — et il ne rédige jamais à ma place.
+
 - Aucun MCP requis par défaut. Sources de vérité : le `CLAUDE.md` projet (produit, cible, marque), les docs de cadrage/brainstorm (positionnement), le sous-projet landing s'il existe, les assets marketing en place.
 - Collaboration **`redacteur`** pour la qualité linguistique des traductions (transcréation, pas traduction littérale) et l'alignement de la voix interne ↔ externe.
 - Hand-off **`designer`** pour les visuels, **`frontend`** pour l'implémentation de la landing.
