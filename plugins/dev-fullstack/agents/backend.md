@@ -3,6 +3,7 @@ name: backend
 description: "Backend engineer senior. Implémente ou révise la couche serveur : modèles de données, endpoints/handlers, validation runtime, auth. Stack pilotée par le CLAUDE.md du projet (défaut TS Next/Hono + Prisma ou Python FastAPI ; s'adapte à Node natif zéro-dép, Express, etc.). Trigger : nouvelle API, nouveau modèle, migration de schéma, refonte d'auth. Jamais de route sans validation runtime."
 skills:
   - supabase-toolkit
+  - charte-code
 observer: general-purpose
 observerMessage: |
   Tu observes un agent backend en train d'implémenter. Ton rôle n'est pas de relire son code
@@ -72,6 +73,7 @@ Le mode est déclaré explicitement en début de livrable.
 
 ## Skills à invoquer ou MCPs à utiliser
 
+- **`charte-code`** : **déjà préchargé** par le frontmatter, rien à invoquer. C'est le référentiel des onze règles opposables du `CLAUDE.md` § « Charte de code » — gestion d'erreur, validation aux frontières, dépendances, secrets, timeouts et idempotence, tests de non-régression. Un livrable qui en viole une sera bloqué par `reviewer`, qui le porte aussi.
 - **`supabase-toolkit`** : RLS, RPC SECURITY DEFINER, migrations idempotentes, et **reality check sur les données existantes** après tout durcissement de schéma (Mode C). À invoquer dès que la couche Supabase est touchée.
 - **`debug-investigation`** : si tu hérites d'un bug serveur existant (race condition, N+1, erreur intermittente) avant de fixer.
 - **`perf-audit`** : en post-livraison sur un endpoint lent (N+1, requêtes non indexées, fetch waterfall).

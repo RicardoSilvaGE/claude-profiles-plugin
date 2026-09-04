@@ -1,7 +1,7 @@
 # claude-profiles-plugin
 
 Marketplace public d'un seul plugin Claude Code : le profil **`dev-fullstack`** — 12 sub-agents,
-8 skills métier, la doctrine de travail livrée comme skill, et six hooks.
+9 skills métier, la doctrine de travail livrée comme skill, et six hooks.
 
 ## Avant de t'en servir — trois choses qui surprennent
 
@@ -72,7 +72,7 @@ après avoir constaté l'inverse pour un marketplace privé.
 | | |
 |---|---|
 | Sub-agents | `architecte`, `backend`, `brainstormer`, `designer`, `frontend`, `growth`, `qa`, `redacteur`, `release`, `reviewer`, `securite`, `ux` |
-| Skills | `a11y-audit`, `debug-investigation`, `framework-upgrade`, `frontend-app-builder`, `librairie-maison`, `perf-audit`, `spec-builder`, `supabase-toolkit` |
+| Skills | `a11y-audit`, `charte-code`, `debug-investigation`, `framework-upgrade`, `frontend-app-builder`, `librairie-maison`, `perf-audit`, `spec-builder`, `supabase-toolkit` |
 | Doctrine | `doctrine-dev-fullstack` — méthodologie en phases, règle absolue spec-builder, conventions |
 | Hooks | `SessionStart` (doctrine en contexte, puis préférences personnelles), `SubagentStart` (préférences), `PreToolUse` (règle spec-builder), `Stop` (compilation TypeScript), `PreToolUse` sur `Bash` (push direct sur `main` refusé), `PostToolUse` sur `Agent` (journal d'usage) |
 
