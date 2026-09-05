@@ -22,8 +22,11 @@
 # repondre vaut REFUS — le premier Write est rejete (`permission_denied`, raison = ce message),
 # le modele recoit le message comme resultat d'outil, relance l'ecriture, et le marqueur « une
 # fois par session » la laisse passer. Ce n'est donc ni « interrompt » ni « n'interrompt pas » :
-# c'est un refus unique suivi d'un passage, et le message le dit desormais. En `auto`, `dontAsk`
-# ou `bypassPermissions` interactifs, le comportement n'a PAS ete mesure. Le hook REPORTE le mode
+# c'est un refus unique suivi d'un passage, et le message le dit desormais. MESURE le 05.09.2026
+# dans une vraie session cloud en mode `auto` (le mode reel de ces sessions) : le hook tourne, rend
+# `ask` + `additionalContext`, et l'ecriture passe sans interruption ni texte visible dans le
+# resultat de l'outil - seul le marqueur prouve le rappel. `dontAsk` et `bypassPermissions`
+# interactifs restent non mesures. Le hook REPORTE le mode
 # qu'il a recu dans son message, pour que cet ecart se mesure au lieu de se supposer. Il n'emet JAMAIS `deny` : reprise textuelle de l'en-tete du hook PowerShell, « un
 # faux positif bloquant sur une tache urgente detruit la confiance dans tout le dispositif ».
 #
