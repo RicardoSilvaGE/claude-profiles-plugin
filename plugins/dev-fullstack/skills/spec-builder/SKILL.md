@@ -28,7 +28,7 @@ La doctrine `dev-fullstack` définit **trois étages**. Ce skill ne produit la s
 
 | Ampleur estimée | Ce que produit ce skill |
 |---|---|
-| **< 10 lignes** | **Rien.** Le dire, en une ligne : « sous 10 lignes, pas de spec — le hook `check-build-ts.ps1` sert de filet ». Ne pas rédiger, ne pas insister. |
+| **< 10 lignes** | **Rien.** Le dire, en une ligne : « sous 10 lignes, pas de spec — le hook de build `check-build-ts` (Stop) sert de filet, TypeScript ou non ». Ne pas rédiger, ne pas insister. |
 | **10 à 50 lignes** | **SPEC-lite**, ~30 lignes, **trois sections seulement** : `## Objectif` (verbe d'action mesurable), `## Périmètre` (dedans / dehors), `## Vérifications avant fin de tâche` (cases concrètes). Même exigence de fond que la spec complète : pas d'invention, chemins exacts, `À DÉFINIR — <explication>` si une info manque. |
 | **> 50 lignes, ou structurel** | **Spec complète en 13 sections**, telle que décrite plus bas. |
 
