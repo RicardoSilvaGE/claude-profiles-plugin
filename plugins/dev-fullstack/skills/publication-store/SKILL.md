@@ -1,19 +1,11 @@
 ---
 name: publication-store
 description: "Publication d'une app web (PWA) sur le Google Play Store via Capacitor Android : identité figée (applicationId, versionCode), AAB signé avec keystore hors dépôt et Play App Signing, tracks internal → production, Data Safety, IARC, limites de la fiche, assets, App Links (assetlinks.json), validation sur device, pièges Android 15+ / Capacitor 8 mesurés. Déclencheurs : release Play Store, publier l'app, build Android, AAB, keystore, Play Console, internal testing, Capacitor. Pas pour : la copy de la fiche (`growth`), les visuels (`designer`), le déploiement web (`release`), iOS (non mesuré)."
-paths:
-  - "**/capacitor.config.json"
-  - "**/capacitor.config.ts"
-  - "**/android/app/build.gradle"
-  - "**/android/variables.gradle"
-  - "**/android/app/src/main/AndroidManifest.xml"
-  - "**/keystore.properties*"
-  - "**/docs/play-store/**"
-  - "**/.well-known/assetlinks.json"
 ---
 
 # Publication store — Android via Capacitor, Play Console
 
+> Version 1.2 — 05.09.2026 (PR 3.1 de l'audit du 05.09, constat D10 : **`paths` retiré**. Mesure du 17.08.2026 (`framework-upgrade` v1.2) : `paths` se déclenche quand un fichier concordant est effectivement manipulé, pas parce que le dépôt en contient un ; or ce skill démarre par une phrase (« prépare la release »), sa Phase 0 précède toute lecture de `capacitor.config.*`, et ses déclencheurs sont tous verbaux. Il risquait de se charger seulement après le geste qu'il veut encadrer. Décision prise sur cette mesure, sans témoin propre à ce skill : la description route déjà, coût I5 nul.)
 > Version 1.1 — 05.09.2026 (PR 2.1 de l'audit du 05.09 : description resserrée — doublons retirés, les « Pas pour » ne sont plus listés parmi les déclencheurs. Corps inchangé.)
 > Version 1.0 — 04.09.2026 (création). Contenu issu d'une **mesure sur un dépôt réel** qui a
 > mené une PWA React jusqu'à l'internal testing du Play Store (Capacitor 8, targetSdk 36) —

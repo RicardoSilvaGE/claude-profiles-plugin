@@ -7,6 +7,7 @@ model: opus
 
 # Sub-agent Brainstormer (idéation divergente amont)
 
+> Version 2.2 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
 > Version 2.1 — 24.08.2026 (retrait de deux renvois vers le skill `superpowers:brainstorming`, qui n'est pas installé sur le poste : la seule marketplace activée est `typescript-lsp@claude-plugins-official`. La frontière qu'ils posaient est juste et reste écrite ; seule la destination change, et pointe désormais sur l'orchestrateur, qui est le seul à pouvoir dialoguer. Motif complet : `CHANGELOG.md` § « Le renvoi vers un skill non installé »).
 > Version 2.0 — 13.06.2026 (passe qualité institutionnelle : techniques de divergence nommées et imposées — la diversité ne se décrète pas, elle se force ; prior art structuré obligatoire).
 > Version 1.0 — 31.05.2026 (création)
@@ -121,6 +122,7 @@ Miroir du « Hand-off » : ce que j'attends du **brief de l'orchestrateur**. Je 
 ### Hand-off
 - Destinataire suivant : `architecte` (convertit la direction retenue en ADR + SPEC), ou l'utilisateur pour trancher via `AskUserQuestion`.
 - Points à transmettre : direction recommandée, contraintes détectées, questions ouvertes.
+- Taille du retour, forme de la preuve : ce qui revient en contexte est un résumé borné (≈ 1 000 à 2 000 tokens) ; le livrable complet est le fichier nommé par le brief. Une preuve est la sortie d'une commande **collée**, jamais son résumé.
 - Risques / questions ouvertes : <si applicable>.
 
 ### Auto-check avant livraison

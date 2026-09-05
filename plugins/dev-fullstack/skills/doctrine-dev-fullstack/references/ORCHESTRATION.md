@@ -1,7 +1,7 @@
 # Orchestration des sub-agents
 
 > Source canonique : `templates/profiles/dev-fullstack/agents/ORCHESTRATION.md` (dépôt `claude-profiles`) ; la copie déployée vit dans `agents/` du home actif.
-> Dernière mise à jour : 05.09.2026 (v2.5 — PR 2.1 de l'audit du 05.09 : l'historique des versions, 5 254 octets lus à chaque Phase 0, part dans `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions » ; séquence 9 réduite à sa note de retrait ; skill `garde-fous-powershell` inscrit ; renvoi croisé `frontend-app-builder` ↔ `librairie-maison`.)
+> Dernière mise à jour : 05.09.2026 (v2.6 — PR 3.1 et 3.2 de l'audit du 05.09 : gabarit de brief complété par `OUTILS`, `AUTORISÉ À` et `RETOUR` ; § « Ce qu'on vérifie au retour » réécrit en commandes et chemins, jamais en phrases ; registre : `memory: user` désormais couvert par `backup-memoire.ps1`. Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
 
 Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les séquences typiques. Il complète le `CLAUDE.md` global et les frontmatters de chaque agent.
 
@@ -70,7 +70,10 @@ DEHORS       : <ce qu'il ne doit pas toucher — fichiers, sujets, refactos tent
 ÉTABLI       : - fichiers déjà lus : <chemins> → <les faits qu'ils portent>
                - décisions déjà tranchées (NON rouvrables) : <liste>
                - contraintes du dépôt : <stack, conventions, CLAUDE.md local>
+OUTILS       : <quoi lire en priorité, quoi ne pas ouvrir, quelles commandes lancer ou non>
+AUTORISÉ À   : <ce qu'il peut faire hors du dépôt — déployer, migrer, publier — ou « rien »>
 LIVRABLE     : <forme> dans <chemin exact>
+RETOUR       : <résumé en contexte, ≈ 1 000 à 2 000 tokens ; le complet reste dans LIVRABLE>
 HAND-OFF REÇU: <le livrable de l'agent précédent, ou « aucun »>
 ```
 
@@ -78,19 +81,36 @@ HAND-OFF REÇU: <le livrable de l'agent précédent, ou « aucun »>
 le corrige — c'est son travail bien fait, et c'est un débordement de périmètre qui rend la review
 impossible. Le lui interdire nommément coûte une ligne.
 
+**« OUTILS », « AUTORISÉ À » et « RETOUR » (05.09.2026, audit L2 et F5).** Un sub-agent a besoin
+« d'un objectif, d'un format de sortie, d'indications sur les outils et sources à employer, et de
+limites claires » (Anthropic, système de recherche multi-agents) : le gabarit couvrait trois des
+quatre. `OUTILS` dit ce qu'il faut lire d'abord, ce qu'il ne faut **pas** ouvrir — un agent qui
+lit tout le dépôt en perd le fil et le budget — et quelles commandes sont attendues ou interdites.
+`AUTORISÉ À` porte l'autorisation explicite que `release` exige avant d'agir en production ;
+« rien » est une réponse valable, et la plus fréquente. `RETOUR` borne ce qui revient dans ton
+contexte : le livrable long se dépose sur disque, seul le résumé remonte. Un retour de
+8 000 tokens n'est pas un rapport complet, c'est un livrable mal rangé.
+
 ### Ce qu'on vérifie au retour, agent par agent
 
 Un rapport se vérifie sur ce qui est **mécaniquement** vérifiable, avant d'être relayé à l'utilisateur.
 Le contrôle prend quelques secondes ; ne pas le faire transfère à l'utilisateur le rôle de détecteur.
 
-| Agent | Preuve minimale à constater soi-même |
+**La preuve est une commande dont tu lis la sortie, ou un chemin que tu ouvres — jamais une
+phrase** (05.09.2026, audit L1). MAST mesure un quart des défaillances multi-agents en
+vérification incorrecte, absente ou prématurée, et constate que les vérificateurs « n'effectuent
+que des contrôles superficiels, bien qu'invités à vérifier en profondeur ». « Le build passe »
+est une affirmation ; `tsc --noEmit`, sa sortie vide et son code 0 sont une preuve. Côté agent,
+la règle miroir est dans chaque § Hand-off : coller la sortie, jamais la résumer.
+
+| Agent | Preuve à constater soi-même — commande dont on lit la sortie, ou chemin qu'on ouvre |
 |---|---|
-| `architecte`, `ux`, `designer`, `qa`, `growth`, `brainstormer` | Le fichier annoncé dans `docs/` existe et couvre le périmètre du brief |
-| `backend`, `frontend` | Le diff existe ; le build ou `tsc --noEmit` passe ; les fichiers « DEHORS » n'ont pas bougé (`git status`) |
-| `redacteur` | Aucune clé présente dans une seule locale |
-| `reviewer` | Chaque finding pointe un fichier et une ligne qui existent |
-| `securite` | Chaque finding pointe un fichier existant ; les CRITIQUE sont traités ou explicitement acceptés |
-| `release` | La commande annoncée a été exécutée et sa sortie est citée, pas résumée |
+| `architecte`, `ux`, `designer`, `qa`, `growth`, `brainstormer` | `test -f docs/<fichier annoncé>` (ou `Read`) ; les sections que le brief exigeait s'y trouvent, par leur titre |
+| `backend`, `frontend` | `git status --short` et `git diff --stat` : les fichiers touchés sont ceux du brief, aucun de « DEHORS » ; `npx tsc --noEmit` ou le script `build`/`check` de `package.json`, sortie collée et code 0 ; `npm test -- <fichier de test cité>` quand un test est annoncé |
+| `redacteur` | `grep -c "<clé>" <chaque fichier de locale>` : même compte partout — aucune clé présente dans une seule locale |
+| `reviewer` | pour chaque finding, `sed -n '<ligne>p' <fichier>` : la ligne existe et dit ce que le finding dit |
+| `securite` | idem `reviewer` ; pour chaque CRITIQUE, le diff du correctif ou la phrase d'acceptation de l'utilisateur — jamais « à traiter en suivi » |
+| `release` | la commande annoncée figure dans le rapport **avec sa sortie collée** ; sans sortie, elle n'a pas été lancée |
 
 ### Le contrat d'entrée, et le verdict `BLOQUÉ`
 
@@ -387,7 +407,7 @@ Tous les sub-agents (v2 — depuis 21.05.2026) suivent le même squelette :
    | `skills:` | `backend` (`supabase-toolkit`, `charte-code`), `frontend` (`a11y-audit`, `charte-code`), `reviewer` (`charte-code`) | Précharge le skill en entier au démarrage. **Exclusif avec `paths:`** sur le skill visé : poser un `paths` vide la ligne de son effet **en silence** (vérifié par témoin le 17.08.2026, absent de la documentation officielle). **En revanche, PAS exclusif avec `context: fork`** : mesuré par témoin le 19.08.2026, les deux cohabitent — le skill reste préchargé, et une invocation depuis un sous-agent s'exécute bien en fork imbriqué. Ne pas généraliser la première exclusion à la seconde par analogie : c'est l'erreur qui a été commise, puis corrigée par la mesure. |
    | `observer:` + `observerMessage:` | `backend`, `frontend` | Lance un agent en observateur de fond pendant que l'agent travaille, et lui adresse des digests d'activité. Posé sur les agents qui **produisent** le code, jamais sur ceux qui le contrôlent : l'écart entre demandé et livré naît chez le producteur. `observerMessage` est restrictif à dessein (quatre motifs, silence sinon) — un observateur qui commente tout n'est plus lu. |
    | `disallowedTools:` | `reviewer`, `securite`, `release` (`Edit, Write, NotebookEdit`) ; `architecte`, `ux`, `designer`, `growth` (`Edit, Bash, NotebookEdit`, `Write` gardé pour `docs/`) ; `qa` (`Edit, NotebookEdit`) | Liste noire d'outils, posée le 05.09.2026 (audit F2) sur les fiches qui interdisaient l'écriture par une phrase que rien n'opposait. **Témoin du 05.09.2026** (`claude -p`, dépôt jetable, serveur MCP stdio maison, agent `disallowedTools: Edit, Write, NotebookEdit`) : l'outil MCP reste appelable — appel journalisé côté serveur avec son `toolUseId` —, `Write` disparaît (fichier non créé, outil absent de la liste rendue), `Bash` reste. C'est ce que `tools:` ne donne pas : une liste blanche perd les serveurs MCP qu'elle n'énumère pas. **Ne restreint pas les chemins** : un agent qui garde `Write` pour `docs/` peut écrire ailleurs ; le champ DEHORS du brief reste la seule barrière sur le *où*. |
-   | `memory: user` | `reviewer` | Mémoire persistante propre à l'agent (`agent-memory/reviewer/` du home), pour que le même défaut vu sur trois dépôts devienne une règle. **Éphémère en session cloud** (plugin) : le home du conteneur ne survit pas. Absente de `backup-memoire.ps1` (à vérifier avant de s'y fier). |
+   | `memory: user` | `reviewer` | Mémoire persistante propre à l'agent (`agent-memory/reviewer/` du home), pour que le même défaut vu sur trois dépôts devienne une règle. **Éphémère en session cloud** (plugin) : le home du conteneur ne survit pas. Couverte par `backup-memoire.ps1` / `restore-memoire.ps1` depuis le 05.09.2026 (sous-dossier `_agent-memory/` de la sauvegarde) — exécutés sous PowerShell 7 dans le conteneur, pas encore sous 5.1 au poste (`EN-ATTENTE-POSTE.md`, entrée 20). |
 
 2. **Version** : ligne en tête juste après le frontmatter.
 3. **Modes** : A / B / C (parfois D), détectés en Phase 0, déclarés en début de livrable.

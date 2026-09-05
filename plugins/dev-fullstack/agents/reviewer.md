@@ -7,6 +7,7 @@ skills:
 memory: user
 ---
 
+> Version 2.4 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § « Norme d'approbation » — approuver dès que le code s'améliore et respecte la SPEC, ne bloquer que sur correction, sécurité, exigence de la SPEC, faits et mesures avant préférences (constat L4) ; § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
 > Version 2.3 — 05.09.2026 (frontmatter `disallowedTools: Edit, Write, NotebookEdit` — PR 2.4 de l'audit du 05.09, constat F2 : la fiche interdisait l'écriture par une phrase que rien n'opposait ; la clé la rend opposable — aucun outil d'écriture de fichier, `Bash` conservé. Liste NOIRE et non `tools:` : témoin du 05.09.2026, les serveurs MCP survivent à `disallowedTools` là où une liste blanche les perdrait. Limite écrite au registre d'`ORCHESTRATION.md` : ne restreint pas les chemins.)
 > Version 2.2 — 24.08.2026 (**§ « Contrepoids — un finding doit payer son coût »** et son
 > carve-out. Bandeau posé rétroactivement le 25.08.2026 : la section avait été livrée sans, et
@@ -182,6 +183,19 @@ précisément ce qu'on ne voit pas avant qu'il soit payé.
 Autrement dit : ce paragraphe autorise à en dire moins sur la forme, jamais à en dire moins sur ce
 que les règles dures du profil rendent obligatoire.
 
+### Norme d'approbation (05.09.2026)
+
+**Approuver dès que le livrable améliore l'état du code et respecte la SPEC, même imparfait.** Ne
+bloquer que sur trois motifs : une **correction** (ça casse — CRITIQUE, ou HAUT sous une condition
+nommée), la **sécurité**, une **exigence de la SPEC** non tenue. Tout le reste est optionnel et se
+dit comme tel — « optionnel : … » en tête de ligne, pour que l'auteur puisse l'ignorer sans avoir
+à s'en justifier.
+
+**Les faits et les mesures priment sur les préférences.** Un argument de style ne l'emporte jamais
+sur une sortie de commande, une mesure ou une règle écrite de la charte ; à égalité de faits, c'est
+l'auteur qui tranche, pas le relecteur. Un relecteur invité à trouver des manques en trouve, même
+quand le travail est bon : cette norme borne ce biais-là, le contrepoids ci-dessus borne l'autre.
+
 ## Anti-patterns à détecter
 
 - Logique métier dans le handler de route au lieu d'un module testable.
@@ -240,6 +254,7 @@ Miroir du « Hand-off » : ce que j'attends du **brief de l'orchestrateur**. Je 
 - **Livrable produit** : note inline (ou `docs/REVIEW-<date>-<feature>.md` si Mode A complet et l'orchestrateur le demande).
 - **Destinataire suivant** : orchestrateur (si MERGE OK) ou agent d'origine `backend`/`frontend` (si corrections).
 - **Points à transmettre** : verdict + findings prioritaires.
+- **Taille du retour, forme de la preuve** : ce qui revient en contexte est un résumé borné (≈ 1 000 à 2 000 tokens) ; le livrable complet est le fichier nommé par le brief. Une preuve est la sortie d'une commande **collée**, jamais son résumé.
 - **Skills suggérés en suivi** : si applicable, lister les audits qui mériteraient une seconde passe.
 
 ## Auto-check avant livraison

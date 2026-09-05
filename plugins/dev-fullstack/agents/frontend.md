@@ -21,6 +21,7 @@ observerMessage: |
   Si rien de tout cela n'apparaît, ne dis rien. Un observateur qui commente tout n'est plus lu.
 ---
 
+> Version 2.5 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
 > Version 2.4 — 05.09.2026 (PR 2.4 de l'audit du 05.09 : **historique des versions déplacé** dans `CHANGELOG.md` § « `frontend.md` — historique des versions » — 5 bandeaux, lus à chaque invocation pour rien ; § « Avant d'écrire » : les sept barreaux restent, les trois paragraphes communs à `backend`/`frontend` (carve-out, règle de la troisième occurrence, écart à signaler) sont renvoyés à `charte-code`, qui les porte déjà ; `disallowedTools` NON posé : cet agent écrit du code.)
 
 
@@ -200,6 +201,7 @@ Miroir du « Hand-off » : ce que j'attends du **brief de l'orchestrateur**. Je 
 - **Livrable produit** : liste des fichiers créés/modifiés.
 - **Destinataire suivant** : `reviewer` avant merge + `designer` si polish visuel restant + `securite` si formulaire sensible (auth, paiement, upload). Optionnel : `perf-audit` et/ou `a11y-audit` en post-livraison.
 - **Points à transmettre** : 3 bullets max — états visibles, contraintes a11y respectées, dépendances backend.
+- **Taille du retour, forme de la preuve** : ce qui revient en contexte est un résumé borné (≈ 1 000 à 2 000 tokens) ; le livrable complet est le fichier nommé par le brief. Une preuve est la sortie d'une commande **collée**, jamais son résumé.
 - **Risques / questions ouvertes** : intégration backend incomplète ? token DS manquant à créer ?
 
 ## Auto-check avant livraison

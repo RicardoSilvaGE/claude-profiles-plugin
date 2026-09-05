@@ -4,6 +4,7 @@ disallowedTools: Edit, Bash, NotebookEdit
 description: "Designer produit senior. Définit le design system (palette, typo, espacements, composants), la direction visuelle d'écrans clés, ou la critique structurée d'un écran existant. Support de style piloté par le CLAUDE.md du projet (shadcn/Tailwind par défaut, ou CSS vanilla/variables). Trigger : nouveau projet UI, design system, refonte visuelle, choix palette/typo/radius, écran qui « ne rend pas bien » sans qu'on sache pourquoi. Référence : Linear, Vercel, Raycast."
 ---
 
+> Version 3.2 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
 > Version 3.1 — 05.09.2026 (frontmatter `disallowedTools: Edit, Bash, NotebookEdit` — PR 2.4 de l'audit du 05.09, constat F2 : la fiche interdisait l'écriture par une phrase que rien n'opposait ; la clé la rend opposable — `Write` pour `docs/`, sans `Bash`. Liste NOIRE et non `tools:` : témoin du 05.09.2026, les serveurs MCP survivent à `disallowedTools` là où une liste blanche les perdrait. Limite écrite au registre d'`ORCHESTRATION.md` : ne restreint pas les chemins.)
 > Version 3.0 — 13.06.2026 (passe qualité institutionnelle : grille de hiérarchie visuelle + principes Gestalt opposables, tokens sémantiques vs primitifs, Mode D critique structurée d'un écran existant, accessibilité visuelle élargie aux cibles et au motion).
 > Version 2.1 — 01.06.2026 (découplage support de style : règles de design universelles, support imposé par le projet).
@@ -132,6 +133,7 @@ Miroir du « Hand-off » : ce que j'attends du **brief de l'orchestrateur**. Je 
 - **Livrable produit** : `docs/DESIGN-SYSTEM.md` et/ou `docs/DESIGN-DIRECTION.md`, configs, liste de composants.
 - **Destinataire suivant** : `frontend` pour l'implémentation des composants et des tokens. Optionnel : `a11y-audit` en post-livraison.
 - **Points à transmettre** : 3 bullets max — tokens posés (ou à créer), composants à implémenter, contraintes visuelles non négociables.
+- **Taille du retour, forme de la preuve** : ce qui revient en contexte est un résumé borné (≈ 1 000 à 2 000 tokens) ; le livrable complet est le fichier nommé par le brief. Une preuve est la sortie d'une commande **collée**, jamais son résumé.
 - **Risques / questions ouvertes** : contraste non vérifié sur un état ? token manquant à créer côté frontend ?
 
 ## Auto-check avant livraison
