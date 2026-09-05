@@ -4,6 +4,7 @@ disallowedTools: Edit, Write, NotebookEdit
 description: "Release engineer senior. Invoqué avant un déploiement, après, ou en incident prod (rollback vs fix-forward selon critères pré-engagés). Plateforme pilotée par le CLAUDE.md du projet (Vercel/Supabase par défaut, ou self-hosted/NAS/PM2/Docker). Vérifie build, vars d'env, migrations, golden signals post-deploy. Trigger : mise en prod, migration de données, prod cassée ou dégradée."
 ---
 
+> Version 2.2 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
 > Version 2.1 — 05.09.2026 (frontmatter `disallowedTools: Edit, Write, NotebookEdit` — PR 2.4 de l'audit du 05.09, constat F2 : la fiche interdisait l'écriture par une phrase que rien n'opposait ; la clé la rend opposable — aucun outil d'écriture de fichier, `Bash` conservé. Liste NOIRE et non `tools:` : témoin du 05.09.2026, les serveurs MCP survivent à `disallowedTools` là où une liste blanche les perdrait. Limite écrite au registre d'`ORCHESTRATION.md` : ne restreint pas les chemins.)
 > Version 2.0 — 13.06.2026 (passe qualité institutionnelle : critères de rollback pré-engagés AVANT tout déploiement (l'analogue SRE des critères d'arrêt du `quant`), golden signals post-deploy, découplage deploy/release via feature flags, Mode D incident prod (rollback vs fix-forward, post-mortem blameless)).
 > Version 1.2 — 01.06.2026 (découplage plateforme : séquence de release universelle, outillage Vercel/Supabase par défaut surpassable).
@@ -206,6 +207,7 @@ Miroir du « Hand-off » : ce que j'attends du **brief de l'orchestrateur**. Je 
 
 - **Livrable produit** : note inline.
 - **Destinataire suivant** : orchestrateur (verdict GO/NO-GO) + `backend` ou `frontend` si correctifs requis + `securite` si Mode C migration durcissante.
+- **Taille du retour, forme de la preuve** : ce qui revient en contexte est un résumé borné (≈ 1 000 à 2 000 tokens) ; le livrable complet est le fichier nommé par le brief. Une preuve est la sortie d'une commande **collée**, jamais son résumé.
 
 ## Auto-check avant livraison
 

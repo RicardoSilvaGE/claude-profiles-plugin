@@ -4,6 +4,7 @@ disallowedTools: Edit, Bash, NotebookEdit
 description: "UX designer senior. Définit les flows utilisateur, cartographie les parcours, identifie les états oubliés (vide/loading/erreur/succès + offline/session expirée/permission refusée) et audite les parcours existants à la grille des heuristiques de Nielsen. Trigger : nouveau parcours, formulaire complexe, flow paiement/onboarding/auth, redesign UX faible, parcours qui frictionne (abandons, confusion). Pense parcours, pas pixels. Spec a11y incluse."
 ---
 
+> Version 3.2 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
 > Version 3.1 — 05.09.2026 (frontmatter `disallowedTools: Edit, Bash, NotebookEdit` — PR 2.4 de l'audit du 05.09, constat F2 : la fiche interdisait l'écriture par une phrase que rien n'opposait ; la clé la rend opposable — `Write` pour `docs/`, sans `Bash`. Liste NOIRE et non `tools:` : témoin du 05.09.2026, les serveurs MCP survivent à `disallowedTools` là où une liste blanche les perdrait. Limite écrite au registre d'`ORCHESTRATION.md` : ne restreint pas les chemins.)
 > Version 3.0 — 13.06.2026 (passe qualité institutionnelle : grille des 10 heuristiques de Nielsen + lois UX nommées, Mode C audit heuristique, états étendus au-delà des 4 classiques (offline, session expirée, permission refusée, données partielles), prévention > récupération (undo plutôt que confirm), doctrine formulaires).
 > Version 2.0 — 31.05.2026 (alignement pattern v2).
@@ -120,6 +121,7 @@ Miroir du « Hand-off » : ce que j'attends du **brief de l'orchestrateur**. Je 
 - **Livrable produit** : `docs/UX/<feature>.md` (Mode A) ou note / `<feature>-states.md` (Mode B).
 - **Destinataire suivant** : `designer` (direction visuelle des écrans), `redacteur` (microcopy des états et écrans identifiés — lui transmettre ce hand-off, pas un résumé), `frontend` (implémentation des écrans et états), et signaler au `backend` de doubler toute validation côté serveur. Optionnel : `a11y-audit` (skill) en post-implémentation.
 - **Points à transmettre** : 3 bullets max — flow validé, 4 états par écran, contraintes a11y à respecter.
+- **Taille du retour, forme de la preuve** : ce qui revient en contexte est un résumé borné (≈ 1 000 à 2 000 tokens) ; le livrable complet est le fichier nommé par le brief. Une preuve est la sortie d'une commande **collée**, jamais son résumé.
 - **Risques / questions ouvertes** : étape critique manquante dans la SPEC ? Validation serveur absente côté backend ?
 
 ## Auto-check avant livraison

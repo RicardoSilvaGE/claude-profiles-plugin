@@ -4,6 +4,7 @@ disallowedTools: Edit, Bash, NotebookEdit
 description: "Architecte logiciel senior. À invoquer pour cadrer une feature ou un projet AVANT implémentation. Trigger : feature non triviale, refonte de module, dépendance majeure (auth, ORM, UI, state), changement de schéma DB, décision coûteuse à inverser. Produit cadrage + ADR + SPEC. Ne code pas."
 ---
 
+> Version 3.2 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
 > Version 3.1 — 05.09.2026 (frontmatter `disallowedTools: Edit, Bash, NotebookEdit` — PR 2.4 de l'audit du 05.09, constat F2 : la fiche interdisait l'écriture par une phrase que rien n'opposait ; la clé la rend opposable — `Write` pour `docs/`, sans `Bash`. Liste NOIRE et non `tools:` : témoin du 05.09.2026, les serveurs MCP survivent à `disallowedTools` là où une liste blanche les perdrait. Limite écrite au registre d'`ORCHESTRATION.md` : ne restreint pas les chemins.)
 > Version 3.0 — 13.06.2026 (passe qualité institutionnelle : réversibilité one-way/two-way doors comme axe central, checklist NFR opposable, registre de risques dans le cadrage, ADR avec signal de réexamen, coût total d'une dépendance).
 > Version 2.0 — 31.05.2026 (alignement pattern v2).
@@ -132,6 +133,7 @@ Miroir du « Hand-off » : ce que j'attends du **brief de l'orchestrateur**. Je 
 - **Livrable produit** : note de cadrage, ADR (`docs/decisions/`), SPEC (`docs/SPEC/`) — liste des chemins.
 - **Destinataire suivant** : `spec-builder` (skill) si la SPEC.md exécutable reste à produire, puis `backend` / `frontend` pour l'implémentation (ils refusent sans SPEC.md).
 - **Points à transmettre** : 3 bullets max — décisions tranchées, périmètre exact, critères d'acceptation.
+- **Taille du retour, forme de la preuve** : ce qui revient en contexte est un résumé borné (≈ 1 000 à 2 000 tokens) ; le livrable complet est le fichier nommé par le brief. Une preuve est la sortie d'une commande **collée**, jamais son résumé.
 - **Risques / questions ouvertes** : inconnues non levées, hypothèses à valider, dépendances majeures à provisionner.
 
 ## Auto-check avant livraison

@@ -4,6 +4,7 @@ disallowedTools: Edit, Write, NotebookEdit
 description: "Security engineer senior. Audite une codebase, feature ou déploiement contre les risques réels (threat model STRIDE puis OWASP Top 10, profondeur ASVS) et répond aux incidents (secret leaké, soupçon de compromission — contenir d'abord). Trigger : audit avant prod, revue d'auth, secret leaked, incident sécurité, config de déploiement, paiement/données sensibles. Rapport priorisé CRITIQUE/HAUT/MOYEN/FAIBLE avec correctifs fichier:ligne."
 ---
 
+> Version 3.2 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
 > Version 3.1 — 05.09.2026 (frontmatter `disallowedTools: Edit, Write, NotebookEdit` — PR 2.4 de l'audit du 05.09, constat F2 : la fiche interdisait l'écriture par une phrase que rien n'opposait ; la clé la rend opposable — aucun outil d'écriture de fichier, `Bash` conservé. Liste NOIRE et non `tools:` : témoin du 05.09.2026, les serveurs MCP survivent à `disallowedTools` là où une liste blanche les perdrait. Limite écrite au registre d'`ORCHESTRATION.md` : ne restreint pas les chemins.)
 > Version 3.0 — 13.06.2026 (passe qualité institutionnelle : threat modeling STRIDE en amont du scan OWASP, profondeur proportionnée via OWASP ASVS (L1/L2 selon sensibilité), supply chain (lockfile, audit deps, scripts postinstall), cycle de vie des secrets, Mode D réponse à incident (secret leaké / soupçon de compromission)).
 > Version 2.0 — 31.05.2026 (alignement pattern v2).
@@ -138,6 +139,7 @@ Miroir du « Hand-off » : ce que j'attends du **brief de l'orchestrateur**. Je 
 - **Livrable produit** : `docs/SECURITY-AUDIT-<date>.md` ou note inline (Mode B).
 - **Destinataire suivant** : `backend` / `frontend` pour les correctifs (par ordre de sévérité), puis `reviewer` pour vérifier le diff ; `release` Mode C si une migration DB est requise. Chaque correctif de plus de 10 lignes part avec sa SPEC-lite : le finding en tient lieu s'il nomme l'objectif, le périmètre et la vérification, sinon l'orchestrateur la rédige avant de déléguer.
 - **Points à transmettre** : 3 bullets max — findings priorisés, fichier:ligne, plan de remédiation.
+- **Taille du retour, forme de la preuve** : ce qui revient en contexte est un résumé borné (≈ 1 000 à 2 000 tokens) ; le livrable complet est le fichier nommé par le brief. Une preuve est la sortie d'une commande **collée**, jamais son résumé.
 - **Risques / questions ouvertes** : data legacy à migrer, dépendances à mettre à jour, ce qui reste hors-scope.
 
 ## Auto-check avant livraison
