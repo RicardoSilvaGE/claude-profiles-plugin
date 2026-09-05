@@ -48,16 +48,28 @@ CWD="$(lire '.cwd')"; [ -n "$CWD" ] || CWD="$PWD"
 
 OPT='(-[cC][[:space:]]+("[^"]*"|'"'"'[^'"'"']*'"'"'|[^[:space:]]+)|--?[[:alnum:]_-]+(=("[^"]*"|[^[:space:]]+))?)'
 MOTIF="(^|[^[:alnum:]_])git([[:space:]]+$OPT)*[[:space:]]+commit([^[:alnum:]_-]|$)"
+# Les trois motifs d'extraction sont des VARIABLES, pour que les classes soient exactement
+# [^"] et [^'] sans avoir a raisonner sur ce que bash fait d'un guillemet echappe dans [[ =~ ]].
+DQ='"'; SQ="'"
+RE_HEREDOC="<<-?[[:space:]]*[${SQ}${DQ}]?([A-Za-z_][A-Za-z0-9_]*)[${SQ}${DQ}]?"
+RE_MESSAGE="--message=(${DQ}([^${DQ}]*)${DQ}|${SQ}([^${SQ}]*)${SQ}|([^[:space:]]+))"
+RE_M="(^|[[:space:]])-[a-zA-Z]*m[[:space:]]*(${DQ}([^${DQ}]*)${DQ}|${SQ}([^${SQ}]*)${SQ}|([^[:space:]]+))"
 
-# Decoupage par instruction (';', '&&', '||'), PAS par saut de ligne : la forme heredoc de
-# Claude Code (`-m "$(cat <<'EOF' ... EOF)"`) porte le message sur plusieurs lignes.
+# PAS DE DECOUPAGE PAR INSTRUCTION AVANT L'EXTRACTION. La premiere version decoupait sur ';',
+# '&&' et '||' comme guard-push-main.sh, puis cherchait le commit dans chaque instruction. Un
+# message qui CONTIENT un point-virgule ("... tel quel a git checkout ; sous Linux ...") etait
+# coupe avant son guillemet fermant, l'extraction tombait sur le mot sans espace
+# `"correctif(tests):`, guillemet compris, et un commit conforme etait refuse. Trouve en usage
+# reel le 05.09.2026, sur le commit qui corrigeait un autre banc - et d'abord attribue a tort a
+# l'antislash du meme message (le diagnostic fautif est dans l'historique du depot, 6ea7be9).
+# On cherche donc le premier `git [options] commit` dans la commande ENTIERE, et l'extraction
+# du message est elle-meme bornee par les guillemets : un ';' dedans n'est plus un separateur.
 SUJET=""; TROUVE=0
-while IFS= read -r -d $'\037' stmt; do
-    [[ "$stmt" =~ $MOTIF ]] || continue
+if [[ "$CMD" =~ $MOTIF ]]; then
     TROUVE=1
-    rest="${stmt#*"${BASH_REMATCH[0]}"}"
+    rest="${CMD#*"${BASH_REMATCH[0]}"}"
     msg=""
-    if [[ "$rest" =~ \<\<-?[[:space:]]*[\'\"]?([A-Za-z_][A-Za-z0-9_]*)[\'\"]? ]]; then
+    if [[ "$rest" =~ $RE_HEREDOC ]]; then
         marqueur="${BASH_REMATCH[1]}"
         corps="${rest#*"${BASH_REMATCH[0]}"}"
         corps="${corps#*$'\n'}"                                   # ce qui suit la ligne du marqueur
@@ -67,17 +79,16 @@ while IFS= read -r -d $'\037' stmt; do
         done <<EOF_CORPS
 $corps
 EOF_CORPS
-    elif [[ "$rest" =~ --message=(\"([^\"]*)\"|\'([^\']*)\'|([^[:space:]]+)) ]]; then
+    elif [[ "$rest" =~ $RE_MESSAGE ]]; then
         msg="${BASH_REMATCH[2]}${BASH_REMATCH[3]}${BASH_REMATCH[4]}"
-    elif [[ "$rest" =~ (^|[[:space:]])-[a-zA-Z]*m[[:space:]]*(\"([^\"]*)\"|\'([^\']*)\'|([^[:space:]]+)) ]]; then
+    elif [[ "$rest" =~ $RE_M ]]; then
         msg="${BASH_REMATCH[3]}${BASH_REMATCH[4]}${BASH_REMATCH[5]}"
     else
-        continue                                                  # -F, editeur, --amend --no-edit, --help
+        exit 0                                                    # -F, editeur, --amend --no-edit, --help
     fi
     SUJET="${msg%%$'\n'*}"
     SUJET="$(printf '%s' "$SUJET" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
-    break                                                         # premier commit, premier -m : le sujet
-done < <(printf '%s\037' "$CMD" | awk 'BEGIN{RS="\037"} { gsub(/;|&&|\|\|/, "\037"); printf "%s\037", $0 }')   # separateur 0x1F, jamais un saut de ligne
+fi
 [ "$TROUVE" -eq 1 ] || exit 0
 [ -n "$SUJET" ] || exit 0
 
