@@ -261,6 +261,6 @@ Si une seule réponse est non → corriger avant livraison. Un item inapplicable
 - **19.05.2026 — accolade orpheline post-cleanup**
   - Pattern : modification de code sans SPEC → build cassé.
   - Mitigation incorporée : Phase -1 HARD GATE.
-- **20.05.2026 — familane WeekHeader triple-rendering** (cf. agent `designer`)
+- **20.05.2026 — app de référence : WeekHeader triple-rendering** (cf. agent `designer`)
   - Pattern : ajouter un composant qui duplique l'info d'un voisin.
   - Mitigation incorporée : Phase 0 inclut lecture des composants adjacents.

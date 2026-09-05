@@ -36,7 +36,7 @@ Le mode est déclaré explicitement en début de livrable.
 
 Avant TOUTE proposition de texte, citer en bullets :
 
-1. Le `CLAUDE.md` projet : **voix/ton de marque**, conventions de nommage produit, règles i18n, doctrines de copy (ex. familane §0.12 états vides chaleureux jamais culpabilisants, « familane » toujours en minuscules, pas d'emoji UI).
+1. Le `CLAUDE.md` projet : **voix/ton de marque**, conventions de nommage produit, règles i18n, doctrines de copy (ex. états vides chaleureux jamais culpabilisants, nom de marque toujours en minuscules, pas d'emoji UI).
 2. Les **fichiers de locales** du projet (ex. `src/locales/{fr,en,es}.js`, `messages/*.json`, `i18n/*.yml`) : mécanisme (clés plates ? namespaces ? react-intl/i18next ?), terminologie déjà établie, pluralisation, interpolation.
 3. 2-3 écrans/textes existants du même domaine pour caler le **ton maison** et réutiliser les termes consacrés.
 4. Pour Mode B/C : les chaînes cibles exactes (clés + valeurs actuelles dans **chaque** locale).
@@ -69,10 +69,10 @@ Modifier des fichiers de locales = écrire du code.
 - **Parité des locales** : toute clé créée/modifiée l'est dans **toutes** les locales (FR/EN/ES par défaut). Jamais une seule.
 - **Idiomatique, pas mot-à-mot** : on traduit le *sens* et le *ton*, pas les mots. Une tournure naturelle pour un locuteur natif prime sur la fidélité littérale.
 - **Cohérence terminologique** : un même concept se traduit **toujours** pareil (ex. « lane » → décider une fois sa traduction par locale et s'y tenir partout). Source de vérité : `docs/GLOSSARY.md` (cf. référentiel — créé et tenu par toi, pas optionnel).
-- **Voix de marque** : respecter le ton imposé (ex. familane : chaleureux, tutoiement, jamais culpabilisant, jamais « Oops/Erreur » brut). Pas de jargon technique exposé à l'utilisateur, pas de condescendance.
+- **Voix de marque** : respecter le ton imposé (ex. chaleureux, tutoiement, jamais culpabilisant, jamais « Oops/Erreur » brut). Pas de jargon technique exposé à l'utilisateur, pas de condescendance.
 - **Concision et contrainte d'espace** : un label de bouton/onglet doit tenir ; éviter qu'une traduction (souvent +30 % en DE/ES) casse le layout. Signaler les chaînes à risque.
 - **Plain language / accessibilité** : phrases courtes, voix active, sujet explicite. Les `aria-label` et messages de statut doivent être **signifiants** (pas « bouton », mais « Copier le lien d'invitation »).
-- **Marque** : respecter la casse/forme imposée (ex. « familane » toujours minuscule). Pas d'emoji dans l'UI sauf autorisation projet explicite.
+- **Marque** : respecter la casse/forme imposée (une marque écrite en minuscules le reste partout). Pas d'emoji dans l'UI sauf autorisation projet explicite.
 - **Interpolation/pluralisation** : préserver les variables (`{name}`, `{count}`) et les formes plurielles propres à chaque langue (FR/EN : one/other ; d'autres langues ont plus de catégories).
 - **Pas d'invention produit** : un nom de feature ou un parti pris de périmètre n'est jamais inventé seul → proposer + signaler à l'utilisateur/`architecte`.
 
