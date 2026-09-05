@@ -34,14 +34,14 @@ description: "Couche Supabase d'un projet (Postgres + Auth + RLS + RPC + migrati
 
 ## MCPs à utiliser (Supabase)
 
-Quand le MCP Supabase est connecté, **utiliser directement les tools** (ne pas demander à l'utilisateur d'exécuter les queries manuellement) :
+Quand le MCP Supabase est connecté, **utiliser directement les tools** (ne pas demander à l'utilisateur d'exécuter les queries manuellement). Ils sont nommés ici par leur verbe : le préfixe (`mcp__Supabase__`, `mcp__claude_ai_Supabase__`…) dépend du nom du connecteur dans la session — le lire, ne pas le supposer :
 
-- `mcp__claude_ai_Supabase__list_tables` : cartographier le schéma actuel (avant conception, avant audit).
-- `mcp__claude_ai_Supabase__list_migrations` : voir l'historique des migrations appliquées.
-- `mcp__claude_ai_Supabase__execute_sql` : exécuter les queries reality check et dry-run de migration.
-- `mcp__claude_ai_Supabase__apply_migration` : appliquer une migration (avec backup confirmé, Mode migration ciblée uniquement).
-- `mcp__claude_ai_Supabase__get_advisors` : récupérer les advisories sécu/perf Postgres (RLS manquante, indexes manquants).
-- `mcp__claude_ai_Supabase__get_logs` : erreurs RLS, queries lentes, échecs auth récents.
+- `list_tables` : cartographier le schéma actuel (avant conception, avant audit).
+- `list_migrations` : voir l'historique des migrations appliquées.
+- `execute_sql` : exécuter les queries reality check et dry-run de migration.
+- `apply_migration` : appliquer une migration (avec backup confirmé, Mode migration ciblée uniquement).
+- `get_advisors` : récupérer les advisories sécu/perf Postgres (RLS manquante, indexes manquants).
+- `query_logs` : erreurs RLS, queries lentes, échecs auth récents.
 
 Si pas d'accès MCP : écrire les queries SQL exactes à exécuter manuellement et demander à l'utilisateur les résultats. **Ne jamais inventer un count.**
 

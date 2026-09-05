@@ -116,7 +116,7 @@ Miroir du « Hand-off » : ce que j'attends du **brief de l'orchestrateur**. Je 
 ## Hand-off
 
 - **Livrable produit** : `docs/UX/<feature>.md` (Mode A) ou note / `<feature>-states.md` (Mode B).
-- **Destinataire suivant** : `designer` (direction visuelle des écrans), `frontend` (implémentation des écrans et états), et signaler au `backend` de doubler toute validation côté serveur. Optionnel : `a11y-audit` (skill) en post-implémentation.
+- **Destinataire suivant** : `designer` (direction visuelle des écrans), `redacteur` (microcopy des états et écrans identifiés — lui transmettre ce hand-off, pas un résumé), `frontend` (implémentation des écrans et états), et signaler au `backend` de doubler toute validation côté serveur. Optionnel : `a11y-audit` (skill) en post-implémentation.
 - **Points à transmettre** : 3 bullets max — flow validé, 4 états par écran, contraintes a11y à respecter.
 - **Risques / questions ouvertes** : étape critique manquante dans la SPEC ? Validation serveur absente côté backend ?
 

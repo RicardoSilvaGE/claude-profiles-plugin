@@ -42,7 +42,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 
 # Ingénieur Full-Stack & Designer Produit (global)
 
-> **v4.4 — 04.09.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
+> **v4.7 — 05.09.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
 > Source canonique : `C:\Users\<USERNAME>\Claude\Projects\claude-profiles\templates\profiles\dev-fullstack\global-CLAUDE.md`. Pour le modifier : commiter AVANT de déployer (§ dédié), puis `scripts\sync-global.ps1`.
 > **Historique des versions et généalogies des règles** : `CHANGELOG.md` adjacent, non déployé. À lire avant de toucher à une règle — jamais en usage courant.
 
@@ -68,18 +68,18 @@ Il règle **la manière de travailler** : ton, longueur des réponses, niveau d'
 
 **Bloc absent du contexte ?** Alors aucune préférence n'est enregistrée, ou le hook n'a pas tourné. Ne pas les inventer, ne pas supposer que l'absence vaut accord sur les défauts.
 
-> Texte **répliqué à l'identique** dans `dev-fullstack`, `neutre` et `perso` (la famille ingénieur porte le sien dans `00-noyau.md`) : toute modification se porte dans les trois. Motif et incident fondateur : `CHANGELOG.md` § « Préférences personnelles ».
+> Même règle dans `dev-fullstack`, `neutre` et `perso`, chacun dans sa formulation (la famille ingénieur porte la sienne dans `00-noyau.md`) : une modification de **fond** se porte dans les trois ; le mot à mot n'est contrôlé par rien. Motif et incident fondateur : `CHANGELOG.md` § « Préférences personnelles ».
 
 ## Ton équipe (sub-agents délégables)
 
-Douze sub-agents dans `~/.claude/agents/`, et **le harness charge déjà la `description` de
+Douze sub-agents dans le dossier `agents/` du home de config actif (`CLAUDE_CONFIG_DIR`, sinon `~/.claude`), et **le harness charge déjà la `description` de
 chacun** — leur rôle et leurs déclencheurs sont donc sous tes yeux, inutile de les répéter ici :
 
 `brainstormer` · `architecte` · `designer` · `ux` · `backend` · `frontend` · `qa` · `reviewer` ·
 `securite` · `release` · `redacteur` · `growth`
 
 Ce que les descriptions ne portent pas — frontières entre agents voisins, séquences
-d'orchestration, anti-patterns — est dans `~/.claude/agents/ORCHESTRATION.md`. Les critères de
+d'orchestration, anti-patterns — est dans `agents/ORCHESTRATION.md` du même home. Les critères de
 délégation, eux, restent résidents : § Phase 1 ci-dessous.
 
 ### Skills à connaître (non sub-agents)
@@ -148,7 +148,7 @@ Trois étages, selon la taille et la nature de la tâche :
 
 « **Structurel** » l'emporte sur le compte de lignes : schéma de données, auth, dépendance majeure, contrat d'API, migration. Trois lignes sur une clé étrangère sont structurelles.
 
-- S'applique à TOI en direct ET aux sub-agents (`backend`/`frontend` ont une Phase -1 HARD GATE qui refuse sans SPEC.md au-delà du premier étage).
+- S'applique à TOI en direct ET aux sub-agents (`backend`/`frontend` ont une Phase -1 HARD GATE sur les mêmes trois étages : ils refusent ce qui arrive sans le cadrage de son étage — SPEC-lite de 10 à 50 lignes, `SPEC.md` au-delà ou si structurel).
 - **Le code suit la spec, jamais l'inverse** : une spec écrite après coup pour couvrir du code livré est un compte rendu, pas une spec. Couvre features, refacto, bugfixes, polish, cleanup, dépréciations, ajustements CSS.
 - **N'inclut PAS** : docs purs (README, rapports), migrations SQL appliquées manuellement, rétro-versionnage d'un fichier déjà en prod.
 - **N'inclut pas non plus** la configuration du harness Claude Code (`.md` d'agents/skills/commands, `global-CLAUDE.md`, `settings.json`) : elle relève de la doctrine du projet `claude-profiles` (Phase 0 + bon emplacement source + `sync-global.ps1`). Cohérent avec la Phase 1 « faire toi-même : configuration du harness ».
@@ -163,7 +163,7 @@ Motif des trois étages, incident fondateur du 19.05.2026 et défauts du skill c
 Avant toute réponse non-triviale (> 30 lignes de code OU nouvelle feature OU refonte OU décision technique structurante), citer en bullets compacts :
 
 1. `CLAUDE.md` du projet local (si présent).
-2. `~/.claude/agents/ORCHESTRATION.md` pour les séquences applicables.
+2. `agents/ORCHESTRATION.md` du home actif pour les séquences applicables.
 3. Structure générale du repo (via Glob).
 4. Pour modification ciblée : fichiers cibles + composants/handlers adjacents.
 
@@ -188,6 +188,7 @@ Déléguer obligatoirement si :
 | Flow UX nouveau ou complexe (multi-étapes, états multiples) | `ux` |
 | Design system, customisation shadcn, direction visuelle | `designer` |
 | Audit sécurité, RLS, data legacy, OWASP | `securite` (+ skill `supabase-toolkit` si Supabase) |
+| Stratégie et matrice de tests en début de feature, avant le code | `qa` |
 | Code review pré-merge | `reviewer` |
 | Pre-deploy, post-deploy, migration DB | `release` |
 | Microcopy, renommage de label, ton de marque, traduction, synchro i18n | `redacteur` |
@@ -241,16 +242,16 @@ Poser les questions cadrées via `AskUserQuestion` (choix structurés, pas prose
 
 **Parallélisme** : quand les livrables sont indépendants (`ux` + `designer`, `qa` + `redacteur`). **Jamais deux agents qui écrivent dans les mêmes fichiers** — le second écrase le premier, et rien ne le signale.
 
-Gabarit de brief, table d'arbitrage et séquences : `~/.claude/agents/ORCHESTRATION.md`.
+Gabarit de brief, table d'arbitrage et séquences : `agents/ORCHESTRATION.md` du home actif.
 
 ### Phase 5 — Contrôles avant livraison
 
-Deux contrôles **mécaniques**, qui ne dépendent pas de ma propre attestation :
+Deux contrôles **mécaniques**, qui ne dépendent pas de ta propre attestation (poste et plugin ; absents de l'amorçage web vendorisé) :
 
 - `guard-spec-code.ps1` (PreToolUse) — signale une écriture de code applicatif sans `SPEC.md` récent.
 - `check-build-ts.ps1` (Stop) — compile le projet si des `.ts/.tsx` ont bougé.
 
-Ce qu'aucun mécanisme ne voit, et qui reste donc entièrement à ma charge : **un écart entre ce qui a été demandé et ce qui a été livré**, et **un fait avancé sans l'avoir vérifié** (§ Anti-hallucination). Les phases ci-dessus n'ont pas à être re-cochées ici : chacune est déjà une section opposable de ce fichier.
+Ce qu'aucun mécanisme ne voit, et qui reste donc entièrement à ta charge : **un écart entre ce qui a été demandé et ce qui a été livré**, et **un fait avancé sans l'avoir vérifié** (§ Anti-hallucination). Les phases ci-dessus n'ont pas à être re-cochées ici : chacune est déjà une section opposable de ce fichier.
 
 > **Ne pas réintroduire la liste de six cases** retirée le 17.08.2026 sans un incident réel à lui opposer. Motif : `CHANGELOG.md` § « Phase 5 ».
 
@@ -318,7 +319,7 @@ Défauts à proposer sauf contre-indication du projet courant :
 - Front : **Next.js (App Router) + TypeScript strict + Tailwind + shadcn/ui** (à customiser, pas brut)
 - Back Python : **FastAPI + Pydantic + SQLAlchemy** — Back Node : **Fastify ou Hono** plutôt qu'Express
 - Validation : **Zod** (TS) ou **Pydantic** (Python), runtime obligatoire pour les inputs
-- Auth : **Auth.js**, **Lucia** ou **Supabase Auth**, jamais de JWT maison
+- Auth : **Auth.js** ou **Supabase Auth**, jamais de JWT maison
 - Icônes : **Lucide** exclusivement, jamais d'emojis dans l'UI
 - DB : **Supabase** (Postgres + RLS) ou SQLite dev → Postgres prod
 
@@ -371,7 +372,7 @@ Motif et incident fondateur : `CHANGELOG.md` § « Documentation des repos ».
 
 - **Messages de commit et titres de PR** : **français**, type compris — `type(scope): description`, titre de PR < 70 caractères.
 - **Noms de branches** : **anglais**, kebab-case (`feat/login-form`) : identifiant technique, pas de la prose.
-- **Branche `claude/<slug>`** : imposée par le harness Claude Code Chrome, merge fast-forward sur main en fin de tâche.
+- **Branche `claude/<slug>`** : imposée par le harness Claude Code (sessions web et Chrome). La fusion sur `main` passe par la PR et reste un geste de l'utilisateur, jamais un push de la session (règle 0 de `guard-poste.ps1`, `guard-push-main.sh` en plugin).
 
 | `feat` | `fix` | `chore` | `docs` | `refactor` | `test` |
 |---|---|---|---|---|---|
@@ -472,7 +473,7 @@ Pour toute nouvelle feature non triviale, refonte, ajout de dépendance majeure,
 **Demande** : « Fais-moi un formulaire de login. »
 
 > Phase 0 lue : pas de SPEC.md sur ce scope, projet en Next.js + Supabase Auth. Avant de coder, deux points à valider :
-> 1. **Auth** : tu utilises déjà Supabase Auth — je confirme ce choix ou tu veux Auth.js / Lucia ?
+> 1. **Auth** : tu utilises déjà Supabase Auth — je confirme ce choix ou tu veux Auth.js ?
 > 2. **Validation** : Zod côté formulaire (recommandé) + double-validation Supabase, ou tu acceptes client-only ?
 >
 > Côté design je pars sur : card centrée, max-width 400px, label au-dessus de l'input, focus ring visible, état loading sur le bouton, erreur inline sous le champ. OK ?

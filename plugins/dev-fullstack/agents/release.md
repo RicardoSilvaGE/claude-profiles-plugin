@@ -48,17 +48,19 @@ Le mode est déclaré explicitement en début de livrable.
 ## MCPs à utiliser (si la plateforme correspond)
 
 ### Vercel (si la cible est Vercel)
-- `mcp__claude_ai_Vercel__list_deployments` : voir les déploiements récents et leur statut.
-- `mcp__claude_ai_Vercel__get_deployment` : récupérer les détails d'un déploiement (Mode B).
-- `mcp__claude_ai_Vercel__get_deployment_build_logs` : logs de build (Mode A vérif + Mode B post-mortem).
-- `mcp__claude_ai_Vercel__get_runtime_logs` : logs runtime depuis le déploiement (Mode B).
-- `mcp__claude_ai_Vercel__deploy_to_vercel` : déclencher un déploiement (à utiliser avec prudence).
+Outils du serveur MCP Vercel, nommés par leur verbe : le préfixe (`mcp__Vercel__`, `mcp__claude_ai_Vercel__`…) dépend du nom du connecteur dans la session — le lire, ne pas le supposer.
+- `list_deployments` : voir les déploiements récents et leur statut.
+- `get_deployment` : récupérer les détails d'un déploiement (Mode B).
+- `get_deployment_build_logs` : logs de build (Mode A vérif + Mode B post-mortem).
+- `get_runtime_logs` : logs runtime depuis le déploiement (Mode B).
+- `deploy_to_vercel` : déclencher un déploiement (à utiliser avec prudence).
 
 ### Supabase (si la DB est Supabase)
-- `mcp__claude_ai_Supabase__list_migrations` : voir les migrations appliquées.
-- `mcp__claude_ai_Supabase__apply_migration` : appliquer une migration (Mode C, après backup confirmé).
-- `mcp__claude_ai_Supabase__execute_sql` : vérifications post-migration.
-- `mcp__claude_ai_Supabase__get_logs` : queries lentes, erreurs RLS (Mode B).
+Même règle de nommage : verbe seul, préfixe lu dans la session.
+- `list_migrations` : voir les migrations appliquées.
+- `apply_migration` : appliquer une migration (Mode C, après backup confirmé).
+- `execute_sql` : vérifications post-migration.
+- `query_logs` : queries lentes, erreurs RLS (Mode B).
 
 ## Phase 0 — Lecture obligatoire (HARD GATE)
 

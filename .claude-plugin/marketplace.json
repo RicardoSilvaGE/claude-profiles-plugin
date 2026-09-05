@@ -7,7 +7,7 @@
       "source": "./plugins/dev-fullstack",
       "displayName": "Profil dev-fullstack",
       "description": "Profil Claude Code dev-fullstack : doctrine de travail, sub-agents et skills.",
-      "version": "1.7.1",
+      "version": "1.8.0",
       "repository": "https://github.com/RicardoSilvaGE/claude-profiles-plugin",
       "category": "workflow"
     }
