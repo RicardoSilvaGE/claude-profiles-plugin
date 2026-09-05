@@ -1,7 +1,7 @@
 # Orchestration des sub-agents
 
 > Source canonique : `templates/profiles/dev-fullstack/agents/ORCHESTRATION.md` (dépôt `claude-profiles`) ; la copie déployée vit dans `agents/` du home actif.
-> Dernière mise à jour : 04.09.2026 (v2.4 — skill `publication-store` inscrit, séquence 11 « Publication store » ajoutée. Mesuré sur un dépôt réel ayant atteint l'internal testing Play Store ; Android via Capacitor seulement, iOS hors périmètre. Frontières posées avec `growth` (copy), `designer` (visuels), `release` (web).) v2.3 (04.09.2026 — **le contrat devient bilatéral** : chaque fiche porte un « Contrat d'entrée », miroir du « Hand-off » — ce que le brief doit porter, ce que l'agent lit lui-même, ce qui le bloque — et le verdict `BLOQUÉ`, rendu à la place du livrable quand un input décisif manque, avec les options préparées pour l'utilisateur. Le v2.2 obligeait l'orchestrateur à bien briefer ; rien n'obligeait l'agent à refuser un brief incomplet, et un agent compétent comble un vide en silence. Pattern v2 : section 13bis. Banc : règle R20.) v2.2 (04.09.2026 — **la collaboration orchestrateur ↔ sub-agents devient explicite** : nouvelle section homonyme portant les quatre limites structurelles d'un sub-agent, le gabarit de brief en six champs, la table des preuves à constater au retour agent par agent, la boucle de reprise à deux itérations, la table d'arbitrage des contradictions et la règle de conflit d'écriture. Motif : les douze fiches décrivaient toutes ce qu'elles **rendent** — section « Hand-off » du pattern v2 — et aucune ce qu'elles **reçoivent** ; la délégation était à sens unique, et un brief incomplet ne produit pas un livrable dégradé mais un livrable à côté. Inscription du skill `charte-code` (créé le même jour) et mise à jour du registre des clés `skills:`.) v2.1 (02.07.2026 — **`quant` v3.2 : calibration marché crypto** — conventions 24/7/365 (√365, coupe UTC), microstructure perpétuels (funding réel par cycle, mark vs last, liquidation ≠ stop, ADL, cascades), régimes/queues crypto (corrélations → 1 en crash, survivance, plafonds d'API, alpha decay → expirations plus courtes), risques hors-modèle crypto (exchange/depeg/oracle/fork), baseline HODL BTC vol-targeté, et validation des stratégies de COPIE (répliquer ≠ sélectionner, vérification mécanique vs closedPnl des sources). Leçons du chantier copie <depot-prive> 27.06–02.07.) v2.0 (13.06.2026) — **passe qualité institutionnelle sur les 12 autres agents** (même traitement que `quant` v3.x : référentiels canoniques nommés, angles morts couverts, cycle de vie complet) : `architecte` v3.0 (one-way/two-way doors, NFR, signal de réexamen des ADR), `ux` v3.0 (Nielsen + Mode C audit heuristique, états étendus, undo > confirm), `designer` v3.0 (Mode D critique, hiérarchie/Gestalt, tokens sémantiques), `brainstormer` v2.0 (techniques de divergence forcées, prior art), `backend` v3.0 (expand/contract, idempotence, timeouts/retry, pagination), `frontend` v2.0 (budgets de perf, états étendus, formulaires, i18n), `qa` v2.0 (matrice pondérée risque, flaky, contrats), `reviewer` v2.0 (deux passes, ~400 lignes, review des tests), `securite` v3.0 (STRIDE, ASVS, supply chain, Mode D incident), `release` v2.0 (rollback pré-engagé, golden signals, Mode D incident), `redacteur` v2.0 (glossaire artefact, pseudo-localisation, CLDR), `growth` v2.0 (métrique pré-définie, A/B honnête via quant-toolkit, positionnement)). v1.9 — `quant` v3.1 + nouveau skill `quant-toolkit` : librairie Python auditée et testée (PSR/DSR/MinTRL/MDE/bootstrap/PBO — 20 tests d'auto-cohérence) remplaçant les formules récitées en session ; registre de recherche (N cumulatif) ; baselines triviales + prior de plausibilité + garde-fous fuites ML dans le quant). v1.8 (12.06.2026) — `quant` v3.0 niveau institutionnel : cadre de gouvernance SR 11-7 (effective challenge indépendant avant GO capital réel, validations à expiration), Mode E revue de portefeuille (corrélations en stress, risque agrégé, budget de risque — restriction + `docs/QUANT-PORTFOLIO-*`), stress tests/ES obligatoires avant capital réel, dimensionnement recommandé (Kelly fractionnel / vol targeting). v1.7 (12.06.2026) — `quant` v2.0 : Mode D suivi post-déploiement (contrat de suivi + critères d'arrêt pré-engagés, verdict CONTINUE/RÉDUIT/STOP), analyse de puissance dans le workflow, protocole de réglage des seuils co-validé par l'utilisateur. Séquence 9 étendue après la décision de capital ; restriction fichiers + `docs/QUANT-LIVE-*`). v1.6 (03.06.2026 — ajout sub-agent `growth` : go-to-market / positionnement / ASO / copy externe d'acquisition (FR-first multilingue). Inventaire + règle d'invocation (frontière `redacteur` interne vs `growth` externe vs `brainstormer` amont) + Séquence 10 GTM/lancement). v1.5 (03.06.2026 — ajout sub-agent `redacteur` : microcopy / voix de marque / i18n idiomatique multilingue. Inventaire + règle d'invocation + hand-off Séquence 1). v1.4 (02.06.2026) : ajout sub-agent `quant` : validation statistique de stratégies de trading. Inventaire + règle d'invocation + Séquence 9. v1.3 (31.05.2026) : ajout sub-agent `brainstormer` : idéation amont, inventaire + règle d'invocation + Séquence 0. v1.2 (21.05.2026) : ajout `qa` + 3 séquences audit/upgrade + alignement designer/securite pattern v2.
+> Dernière mise à jour : 05.09.2026 (v2.5 — PR 2.1 de l'audit du 05.09 : l'historique des versions, 5 254 octets lus à chaque Phase 0, part dans `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions » ; séquence 9 réduite à sa note de retrait ; skill `garde-fous-powershell` inscrit ; renvoi croisé `frontend-app-builder` ↔ `librairie-maison`.)
 
 Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les séquences typiques. Il complète le `CLAUDE.md` global et les frontmatters de chaque agent.
 
@@ -323,43 +323,11 @@ DEPLOY (preview puis prod)
 
 ### Séquence 9 — Validation d'une stratégie de trading avant capital
 
-> **⚠ Séquence retirée le 18.08.2026.** L'agent `quant` et le skill `quant-toolkit` ne font
-> plus partie de ce profil : ils sont partis dans `<depot-prive>`, en assets propres à ce
-> dépôt (cf. inventaire, séquence 9). Cette section est conservée telle quelle pour
-> l'historique et les renvois « séquence 9 » des autres fiches — **ne pas l'exécuter au titre
-> de ce profil** : les `[quant Mode …]` ci-dessous ne sont pas fournis par lui.
->
-> Nuance qui compte parce que cette fiche **voyage** : une session ouverte sur
-> `<depot-prive>` voit bien un `quant`, ce dépôt le déployant à côté des agents du profil.
-> Ce n'est pas le profil qui le lui donne. Partout ailleurs, l'agent n'existe pas.
-
-```
-orchestrateur
-   ↓
-[architecte] (si nécessaire) → cadre la méthodo d'évaluation (découpage train/test, walk-forward) en ADR/SPEC
-   ↓
-[backend] → moteur de backtest + données out-of-sample + sorties Monte-Carlo (sous SPEC.md)
-   ↓
-[quant Mode A] → protocole d'évaluation honnête (held-out, purge/embargo, seuils GO/NO-GO fixés AVANT résultats)
-   ↓
-(exécution du backtest selon le protocole)
-   ↓
-[quant Mode B] → audit des résultats : surapprentissage, out-of-sample réel, significativité, Monte-Carlo, sensibilité params, régimes, net de frais/funding
-   ↓
-[quant Mode C] → verdict GO / NO-GO / NON ÉVALUABLE + conditions + expiration + dimensionnement recommandé + (si GO) contrat de suivi : hypothèses falsifiables + critères d'arrêt chiffrés AVANT le premier ordre
-   ↓
-si données manquantes → retour [backend] (instrumenter le moteur) ou skill [debug-investigation] (chiffres suspects par bug)
-   ↓ (si GO capital réel)
-revue adversariale indépendante (effective challenge — autre session/agent qui re-dérive les chiffres) + [quant Mode E] si d'autres stratégies tournent (admission au portefeuille : corrélations en stress, risque agrégé)
-   ↓
-UTILISATEUR → décision finale d'engagement du capital et arbitrage du sizing (quant ne tranche pas le métier)
-   ↓ (si engagement)
-[backend] → instrumentation live (logs d'exécution : slippage, fills, funding) selon le contrat de suivi
-   ↓
-[quant Mode D] → suivi périodique : réalisé vs supposé, dérive vs distribution Monte-Carlo, alpha decay → CONTINUE / RÉDUIT / STOP (docs/QUANT-LIVE-<date>.md)
-   ↓
-si STOP ou écart aux critères → UTILISATEUR arbitre ; toute modification des critères repasse par [quant Mode C]
-```
+> **Séquence retirée le 18.08.2026** avec l'agent `quant` et le skill `quant-toolkit`, partis dans
+> le dépôt qui les utilise. Le numéro est conservé pour que les séquences suivantes ne bougent pas ;
+> **aucune fiche de ce profil n'y renvoie** (grep du 05.09.2026 : zéro). Une session ouverte sur ce
+> dépôt-là voit un `quant` que ce dépôt déploie lui-même, pas le profil. Texte intégral de la
+> séquence : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».
 
 ### Séquence 10 — Go-to-market / lancement (copy externe d'acquisition)
 
@@ -460,7 +428,7 @@ Tous les sub-agents (v2 — depuis 21.05.2026) suivent le même squelette :
 
 ### Construction
 - `librairie-maison` (créé 25.08.2026) : socles de démarrage **vérifiés**, en deux jeux étiquetés. **Frontière avec `frontend-app-builder`** : celui-ci *génère* une application à partir d'un cadrage, `librairie-maison` *fournit des pièces déjà éprouvées* à recopier — HTTPS local auto-signé, conversion `.docx` → PDF, manifeste PWA, montage React in-browser. Les deux se composent : le builder construit, la librairie évite de réécrire ce qui existe. Elle intervient au **barreau 2bis** de l'échelle du moindre code de `backend` / `frontend`, jamais à la place du barreau 1 (« est-ce que ça doit exister ? »).
-- `frontend-app-builder` : génération d'apps complètes (à orchestrer avec `architecte` + `designer` + `frontend`).
+- `frontend-app-builder` : génération d'apps complètes **Vite** (à orchestrer avec `architecte` + `designer` + `frontend`). Renvoi croisé avec `librairie-maison` dans les deux descriptions depuis le 05.09.2026 : « nouvelle application » se routait vers trois skills qui ne se citaient pas (le troisième étant le défaut Next.js de la doctrine).
 - ~~`modern-app-design`~~ : **jamais livré par ce profil** (outil d'un bundle externe). La direction visuelle est le domaine du sub-agent `designer`.
 - ~~`ui-polish`~~ : **jamais livré par ce profil** (outil d'un bundle externe). Le polish ciblé passe par `frontend` Mode C, ou `designer` Mode C quand la retouche engage les tokens.
 - `claude-api` : développement d'apps qui utilisent l'API Anthropic.
@@ -481,6 +449,7 @@ Tous les sub-agents (v2 — depuis 21.05.2026) suivent le même squelette :
   Séquence 11.
 
 ### Maintenance / opérations
+- `garde-fous-powershell` (créé 05.09.2026) : la table complète des garde-fous PowerShell 5.1, sortie du résident du `CLAUDE.md` (qui n'en garde que quatre règles) — BOM, arrays imbriqués, `-replace` Unicode, audit post-batch et ses motifs mojibake, cible = fichier, sorties ASCII. À charger avant tout `.ps1` ou toute écriture de fichier par PowerShell ; sans objet en session cloud.
 - `framework-upgrade` (créé 21.05.2026) : upgrade Next.js / React / Tailwind / shadcn / TypeScript / Node. Hand-off `release` Mode A avant merge prod.
 - `update-config` / `keybindings-help` / `fewer-permission-prompts` : config harness Claude Code.
 - `loop` / `schedule` : automatisation récurrente.

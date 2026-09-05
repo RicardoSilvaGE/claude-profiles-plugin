@@ -1,8 +1,9 @@
 ---
 name: spec-builder
-description: "Rédige la spécification technique (SPEC.md) d'une tâche destinée au harness Claude Code. Lit CLAUDE.md, BACKLOG.md, audits et code réel avant toute question, tranche seule les choix techniques et ne sollicite l'utilisateur que sur les arbitrages métier non documentés. Rend un Markdown en 13 sections fixes dans `specs/` du dépôt. Déclencheurs : rédige une spec, prépare un PRD, spécifie cette feature, cadre cette tâche avant développement."
+description: "Cadre une tâche de code AVANT exécution, à l'étage qu'elle mérite : SPEC-lite d'environ 30 lignes (objectif, périmètre, vérifications) de 10 à 50 lignes, commitée avec le code ; spec complète en 13 sections au-delà de 50 lignes ou dès qu'elle est structurelle (schéma, auth, dépendance majeure, contrat d'API, migration), commitée avant le code. Lit CLAUDE.md, BACKLOG.md, audits et code réel avant toute question, tranche seule les choix techniques et ne sollicite l'utilisateur que sur les arbitrages métier non documentés. Rend un Markdown dans `specs/` du dépôt. Déclencheurs : rédige une spec, SPEC-lite, prépare un PRD, spécifie cette feature, cadre cette tâche avant développement."
 ---
 
+> Version 1.2 — 05.09.2026 (PR 2.1 de l'audit du 05.09 : la description décrivait le skill d'avant le 18.08 — « 13 sections fixes », sans un mot de la SPEC-lite, l'étage le plus fréquent. Réécrite sur les trois étages que le corps applique depuis le 18.08.)
 > Version 1.1 — 12.06.2026 (audit dev-fullstack : ligne de version ajoutée ; dépendance claude-rules explicitement marquée externe + fallback si absente).
 > Version 1.0 — 26.05.2026 (entrée au repo ; usernames généralisés en `%USERPROFILE%` le 10.06.2026).
 

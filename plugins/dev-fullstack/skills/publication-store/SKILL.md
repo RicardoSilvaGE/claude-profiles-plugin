@@ -1,6 +1,6 @@
 ---
 name: publication-store
-description: "Publication d'une app web (PWA) sur le Google Play Store via Capacitor Android : identité figée (applicationId), versionCode/versionName, build AAB signé, keystore hors dépôt et Play App Signing, tracks internal → closed → open → production, Data Safety, classification IARC, limites de la fiche, captures et feature graphic, App Links (assetlinks.json), validation sur device, pièges Android 15+ / Capacitor 8 mesurés. Déclencheurs : release Play Store, publier l'app, build Android, AAB, signer, keystore, versionCode, Play Console, internal testing, Data Safety, App Links, deep link natif, Capacitor. Pas pour : la copy de la fiche store (sub-agent `growth`), les visuels (sub-agent `designer`), le déploiement web (sub-agent `release`), l'App Store iOS (non mesuré)."
+description: "Publication d'une app web (PWA) sur le Google Play Store via Capacitor Android : identité figée (applicationId, versionCode), AAB signé avec keystore hors dépôt et Play App Signing, tracks internal → production, Data Safety, IARC, limites de la fiche, assets, App Links (assetlinks.json), validation sur device, pièges Android 15+ / Capacitor 8 mesurés. Déclencheurs : release Play Store, publier l'app, build Android, AAB, keystore, Play Console, internal testing, Capacitor. Pas pour : la copy de la fiche (`growth`), les visuels (`designer`), le déploiement web (`release`), iOS (non mesuré)."
 paths:
   - "**/capacitor.config.json"
   - "**/capacitor.config.ts"
@@ -14,6 +14,7 @@ paths:
 
 # Publication store — Android via Capacitor, Play Console
 
+> Version 1.1 — 05.09.2026 (PR 2.1 de l'audit du 05.09 : description resserrée — doublons retirés, les « Pas pour » ne sont plus listés parmi les déclencheurs. Corps inchangé.)
 > Version 1.0 — 04.09.2026 (création). Contenu issu d'une **mesure sur un dépôt réel** qui a
 > mené une PWA React jusqu'à l'internal testing du Play Store (Capacitor 8, targetSdk 36) —
 > pas d'une idée de ce qu'une publication devrait être. Cf. § « D'où vient ce contenu ».

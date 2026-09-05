@@ -1,8 +1,9 @@
 ---
 name: frontend-app-builder
-description: "Génère une application React SPA complète et production-ready depuis un gabarit d'architecture versionné : Vite + TypeScript strict + Tailwind + React Router + Zustand + auth. Déclencheurs : créer une app React, une SPA, un dashboard, un outil web, un frontend pour une API ; ou une demande partielle (ajouter une page, créer le routing) quand le contexte est déjà une SPA du gabarit. Pas pour : une app Next.js, SSR ou SEO-critique (sub-agent `frontend`), le polish d'un composant (`frontend` Mode C), l'identité visuelle (sub-agent `designer`)."
+description: "Génère une application React SPA complète et production-ready depuis un gabarit d'architecture versionné : Vite + TypeScript strict + Tailwind + React Router + Zustand + auth. Déclencheurs : créer une app React, une SPA, un dashboard, un outil web, un frontend pour une API ; ou une demande partielle (ajouter une page, créer le routing) quand le contexte est déjà une SPA du gabarit. Pas pour : une app Next.js, SSR ou SEO-critique (sub-agent `frontend`), le polish d'un composant (`frontend` Mode C), l'identité visuelle (sub-agent `designer`), ni des pièces déjà éprouvées à recopier — HTTPS local, PWA, `server.js` — qui sont dans `librairie-maison`."
 ---
 
+> Version 2.1 — 05.09.2026 (PR 2.1 de l'audit du 05.09 : renvoi croisé vers `librairie-maison` dans la description — « nouvelle application » se routait vers trois skills qui ne se citaient pas.)
 > Version 2.0 — 12.06.2026 (refonte pattern v2 suite à l'audit dev-fullstack : Modes A/B/C, Phase -1 SPEC, Phase 0 lecture, workflow orchestré, garde-fous, auto-check ; le contenu tutoriel est déplacé vers `references/architecture-patterns.md` ; assets et références désormais câblés explicitement dans le workflow ; versions alignées sur `assets/package-template.json` — Vite 6+).
 > Version 1.0 — 26.05.2026 (import d'un bundle externe, hors pattern v2 : guide de patterns monolithique de 744 lignes présenté comme générateur).
 
