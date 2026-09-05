@@ -6,7 +6,11 @@
 # La regle absolue spec-builder a trois etages, et le premier — « < 10 lignes : aucune spec » —
 # repose sur un filet MECANIQUE : « le filet est check-build-ts.ps1 (Stop), pas une spec ». Ce
 # hook compile TypeScript (tsc --noEmit) quand la session a laisse des .ts/.tsx modifies, et
-# bloque la fin de tour avec la liste des erreurs. C'est le controle qui aurait attrape
+# bloque la fin de tour avec la liste des erreurs. DEPUIS LE 05.09.2026 (audit D4 : sept depots
+# reels sur huit n'ont pas de tsconfig.json, donc n'avaient AUCUN filet), un depot sans
+# tsconfig.json est couvert aussi : script build/check/lint de package.json si node_modules/
+# existe, sinon node --check sur les .js/.mjs/.cjs touches, et la syntaxe Python des .py touches.
+# Cadrage : docs/SPEC-lite-check-build-hors-ts.md. C'est le controle qui aurait attrape
 # l'accolade orpheline du 19.05.2026, incident fondateur de la regle : la mitigation posee ce
 # jour-la etait DOCTRINALE (« passer par une spec ») la ou elle devait etre MECANIQUE (« le code
 # compile-t-il ? »). Il ne remplace pas la revue : il rend impossible de terminer une session sur
@@ -24,7 +28,9 @@
 # DECLENCHEMENT (les quatre conditions, sinon exit 0 silencieux) :
 #   1. Le dossier de travail est un depot git (un .git A SA RACINE — pas de remontee, comme le
 #      hook PowerShell ; le Stop se joue sur le cwd de la session, pas sur un fichier).
-#   2. Il porte un tsconfig.json a sa racine.
+#   2. Avec un tsconfig.json a sa racine : branche TypeScript (conditions 3 et 4). Sans : branche
+#      « hors TypeScript », declenchee par un .js/.mjs/.cjs/.jsx ou un .py modifie ou ajoute
+#      (hors node_modules/, dist/, build/, vendor/, .min.js).
 #   3. git status signale au moins un .ts/.tsx/.mts/.cts modifie ou ajoute (hors .d.ts).
 #      --untracked-files=all est OBLIGATOIRE : sans lui, git regroupe un dossier entierement non
 #      suivi en une seule ligne (« ?? src/ ») et un dossier de composants cree pendant la session
@@ -54,7 +60,12 @@
 # FAIL-OPEN PAR CONSTRUCTION : jq absent, payload vide ou invalide, cwd introuvable, marqueur non
 # ecrivable, tsc introuvable, timeout — le hook se tait et sort en 0. Et si tsc rend un code non
 # nul SANS aucune ligne `error TSxxxx`, il se tait aussi : ce n'est pas un build casse, c'est
-# autre chose, et l'inventer serait pire. CLAUDE_CHECK_BUILD_TS=0 desactive le hook.
+# autre chose, et l'inventer serait pire. Meme regle hors TypeScript : node --check et Python ne
+# bloquent que sur une ligne `SyntaxError` ; npm run ne bloque pas si sa sortie dit `: not found`
+# (outil absent, pas code casse). Un .js dont la seule erreur est « Unexpected token
+# '<' » est du JSX charge par Babel in-browser, le montage reel de plusieurs depots vanilla :
+# ignore, plutot qu'un faux positif a chaque fin de tour. Le JSX d'un .js ou d'un .html n'est
+# donc PAS couvert, et c'est ecrit. CLAUDE_CHECK_BUILD_TS=0 desactive le hook.
 # ==============================================================================================
 set -uo pipefail
 
@@ -75,16 +86,25 @@ lire() { printf '%s' "$RAW" | jq -r "$1 // empty" 2>/dev/null; }
 CWD="$(lire '.cwd')"; [ -n "$CWD" ] || CWD="$PWD"
 [ -d "$CWD" ] || exit 0
 
-# ---- 3 et 4. Depot git portant un tsconfig.json ------------------------------------------------
+# ---- 3 et 4. Depot git ; avec ou sans tsconfig.json -----------------------------------------------
 [ -e "$CWD/.git" ] || exit 0
-[ -f "$CWD/tsconfig.json" ] || exit 0
+if [ -f "$CWD/tsconfig.json" ]; then BRANCHE=ts; else BRANCHE=autre; fi
 
-# ---- 5. Des sources TypeScript ont-elles bouge ? -----------------------------------------------
+# ---- 5. Des sources ont-elles bouge ? ---------------------------------------------------------------
 STATUT="$(git -C "$CWD" status --porcelain --untracked-files=all 2>/dev/null)" || exit 0
 [ -n "$STATUT" ] || exit 0
-TOUCHES="$(printf '%s\n' "$STATUT" | grep -Ei '\.(ts|tsx|mts|cts)$' | grep -Eiv '\.d\.ts$')"
-[ -n "$TOUCHES" ] || exit 0
-NB_TOUCHES="$(printf '%s\n' "$TOUCHES" | grep -c .)"
+# Chemins des lignes de statut (hors suppressions ; un renommage garde sa destination).
+CHEMINS="$(printf '%s\n' "$STATUT" | grep -Ev '^ ?D' | sed -E 's/^.. //; s/^.* -> //; s/^"(.*)"$/\1/' \
+    | grep -Ev '(^|/)(node_modules|dist|build|vendor)/' | grep -Eiv '\.min\.js$')"
+if [ "$BRANCHE" = ts ]; then
+    TOUCHES="$(printf '%s\n' "$STATUT" | grep -Ei '\.(ts|tsx|mts|cts)$' | grep -Eiv '\.d\.ts$')"
+    [ -n "$TOUCHES" ] || exit 0
+    NB_TOUCHES="$(printf '%s\n' "$TOUCHES" | grep -c .)"
+else
+    TOUCHES_JS="$(printf '%s\n' "$CHEMINS" | grep -Ei '\.(js|mjs|cjs|jsx)$')"
+    TOUCHES_PY="$(printf '%s\n' "$CHEMINS" | grep -Ei '\.py$')"
+    [ -n "$TOUCHES_JS$TOUCHES_PY" ] || exit 0
+fi
 
 # ---- 6. Marqueur AVANT la compilation ----------------------------------------------------------
 SID="$(lire '.session_id')"; [ -n "$SID" ] || SID="nosession"
@@ -104,6 +124,103 @@ mkdir -p "$DIR_MARQ" 2>/dev/null || exit 0
 MARQ="$DIR_MARQ/build-$SID-$CLE.flag"
 [ -f "$MARQ" ] && exit 0
 : > "$MARQ" 2>/dev/null || exit 0
+
+# ---- 6bis. Branche HORS TYPESCRIPT (05.09.2026) -------------------------------------------------------
+# Trois verifications, dans cet ordre, toutes en fail-open. Un seul rapport, qui les cumule.
+attendre() { # attendre <pid> : boucle sleep 1 + kill a 90 s, une seule voie, POSIX. Rend 124 si tue.
+    local pid="$1" i=0
+    while kill -0 "$pid" 2>/dev/null && [ "$i" -lt 90 ]; do sleep 1; i=$((i + 1)); done
+    if kill -0 "$pid" 2>/dev/null; then kill "$pid" 2>/dev/null; wait "$pid" 2>/dev/null; return 124; fi
+    wait "$pid"
+}
+if [ "$BRANCHE" = autre ]; then
+    RAPPORT=""; OUTILS=""
+    # (a) npm run <build|check|lint> : seulement si package.json le declare, que node_modules/ existe
+    #     (sinon c'est un clone frais, pas un depot casse) et que npm est joignable.
+    SCRIPT=""
+    if [ -n "$TOUCHES_JS" ] && [ -f "$CWD/package.json" ] && [ -d "$CWD/node_modules" ] && command -v npm >/dev/null 2>&1; then
+        for s in build check lint; do
+            if [ -n "$(jq -r --arg s "$s" '.scripts[$s] // empty' "$CWD/package.json" 2>/dev/null)" ]; then SCRIPT="$s"; break; fi
+        done
+    fi
+    if [ -n "$SCRIPT" ]; then
+        OUT="$DIR_MARQ/npm-$CLE.out"
+        (cd "$CWD" && exec npm run --silent "$SCRIPT") > "$OUT" 2>&1 &
+        attendre $!; CODE=$?
+        if [ "$CODE" -ne 0 ] && [ "$CODE" -ne 124 ] && ! grep -Eqi '(: |command )not found' "$OUT" 2>/dev/null; then
+            RAPPORT="$RAPPORT$(tail -n 12 "$OUT" 2>/dev/null)
+"
+            OUTILS="$OUTILS  npm run $SCRIPT : code $CODE
+"
+        fi
+    elif [ -n "$TOUCHES_JS" ] && command -v node >/dev/null 2>&1; then
+        # (b) node --check, fichier par fichier ; jamais un .jsx (extension refusee par node).
+        NB_JS=0; ERR_JS=""
+        while IFS= read -r f; do
+            [ -n "$f" ] || continue
+            case "$f" in *.jsx|*.JSX) continue ;; esac
+            [ -f "$CWD/$f" ] || continue
+            NB_JS=$((NB_JS + 1))
+            SORTIE="$(cd "$CWD" && node --check "$f" 2>&1)"
+            [ $? -eq 0 ] && continue
+            LIGNE="$(printf '%s\n' "$SORTIE" | grep -m1 'SyntaxError')"
+            [ -n "$LIGNE" ] || continue
+            # JSX dans un .js (Babel in-browser) : hors perimetre de node --check, pas une erreur du code.
+            case "$LIGNE" in *"Unexpected token '<'"*) continue ;; esac
+            NUM="$(printf '%s\n' "$SORTIE" | grep -m1 -E "^.*$(printf '%s' "$f" | sed 's/[.[\*^$/]/\\&/g'):[0-9]+" | sed -E 's/.*:([0-9]+)$/\1/')"
+            ERR_JS="$ERR_JS$f:${NUM:-?}: $LIGNE
+"
+        done <<EOF_JS
+$TOUCHES_JS
+EOF_JS
+        if [ -n "$ERR_JS" ]; then RAPPORT="$RAPPORT$ERR_JS"; OUTILS="$OUTILS  node --check : $NB_JS fichier(s) lu(s)
+"; fi
+    fi
+    # (c) Python : ast.parse, jamais py_compile (qui ecrirait un __pycache__/ dans le depot).
+    PY=""
+    if command -v python3 >/dev/null 2>&1; then PY=python3; elif command -v python >/dev/null 2>&1; then PY=python; fi
+    if [ -n "$TOUCHES_PY" ] && [ -n "$PY" ]; then
+        ERR_PY="$(cd "$CWD" && printf '%s\n' "$TOUCHES_PY" | "$PY" -c '
+import ast, sys
+for p in [l.strip() for l in sys.stdin if l.strip()]:
+    try:
+        ast.parse(open(p, "rb").read(), p)
+    except SyntaxError as e:
+        print("%s:%s: SyntaxError: %s" % (p, e.lineno, e.msg))
+    except OSError:
+        pass
+' 2>/dev/null)"
+        if [ -n "$ERR_PY" ]; then RAPPORT="$RAPPORT$ERR_PY
+"; OUTILS="$OUTILS  python (ast.parse) : $(printf '%s\n' "$TOUCHES_PY" | grep -c .) fichier(s) lu(s)
+"; fi
+    fi
+    [ -n "$RAPPORT" ] || exit 0
+    NB="$(printf '%s' "$RAPPORT" | grep -c .)"
+    EXTRAIT="$(printf '%s' "$RAPPORT" | head -12)"
+    RESTE=$((NB - 12)); [ "$RESTE" -lt 0 ] && RESTE=0
+    SUITE=""; [ "$RESTE" -gt 0 ] && SUITE="... et $RESTE autre(s) ligne(s).
+"
+    MSG="BUILD CASSE (hook du profil, depot sans tsconfig.json).
+
+  Depot   : $(basename "$CWD")
+  Verifications faites :
+$OUTILS
+-------- premieres lignes --------
+$EXTRAIT
+$SUITE----------------------------------
+
+C'est le filet du premier etage de la regle spec-builder (< 10 lignes : pas de spec, mais le
+code doit passer) — celui qui aurait attrape l'accolade orpheline du 19.05.2026, et qui n'existait
+jusqu'ici que sur les depots TypeScript. Il ne lit pas le JSX d'un .js ou d'un .html.
+
+Attention a l'attribution : le hook rapporte l'ETAT du depot, pas la faute. Si ces erreurs
+preexistaient a la session, le dire plutot que de les corriger en passant.
+
+Sorties : corriger, ou constater que l'erreur est heritee et l'annoncer en une ligne.
+Ce rapport n'apparait qu'une fois par session et par depot."
+    jq -n --arg r "$MSG" '{ decision: "block", reason: $r }'
+    exit 0
+fi
 
 # ---- 7. Trouver tsc. Le binaire local du projet prime : c'est sa version qui fait foi. ----------
 if [ -x "$CWD/node_modules/.bin/tsc" ]; then

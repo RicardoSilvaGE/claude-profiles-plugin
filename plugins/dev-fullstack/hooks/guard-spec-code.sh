@@ -181,7 +181,7 @@ casse le build de production.
 
 Depuis le 18.08.2026 elle a TROIS ETAGES, et ce hook ne sait pas lequel s'applique : il voit une
 ecriture de fichier, pas son ampleur. C'est a toi de situer la tache.
-  < 10 lignes            : pas de spec. L'annoncer en une ligne et passer.
+  < 10 lignes            : pas de spec. L'annoncer en une ligne et passer ; le hook de build (Stop) sert de filet, TypeScript ou non.
   10 a 50 lignes         : SPEC-lite ~30 lignes (objectif, perimetre, verifications).
   > 50 ou STRUCTUREL     : spec complete en 13 sections, via le skill spec-builder.
 'Structurel' l'emporte sur le compte de lignes : schema de donnees, auth, dependance majeure,

@@ -77,7 +77,7 @@
       {
         "hooks": [
           {
-            "_comment": "Filet du PREMIER etage de la regle spec-builder (< 10 lignes : pas de spec, le code doit compiler). Lance tsc --noEmit quand la session a laisse des .ts/.tsx modifies, et bloque la fin de tour avec les erreurs. Un block sur Stop n'est PAS une decision de permission : meme effet en cloud qu'au poste. Timeout 100 s, SUPERIEUR au timeout interne de 90 s du script — l'inverse tuerait le hook avant son verdict. Une seule fois par session et par depot.",
+            "_comment": "Filet du PREMIER etage de la regle spec-builder (< 10 lignes : pas de spec, le code doit compiler). Lance tsc --noEmit quand la session a laisse des .ts/.tsx modifies et que le depot porte un tsconfig.json ; sinon (05.09.2026) le script build/check/lint de package.json, sinon node --check sur les .js/.mjs/.cjs et la syntaxe Python des .py touches. Bloque la fin de tour avec les erreurs. Un block sur Stop n'est PAS une decision de permission : meme effet en cloud qu'au poste. Timeout 100 s, SUPERIEUR au timeout interne de 90 s du script — l'inverse tuerait le hook avant son verdict. Une seule fois par session et par depot.",
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/check-build-ts.sh",
             "timeout": 100

@@ -42,7 +42,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 
 # Ingénieur Full-Stack & Designer Produit (global)
 
-> **v4.8 — 05.09.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
+> **v4.9 — 05.09.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
 > Source canonique : `C:\Users\<USERNAME>\Claude\Projects\claude-profiles\templates\profiles\dev-fullstack\global-CLAUDE.md`. Pour le modifier : § « Modifier le profil ».
 > **Historique des versions et généalogies des règles** : `CHANGELOG.md` adjacent, non déployé. À lire avant de toucher à une règle — jamais en usage courant.
 
@@ -137,7 +137,7 @@ Trois étages, selon la taille et la nature de la tâche :
 
 | Ampleur | Cadrage exigé |
 |---|---|
-| **< 10 lignes** | **Aucune spec** : annoncer en une ligne quoi et pourquoi. Le filet est `check-build-ts.ps1` (Stop), pas une spec. |
+| **< 10 lignes** | **Aucune spec** : annoncer en une ligne quoi et pourquoi. Le filet est le hook de build `check-build-ts` (Stop), pas une spec : `tsc` avec un `tsconfig.json`, sinon le script `build`/`check`/`lint` de `package.json`, sinon `node --check` et la syntaxe Python. |
 | **10 à 50 lignes** | **SPEC-lite** ~30 lignes : objectif, périmètre (dedans / dehors), vérifications. Commitée **avec** le code. |
 | **> 50 lignes, ou structurel** | **Spec complète** en 13 sections via `spec-builder`. Commitée **AVANT** le code. |
 
@@ -236,7 +236,7 @@ Gabarit de brief, preuves à constater par agent, table d'arbitrage, séquences 
 Deux contrôles **mécaniques**, qui ne dépendent pas de ta propre attestation (poste et plugin ; absents de l'amorçage web vendorisé) :
 
 - `guard-spec-code.ps1` (PreToolUse) — signale une écriture de code applicatif sans `SPEC.md` récent.
-- `check-build-ts.ps1` (Stop) — compile le projet si des `.ts/.tsx` ont bougé.
+- `check-build-ts.ps1` (Stop) — vérifie que ce qui a bougé compile ou parse : `tsc` avec `tsconfig.json`, sinon `build`/`check`/`lint` de `package.json`, sinon `node --check` et Python. Il ne lit pas le JSX d'un `.js` ou d'un `.html`.
 
 Ce qu'aucun mécanisme ne voit, et qui reste donc entièrement à ta charge : **un écart entre ce qui a été demandé et ce qui a été livré**, et **un fait avancé sans l'avoir vérifié** (§ Anti-hallucination). Les phases ci-dessus n'ont pas à être re-cochées ici : chacune est déjà une section opposable de ce fichier.
 
