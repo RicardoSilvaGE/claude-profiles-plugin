@@ -3,6 +3,7 @@ name: frontend-app-builder
 description: "Génère une application React SPA complète et production-ready depuis un gabarit d'architecture versionné : Vite + TypeScript strict + Tailwind + React Router + Zustand + auth. Déclencheurs : créer une app React, une SPA, un dashboard, un outil web, un frontend pour une API ; ou une demande partielle (ajouter une page, créer le routing) quand le contexte est déjà une SPA du gabarit. Pas pour : une app Next.js, SSR ou SEO-critique (sub-agent `frontend`), le polish d'un composant (`frontend` Mode C), l'identité visuelle (sub-agent `designer`), ni des pièces déjà éprouvées à recopier — HTTPS local, PWA, `server.js` — qui sont dans `librairie-maison`."
 ---
 
+> Version 2.2 — 05.09.2026 (audit du 05.09, constat D11 : le gabarit `assets/package-template.json` épinglait `typescript ~5.6.0` avec la mention « les versions épinglées font foi », qui interdisait le courant (`tsc` 6.0.2 dans le conteneur). Gabarit **daté** dans le SKILL.md et dans son champ `description` ; « font foi » restreint à la cohérence entre versions ; passage par `framework-upgrade` avant génération.)
 > Version 2.1 — 05.09.2026 (PR 2.1 de l'audit du 05.09 : renvoi croisé vers `librairie-maison` dans la description — « nouvelle application » se routait vers trois skills qui ne se citaient pas.)
 > Version 2.0 — 12.06.2026 (refonte pattern v2 suite à l'audit dev-fullstack : Modes A/B/C, Phase -1 SPEC, Phase 0 lecture, workflow orchestré, garde-fous, auto-check ; le contenu tutoriel est déplacé vers `references/architecture-patterns.md` ; assets et références désormais câblés explicitement dans le workflow ; versions alignées sur `assets/package-template.json` — Vite 6+).
 > Version 1.0 — 26.05.2026 (import d'un bundle externe, hors pattern v2 : guide de patterns monolithique de 744 lignes présenté comme générateur).
@@ -20,7 +21,7 @@ Ce skill génère des applications React complètes, prêtes pour la production,
 
 ## La stack : le projet décide, le skill a un gabarit
 
-Le gabarit par défaut (si le projet n'impose rien) est celui d'`assets/package-template.json` : React 18+, Vite 6+, TypeScript 5+ strict, Tailwind 4+, React Router 6+, Zustand 4+. **Les versions épinglées du template font foi** sur les tableaux indicatifs des références.
+Le gabarit par défaut (si le projet n'impose rien) est celui d'`assets/package-template.json` : React 18+, Vite 6+, TypeScript 5+ strict, Tailwind 4+, React Router 6+, Zustand 4+. **Les versions épinglées du template font foi** sur les tableaux indicatifs des références — pour leur **cohérence entre elles**, pas pour leur fraîcheur. Le gabarit a été relevé le **26.08.2026** (TypeScript `~5.6.0`, alors que `tsc` 6.0.2 compilait déjà dans le conteneur cloud au 05.09.2026) : avant de générer, passer `framework-upgrade` sur le gabarit, ou accepter ses versions en le disant dans le livrable. Un gabarit non daté se lit comme courant.
 
 Si le `CLAUDE.md` du projet impose autre chose (autre state manager, autre lib de routing, zéro dépendance), la contrainte projet s'applique sans rejouer le débat — les principes (TS strict, couche services, selectors, états UI complets) restent obligatoires, les libs ne sont que le défaut.
 

@@ -143,7 +143,10 @@ Le bon flux de travail :
 
 Le responsable du depot relira la PR et la fusionnera dans main. Ne pousse jamais
 directement sur main/master sur les depots partages. Pour un depot ou c'est legitime,
-declare-le dans ~/.claude/.push-main-allowed (une ligne \"owner/repo\", joker '*' admis)."
+declare-le dans ~/.claude/.push-main-allowed (une ligne \"owner/repo\", joker '*' admis).
+ATTENTION : c'est la commande ENTIERE qui a ete refusee. Si elle enchainait d'autres
+instructions (git add, git commit...), AUCUNE n'a ete executee : rejoue-les sans le push,
+puis verifie par git log que le commit existe avant de l'annoncer."
 
 jq -n --arg r "$MSG" '{
     hookSpecificOutput: {

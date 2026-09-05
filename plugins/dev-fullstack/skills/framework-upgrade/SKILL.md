@@ -13,6 +13,7 @@ paths:
 description: "Upgrade d'un framework majeur (Next.js, React, Tailwind, shadcn, TypeScript, Node) : inventaire des breaking changes, audit d'impact, stratégie big bang vs feature flag, codemods, plan de rollback, vérification post-upgrade. Interdit le `npm install <pkg>@latest` à l'aveugle. Déclencheurs : upgrade ou saut de version nommé (Next 14 vers 15, Tailwind v3 vers v4), migration Pages Router vers App Router, breaking changes, codemod, deps périmées. Pas pour : une dépendance mineure hors framework, ni un bug de dépendance (`debug-investigation`)."
 ---
 
+> Version 1.3 — 05.09.2026 (audit du 05.09, § Skills : le § « Connaissance domaine » récitait une trentaine de numéros de version, contre la règle « ne jamais réciter de mémoire » de ce même skill ; réécrit en **pièges structurels sans aucun numéro**, à confronter aux release notes lues en Phase 1. `@tailwindcss/upgrade@next` daté retiré.)
 > Version 1.2 — 17.08.2026 (ajout du champ frontmatter `paths` : l'activation **automatique** est bornée aux manifestes et fichiers de configuration de la chaîne JS/TS. `/framework-upgrade` reste invocable partout — `paths` ne borne que le déclenchement par le modèle.
 > **Ce skill porte `paths`, et c'est délibéré** (`publication-store` en a porté du 04.09 au 05.09.2026 ; son déclencheur naturel étant une phrase, `paths` lui a été retiré sur la mesure ci-dessous — constat D10 de l'audit du 05.09). Deux raisons cumulées. D'abord il n'est préchargé dans aucun sub-agent : `paths` et le préchargement (`skills:`) sont **exclusifs** — un skill portant `paths` n'est pas préchargeable, vérifié par témoin isolé le 17.08.2026 et absent de la documentation officielle. Ensuite un upgrade de framework est **inconcevable sans manifeste** : la première chose que fait ce skill est de lire le `package.json`, donc la borne se referme sur elle-même au lieu de rater le déclenchement.
 > **Sémantique à connaître avant d'en poser ailleurs** : `paths` ne se déclenche pas parce que le dossier *contient* un fichier concordant, mais parce qu'un tel fichier est **effectivement manipulé**. Mesuré le 17.08.2026 : dans un dossier contenant un `.tsx`, un skill borné sur `**/*.tsx` reste absent tant que le fichier n'a pas été lu. Un skill dont le déclencheur naturel est une phrase et non un fichier ne doit donc **pas** porter `paths` — il se tairait sans que rien ne le signale.)
@@ -170,38 +171,37 @@ Une fois le build vert :
 - **Upgrade « pour rester à jour »** sans motivation produit ou technique claire.
 - **Tester uniquement le happy path** post-upgrade : c'est sur les edges que les régressions cassent.
 
-## Connaissance domaine métier (upgrades typiques de la stack du profil)
+## Connaissance domaine métier — les pièges structurels, jamais les numéros
 
-### Next.js
-- **14 → 15** : `params`/`searchParams` async, fetch cache default change, React 19 requis, `NextRequest.ip` retiré, instrumentation hook stable.
-- **15 → 15.x mineurs** : codemod `next-async-request-api` à connaître. Lire le changelog avant chaque mineur.
-- **App Router (depuis 13.4)** : si encore Pages Router, c'est une migration plutôt qu'un upgrade — cadrer avec `architecte`.
+Aucun numéro de version ici, à dessein (05.09.2026, audit § Skills) : cette section en récitait
+une trentaine, contre sa propre règle « ne jamais réciter de mémoire », et chacun périmait en
+silence. Ce qui suit est ce qui ne change pas d'une version à l'autre : la **forme** des ruptures,
+à confronter aux release notes lues le jour même en Phase 1.
 
-### React
-- **18 → 19** : nouveau compiler (opt-in), `use()`, Actions / `useActionState`, `useFormStatus`, `useOptimistic`, ref as prop, document metadata, `<title>` etc. dans composants.
-- **Types** : `@types/react` 19, breaking sur `ReactNode` (plus de `{}` autorisé), `forwardRef` déprécié au profit de ref comme prop.
-
-### Tailwind
-- **v3 → v4** : new engine (Oxide, Rust-based), config en CSS via `@theme`, plus de `tailwind.config.js` traditionnel (compat mode dispo), `@import "tailwindcss"` au lieu de 3 directives. Codemod : `npx @tailwindcss/upgrade@next`.
-
-### shadcn/ui
-- **Pas une lib npm — c'est du code copié**. "Upgrade" = re-coller depuis le nouveau registry. Customisations à re-appliquer manuellement.
-- Vérifier la compat avec la version de Radix UI sous-jacente.
-
-### TypeScript
-- **5.x → 5.y** : généralement smooth. Lire les release notes pour `--noUncheckedIndexedAccess` ou autre flag de strictness ajouté par défaut.
-- **Major** : breaking sur `Symbol`, `Iterator`, types utilitaires.
-
-### Node.js
-- **18 → 20 LTS** : généralement OK. Vérifier la matrice de compat de Vercel / Supabase.
-- **20 → 22 LTS** : idem.
-- Toujours bumper `engines.node` dans `package.json` après l'upgrade.
+- **Next.js** : les ruptures portent sur les API de requête (paramètres, en-têtes et cookies qui
+  deviennent asynchrones), sur les défauts de cache de `fetch`, sur la version de React exigée,
+  et sur le passage Pages Router → App Router — qui est une **migration**, pas un upgrade :
+  cadrer avec `architecte`. Chercher le codemod officiel (`@next/codemod`) avant de toucher à
+  la main.
+- **React** : une majeure casse d'abord par les **types** (`@types/react` durcit ce qu'accepte
+  `ReactNode`), puis par les API dépréciées (`forwardRef`, refs passées en prop) ; les nouveaux
+  primitifs (actions, état de formulaire, optimistic UI) ne cassent rien mais rendent l'ancien
+  idiome obsolète — ne pas les adopter dans un upgrade, c'est un chantier à part.
+- **Tailwind** : un changement de moteur déplace la configuration (fichier JS → CSS), change les
+  directives d'import et rend les plugins tiers incompatibles jusqu'à leur propre mise à jour ;
+  un codemod existe, à lire avant de l'exécuter, jamais en `@next` aveugle.
+- **shadcn/ui** : pas une lib npm, du code copié. « Upgrade » = re-coller depuis le registre et
+  réappliquer les customisations à la main ; vérifier la version de Radix UI sous-jacente.
+- **TypeScript** : une mineure est presque toujours indolore ; une majeure casse par les flags de
+  rigueur ajoutés par défaut et par les types utilitaires — lire le tableau des breaking changes
+  de la release note, pas le résumé.
+- **Node.js** : entre deux LTS, vérifier la matrice de compatibilité de l'hébergeur (Vercel,
+  Render, NAS) et du client base de données, puis bumper `engines.node` dans `package.json`.
 
 ### Outils utiles
-- `npx npm-check-updates -u` (juste pour voir, pas pour appliquer aveuglément).
-- `@next/codemod`, `types-react-codemod`, `@tailwindcss/upgrade`.
-- `npm ls <pkg>` : voir où une dep est utilisée.
-- `npm dedupe` : nettoyer après upgrade.
+- `npx npm-check-updates` (pour **voir**, jamais `-u` à l'aveugle).
+- Les codemods officiels de chaque outil, nommés dans leur upgrade guide du jour.
+- `npm ls <pkg>` : voir où une dep est utilisée ; `npm dedupe` : nettoyer après upgrade.
 
 ## Auto-check final (avant livraison)
 

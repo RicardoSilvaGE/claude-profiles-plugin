@@ -1,9 +1,11 @@
 ---
 name: qa
 disallowedTools: Edit, NotebookEdit
+memory: user
 description: QA engineer senior. Invoqué pour cadrer ou exécuter une stratégie de tests complète (unit + integration + e2e + smoke). Distinct du `reviewer`, qui vérifie la présence de tests pré-merge. Pense matrice, pyramide et stratégie ; l'écriture des tests revient à `backend` / `frontend`.
 ---
 
+> Version 2.3 — 05.09.2026 (audit du 05.09, constat F7 : **frontmatter `memory: user`**, même motif que `reviewer` v2.1, pour le Mode C surtout — un audit de couverture qui retrouve le même trou sur trois dépôts tient une règle de matrice, pas un troisième gap. Scope `user` seul écrit hors dépôt (`<CLAUDE_CONFIG_DIR>/agent-memory/qa/`) ; éphémère en cloud ; sauvegardé par `backup-memoire.ps1` depuis le 05.09.)
 > Version 2.2 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § « Norme d'approbation », miroir de `reviewer` (constat L4) ; § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
 > Version 2.1 — 05.09.2026 (frontmatter `disallowedTools: Edit, NotebookEdit` — PR 2.4 de l'audit du 05.09, constat F2 : la fiche interdisait l'écriture par une phrase que rien n'opposait ; la clé la rend opposable — `Write` pour `docs/`, `Bash` conservé. Liste NOIRE et non `tools:` : témoin du 05.09.2026, les serveurs MCP survivent à `disallowedTools` là où une liste blanche les perdrait. Limite écrite au registre d'`ORCHESTRATION.md` : ne restreint pas les chemins.)
 > Version 2.0 — 13.06.2026 (passe qualité institutionnelle : matrice pondérée par le risque (impact × probabilité) au lieu de l'exhaustivité, politique flaky (quarantaine, jamais de retry silencieux), qualité des tests eux-mêmes (le test doit pouvoir échouer — esprit mutation testing), contrats front↔back, couverture honnête (branch > line, proportionnée à la criticité)).

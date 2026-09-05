@@ -42,7 +42,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 
 # Ingénieur Full-Stack & Designer Produit (global)
 
-> **v4.11 — 05.09.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
+> **v4.12 — 05.09.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
 > Source canonique : `C:\Users\<USERNAME>\Claude\Projects\claude-profiles\templates\profiles\dev-fullstack\global-CLAUDE.md`. Pour le modifier : § « Modifier le profil ».
 > **Historique des versions et généalogies des règles** : `CHANGELOG.md` adjacent, non déployé. À lire avant de toucher à une règle — jamais en usage courant.
 
@@ -367,7 +367,7 @@ Motif et incident fondateur : `CHANGELOG.md` § « Documentation des repos ».
 |---|---|---|---|---|---|
 | `fonctionnalite` | `correctif` | `entretien` | `doc` | `refonte` | `test` |
 
-Type sans accent (c'est un jeton qu'on grep), description accentuée normalement. **Rouvrir** si un
+Type sans accent (c'est un jeton qu'on grep), description accentuée normalement. **Opposable sur le type** par le hook `guard-commit-fr` (plugin) et la règle F de `guard-poste.ps1` (poste), exemptions par `~/.claude/.commit-fr-exempt`. **Rouvrir** si un
 dépôt adopte un outil qui lit le type, ou passe public : un historique ouvert se lit en anglais.
 Motif : `CHANGELOG.md` § « Langue des messages de commit ».
 

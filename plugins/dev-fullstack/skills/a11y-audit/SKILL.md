@@ -6,6 +6,7 @@ agent: general-purpose
 background: false
 ---
 
+> Version 1.4 — 05.09.2026 (audit du 05.09, § Skills : les recettes citaient Tailwind, `<Image>` et shadcn sans dire que les critères, eux, ne dépendent pas de la stack ; sur un dépôt vanilla — sept sur huit — un auditeur pouvait conclure « non applicable » à tort. Paragraphe en tête de la Phase 2.)
 > Version 1.3 — 19.08.2026 (**`context: fork` appliqué, après que le témoin a levé la réserve
 > posée quelques heures plus tôt en v1.2.** La v1.2 refusait ce champ par analogie avec
 > l'exclusion `paths` ↔ préchargement : ce skill étant préchargé dans `frontend`, un fork y
@@ -88,6 +89,12 @@ Ne pas auditer un composant sans avoir lu ses dépendances (un `<Dialog>` shadcn
 ### Phase 2 — Audit par pilier
 
 Parcourir les 4 piliers WCAG. Pour chaque critère, OK ou finding.
+
+**Sur un dépôt sans bundler ni shadcn** (sept dépôts sur huit, mesure du 25.08.2026) : les quatre
+piliers s'appliquent **tels quels** — WCAG ne dépend pas de la stack. Seules les recettes changent :
+`focus-visible:` de Tailwind devient `:focus-visible` en CSS, `<Image>` devient `<img>` avec
+`width`/`height`, un composant shadcn devient l'élément natif qu'il enveloppe. Ne jamais conclure
+« non applicable » sur un critère parce que l'outil cité dans la recette manque.
 
 **Pilier 1 — Perceivable** (l'info doit être perceptible)
 - **Images** : `alt` présent et descriptif (vide si décorative `alt=""`).

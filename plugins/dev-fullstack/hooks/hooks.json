@@ -1,5 +1,5 @@
 {
-  "_comment": "Source canonique des SEPT hooks des profils empaquetes en plugin. Copies dans plugins/<profil>/hooks/ par scripts/build-plugin.sh — NE JAMAIS EDITER LA COPIE, elle est ecrasee a chaque generation et comparee par --check.",
+  "_comment": "Source canonique des HUIT hooks des profils empaquetes en plugin. Copies dans plugins/<profil>/hooks/ par scripts/build-plugin.sh — NE JAMAIS EDITER LA COPIE, elle est ecrasee a chaque generation et comparee par --check.",
 
   "hooks": {
     "SessionStart": [
@@ -59,6 +59,12 @@
             "_comment": "Regle 0 de guard-poste.ps1 : deny sur tout git push direct vers main/master (reference explicite, refspec, --all/--mirror, push nu depuis main). Meme decision qu'au poste, meme effet dans tous les modes. Exemptions par ~/.claude/.push-main-allowed. Ne voit que l'outil Bash.",
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/guard-push-main.sh",
+            "timeout": 10
+          },
+          {
+            "_comment": "Conventions git du profil (05.09.2026, pilote du banc de comportement : 4 commits sur 4 hors convention, doctrine injectee) : deny sur un git commit dont le SUJET n'est pas `type(scope): ...` avec un type FRANCAIS (fonctionnalite|correctif|entretien|doc|refonte|test). Lit -m, --message et la forme heredoc. Merge/Revert/fixup!/squash!, -F, editeur, --amend --no-edit passent. Regle F de guard-poste.ps1 au poste. Exemptions ~/.claude/.commit-fr-exempt ; CLAUDE_GUARD_COMMIT_FR=0 pour couper.",
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/guard-commit-fr.sh",
             "timeout": 10
           }
         ]
