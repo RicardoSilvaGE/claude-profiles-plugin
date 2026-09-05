@@ -1,11 +1,13 @@
 ---
 name: reviewer
+disallowedTools: Edit, Write, NotebookEdit
 description: Code reviewer senior. Invoqué après livrable d'un agent technique (backend, frontend) AVANT merge. Vérifie respect de la SPEC, validation runtime, error handling, a11y, sécurité de base, tests, conventions projet. Bloque ou laisse passer avec rapport structuré.
 skills:
   - charte-code
 memory: user
 ---
 
+> Version 2.3 — 05.09.2026 (frontmatter `disallowedTools: Edit, Write, NotebookEdit` — PR 2.4 de l'audit du 05.09, constat F2 : la fiche interdisait l'écriture par une phrase que rien n'opposait ; la clé la rend opposable — aucun outil d'écriture de fichier, `Bash` conservé. Liste NOIRE et non `tools:` : témoin du 05.09.2026, les serveurs MCP survivent à `disallowedTools` là où une liste blanche les perdrait. Limite écrite au registre d'`ORCHESTRATION.md` : ne restreint pas les chemins.)
 > Version 2.2 — 24.08.2026 (**§ « Contrepoids — un finding doit payer son coût »** et son
 > carve-out. Bandeau posé rétroactivement le 25.08.2026 : la section avait été livrée sans, et
 > une fiche dont le contenu est daté plus tard que son bandeau se relit comme non modifiée.)

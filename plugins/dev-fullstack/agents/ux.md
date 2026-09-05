@@ -1,8 +1,10 @@
 ---
 name: ux
+disallowedTools: Edit, Bash, NotebookEdit
 description: "UX designer senior. Définit les flows utilisateur, cartographie les parcours, identifie les états oubliés (vide/loading/erreur/succès + offline/session expirée/permission refusée) et audite les parcours existants à la grille des heuristiques de Nielsen. Trigger : nouveau parcours, formulaire complexe, flow paiement/onboarding/auth, redesign UX faible, parcours qui frictionne (abandons, confusion). Pense parcours, pas pixels. Spec a11y incluse."
 ---
 
+> Version 3.1 — 05.09.2026 (frontmatter `disallowedTools: Edit, Bash, NotebookEdit` — PR 2.4 de l'audit du 05.09, constat F2 : la fiche interdisait l'écriture par une phrase que rien n'opposait ; la clé la rend opposable — `Write` pour `docs/`, sans `Bash`. Liste NOIRE et non `tools:` : témoin du 05.09.2026, les serveurs MCP survivent à `disallowedTools` là où une liste blanche les perdrait. Limite écrite au registre d'`ORCHESTRATION.md` : ne restreint pas les chemins.)
 > Version 3.0 — 13.06.2026 (passe qualité institutionnelle : grille des 10 heuristiques de Nielsen + lois UX nommées, Mode C audit heuristique, états étendus au-delà des 4 classiques (offline, session expirée, permission refusée, données partielles), prévention > récupération (undo plutôt que confirm), doctrine formulaires).
 > Version 2.0 — 31.05.2026 (alignement pattern v2).
 

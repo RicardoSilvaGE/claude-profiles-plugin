@@ -1,5 +1,5 @@
 {
-  "_comment": "Source canonique des SIX hooks des profils empaquetes en plugin. Copies dans plugins/<profil>/hooks/ par scripts/build-plugin.sh — NE JAMAIS EDITER LA COPIE, elle est ecrasee a chaque generation et comparee par --check.",
+  "_comment": "Source canonique des SEPT hooks des profils empaquetes en plugin. Copies dans plugins/<profil>/hooks/ par scripts/build-plugin.sh — NE JAMAIS EDITER LA COPIE, elle est ecrasee a chaque generation et comparee par --check.",
 
   "hooks": {
     "SessionStart": [
@@ -42,6 +42,12 @@
             "_comment": "Regle absolue spec-builder (19.05.2026) rendue opposable en session cloud, ou le hook PowerShell du poste ne peut pas tourner. Decision 'ask' UNIQUEMENT, jamais 'deny', ET additionalContext : hors du mode 'default', 'ask' n'interrompt pas, seul le contexte injecte subsiste. Un seul rappel par session et par depot. Ne voit pas les ecritures faites via Bash.",
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/guard-spec-code.sh",
+            "timeout": 10
+          },
+          {
+            "_comment": "Regle 8 de la charte (aucun secret dans le code), rendue mecanique sur la partie qui peut l'etre (05.09.2026) : deny sur toute ecriture dans un fichier dont le NOM dit qu'il porte un secret (.env et variantes sauf .example/.sample/.template/.dist, *.keystore, *.jks, keystore.properties, google-services.json, *.pem/*.p12/*.pfx/*.key, cles SSH privees). Le contenu n'est jamais regarde. Regle E de guard-poste.ps1 au poste. CLAUDE_GUARD_SECRETS=0 pour couper.",
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/guard-secrets.sh",
             "timeout": 10
           }
         ]
