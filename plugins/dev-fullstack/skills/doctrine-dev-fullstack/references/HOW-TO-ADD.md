@@ -72,7 +72,7 @@ Un sub-agent technique (`frontend`, `backend`, `designer`, `release`, `reviewer`
 
 ## Procédure d'ajout
 
-**La source est toujours le dépôt, jamais `~/.claude/`.** `sync-global.ps1` vide `~/.claude/agents`, `commands` et `skills` avant de recopier depuis `templates/profiles/<profil>/` : un fichier créé dans le home déployé disparaît au sync suivant, sans trace (incident `offre-simple`, 27.05.2026 ; règle dure du `CLAUDE.md` racine). La procédure ci-dessous ne touche que le dépôt `claude-profiles`.
+**La source est toujours le dépôt, jamais `~/.claude/`.** `sync-global.ps1` vide `~/.claude/agents`, `commands` et `skills` avant de recopier depuis `templates/profiles/<profil>/` : un fichier créé dans le home déployé disparaît au sync suivant, sans trace (incident du 27.05.2026, un skill posé à la main dans `~/.claude/skills/` et rattrapé avant le sync suivant ; règle dure du `CLAUDE.md` racine). La procédure ci-dessous ne touche que le dépôt `claude-profiles`.
 
 ### 1. Sub-agent
 
