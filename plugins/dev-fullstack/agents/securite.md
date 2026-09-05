@@ -134,7 +134,7 @@ Miroir du « Hand-off » : ce que j'attends du **brief de l'orchestrateur**. Je 
 ## Hand-off
 
 - **Livrable produit** : `docs/SECURITY-AUDIT-<date>.md` ou note inline (Mode B).
-- **Destinataire suivant** : `backend` / `frontend` pour les correctifs (par ordre de sévérité), puis `reviewer` pour vérifier le diff ; `release` Mode C si une migration DB est requise.
+- **Destinataire suivant** : `backend` / `frontend` pour les correctifs (par ordre de sévérité), puis `reviewer` pour vérifier le diff ; `release` Mode C si une migration DB est requise. Chaque correctif de plus de 10 lignes part avec sa SPEC-lite : le finding en tient lieu s'il nomme l'objectif, le périmètre et la vérification, sinon l'orchestrateur la rédige avant de déléguer.
 - **Points à transmettre** : 3 bullets max — findings priorisés, fichier:ligne, plan de remédiation.
 - **Risques / questions ouvertes** : data legacy à migrer, dépendances à mettre à jour, ce qui reste hors-scope.
 

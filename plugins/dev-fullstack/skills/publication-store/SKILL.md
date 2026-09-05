@@ -104,7 +104,7 @@ Checklist mesurée sur le dépôt de référence, à passer **avant** de bumper 
 
 - [ ] Branche de release (`main`) propre : `git status` vide, tout est sur `origin`.
 - [ ] `applicationId` et `appId` **inchangés** (les relire, ne pas les supposer).
-- [ ] `targetSdkVersion` ≥ l'exigence courante de Google (**34 minimum** au moment de la mesure ; le dépôt visait 36). Une cible en dessous est refusée à l'upload.
+- [ ] `targetSdkVersion` ≥ l'exigence courante de Google (à relire sur la page *Target API level requirements* de Google, relevée chaque année — jamais un chiffre de mémoire ; le dépôt mesuré visait 36). Une cible en dessous est refusée à l'upload.
 - [ ] Tests unitaires verts, lint sans `console.log` non gaté, **build prod propre** (`npm run build`).
 - [ ] `theme_color` / `background_color` du manifeste PWA et de `index.html` cohérents avec `android.backgroundColor` — c'est ce que l'utilisateur voit au splash.
 - [ ] **Migrations SQL en attente appliquées en prod** avant l'upload : une app publiée qui parle à un schéma en retard tourne en dégradé sans le dire. Le dépôt mesuré l'a marqué **CRITIQUE** dans sa spec de release.

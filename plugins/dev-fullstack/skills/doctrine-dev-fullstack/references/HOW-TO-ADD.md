@@ -1,5 +1,6 @@
 # Comment ajouter un nouveau sub-agent ou skill
 
+> Version 1.4 — 05.09.2026 (PR 1.3 de l'audit du 05.09, constat D6 : la procédure faisait créer agents et skills **dans `~/.claude/`**, que `sync-global.ps1` vide au sync suivant — contre la règle dure « la source est toujours le repo » ; elle ignorait les clés de frontmatter posées depuis (`skills:`, `observer:`, `memory:`), le banc de conformité, le plugin et son bump, les registres générés et la propagation aux consommateurs. Réécrite sur `templates/profiles/dev-fullstack/` avec la checklist complète. `securite` ajouté aux agents découplés de la stack.)
 > Version 1.3 — 01.06.2026 (§ « Découplage de la stack » ajouté : la stack d'un agent est un défaut surpassable par le CLAUDE.md projet, à propager aux gates durs — incident 01.06.2026)
 > Version 1.2 — 27.05.2026 (§ « Pourquoi un sub-agent n'apparaît pas » réécrit : la cause primaire prouvée est le CRLF dans le frontmatter, pas la longueur de description — théorie ~319 char réfutée par `qa.md` qui charge à 329 char)
 > Version 1.1 — 26.05.2026 (ajout § « Pourquoi un sub-agent n'apparaît pas » : plafond description ~319 char + set figé au démarrage du process)
@@ -42,6 +43,8 @@ Tout nouveau sub-agent ou skill suit ces 13 sections (ORCHESTRATION.md « Patter
    > lui-même** au § « Pourquoi un sub-agent n'apparaît pas » (`qa.md` charge à 329). Elle avait
    > survécu à sa propre réfutation. Le critère réel : **assez de déclencheurs pour router, rien
    > de plus**. Ce qui déborde de ce critère n'est pas trop long, il est **au mauvais endroit**.
+
+   **Autres clés admises, et ce qu'elles engagent** (registre tenu dans `ORCHESTRATION.md` § « Pattern partagé », qui fait foi) : `tools:` ou `disallowedTools:` — seulement pour **restreindre** (omis = tout hérité, serveurs MCP compris) ; `model:` — seulement pour épingler, et alors la doctrine doit l'annoncer (invariant I2), onze fiches n'en ont pas parce que la Phase 1bis raisonne par tâche ; `skills:` — précharge des skills entiers au démarrage, **exclusif avec `paths:`** sur le skill visé (invariant I3, règle R18 du banc) ; `observer:` + `observerMessage:` — observateur de fond, message ajouté au défaut du harness ; `memory: user` — mémoire persistante propre à l'agent, éphémère en cloud. Toute clé nouvelle passe l'invariant I8 (YAML valide) sans être comprise : le registre est le seul endroit où elle est expliquée.
 2. **Version** : ligne `> Version X.Y — DD.MM.AAAA (changement résumé)` juste après le frontmatter.
 3. **Titre + ligne d'identité** : 1-2 phrases sur le rôle.
 4. **Modes** : A / B / C (ou D), détectés en Phase 0, déclarés en début de livrable.
@@ -57,7 +60,7 @@ Tout nouveau sub-agent ou skill suit ces 13 sections (ORCHESTRATION.md « Patter
 
 ## Découplage de la stack (depuis 01.06.2026)
 
-Un sub-agent technique (`frontend`, `backend`, `designer`, `release`, `reviewer`) a une **stack par défaut** opinionée (Next/shadcn/Prisma/Vercel/Supabase). Cette stack est un **défaut surpassable**, jamais une prescription : la **source de vérité est le `CLAUDE.md` du projet**, lu en Phase 0.
+Un sub-agent technique (`frontend`, `backend`, `designer`, `release`, `reviewer`, `securite`) a une **stack par défaut** opinionée (Next/shadcn/Prisma/Vercel/Supabase). Cette stack est un **défaut surpassable**, jamais une prescription : la **source de vérité est le `CLAUDE.md` du projet**, lu en Phase 0.
 
 **Règle 1 — Section « le projet décide ».** Tout agent qui nomme une stack pose explicitement la hiérarchie : si le projet impose autre chose (monofichier, zéro-dépendance, pas de build, autre lib), l'agent applique la contrainte **sans rejouer le débat**. La stack par défaut va dans une sous-section « Défaut (si le projet n'impose rien) », qui reste **forte et concrète** — découpler ≠ rendre fade.
 
@@ -69,41 +72,43 @@ Un sub-agent technique (`frontend`, `backend`, `designer`, `release`, `reviewer`
 
 ## Procédure d'ajout
 
+**La source est toujours le dépôt, jamais `~/.claude/`.** `sync-global.ps1` vide `~/.claude/agents`, `commands` et `skills` avant de recopier depuis `templates/profiles/<profil>/` : un fichier créé dans le home déployé disparaît au sync suivant, sans trace (incident `offre-simple`, 27.05.2026 ; règle dure du `CLAUDE.md` racine). La procédure ci-dessous ne touche que le dépôt `claude-profiles`.
+
 ### 1. Sub-agent
 
-```powershell
-# Créer le fichier
-New-Item -ItemType File -Path "$env:USERPROFILE\.claude\agents\<nom>.md"
-
-# Optionnel : créer le dossier projet autonome
-New-Item -ItemType Directory -Path "$env:USERPROFILE\Claude\Projects\Assistant-<Nom>"
-New-Item -ItemType File -Path "$env:USERPROFILE\Claude\Projects\Assistant-<Nom>\CLAUDE.md"
-```
+Créer `templates/profiles/dev-fullstack/agents/<nom>.md` (fins de ligne **LF**, UTF-8 sans BOM — Edit/Write, jamais PowerShell) sur le pattern v2 ci-dessus. `name:` = nom de fichier sans extension, unique dans le profil (invariant I10).
 
 ### 2. Skill
 
-```powershell
-New-Item -ItemType Directory -Path "$env:USERPROFILE\.claude\skills\<nom>"
-New-Item -ItemType File -Path "$env:USERPROFILE\.claude\skills\<nom>\SKILL.md"
-```
+Créer `templates/profiles/dev-fullstack/skills/<nom>/SKILL.md`, ligne de version en tête. Pas de `paths:` si un agent doit le précharger (`skills:`), et pas de `paths:` si le déclencheur naturel est une phrase (mesure du 17.08.2026, § de version de `framework-upgrade`).
 
 ### 3. Référencer dans l'écosystème
 
-- **Sub-agent** : ajouter au tableau dans `~/.claude/CLAUDE.md` + `templates/profiles/dev-fullstack/global-CLAUDE.md` + `claude-profiles/CLAUDE.md`.
-- **Skill** : ajouter à la section « Skills à connaître » dans `~/.claude/CLAUDE.md`.
-- **Dans les deux cas** : ajouter à `~/.claude/agents/ORCHESTRATION.md` (inventaire + séquence typique si applicable).
+- **Sub-agent** : ligne dans la table de délégation de la Phase 1 de `global-CLAUDE.md` (résident : elle coûte à l'invariant I5, la mesurer) ; inventaire et registre des clés d'`ORCHESTRATION.md`, plus une séquence typique si applicable.
+- **Skill** : puce dans « Skills à connaître » de `global-CLAUDE.md` **seulement** pour ce que la description ne peut pas dire ; `ORCHESTRATION.md` § « Skills associées ».
+- **Dans les deux cas** : tableau des profils et arborescence du `CLAUDE.md` racine, ligne de version dans `CHANGELOG.md` du profil et en-tête de `global-CLAUDE.md` si la doctrine change.
 
 ### 4. Connecter aux sub-agents existants
 
-Si le nouveau composant complète un sub-agent (ex: `supabase-toolkit` complète `securite` et `backend`), ajouter une section « Skills à invoquer » dans les sub-agents concernés.
+Si le nouveau composant complète un sub-agent (ex : `supabase-toolkit` complète `securite` et `backend`), l'inscrire dans leur section « Skills à invoquer » ; si un agent doit l'avoir en entier au démarrage, `skills:` dans son frontmatter (et alors pas de `paths:` sur le skill).
 
-### 5. Tester
+### 5. Contrôler, puis déployer
 
-Invoquer le nouveau sub-agent / skill sur un cas réel et vérifier :
-- Le trigger fonctionne (description matche les mots-clés attendus).
+Dans cet ordre, tous verts avant de commiter :
+
+1. `bash scripts/tests/test-conformite-fiches-agents.sh` — les vingt règles du pattern v2 (R1-R20).
+2. `verifier-invariants.ps1 -RepoRoot . -Strict` — I1 compteurs, I2 `model:`, I3 `skills:`/`paths:`, I5 résident (mesure avant/après par `-Mesures`), I6 blocs générés (`generer-registres.ps1 -Verifier`, cellule à aligner si un compteur bouge), I7 renvois, I8 YAML, I10 `name:` unique. Sous PowerShell 7 dans le conteneur, à deux windowsismes près (v4.10 du `CLAUDE.md` racine).
+3. `build-plugin.sh`, `build-plugin.sh --check`, **bump de `VERSION_PLUGIN`** et de `.claude-plugin/marketplace.json` (un plugin modifié sans bump est invisible d'un environnement en cache), puis `--public --sortie <clone public>` et push du dépôt public.
+4. Commit sur une branche, PR, CI `invariants` verte, fusion.
+5. Déployer : `sync-global.ps1` (poste), `redeploy-isolated-homes.ps1` (homes isolés), `vendor-profile.sh --profile dev-fullstack --repo <r>` sur chaque consommateur du registre `templates/_web-bootstrap/README.md`. Une session déjà ouverte ne voit rien : le set d'agents est figé au démarrage du process (§ suivant).
+
+### 6. Tester
+
+Invoquer le nouveau sub-agent / skill sur un cas réel, **après redémarrage du process**, et vérifier :
+- Le trigger fonctionne (la description matche les mots-clés attendus).
 - La Phase 0 lecture est effectuée.
 - Le format de livrable est respecté.
-- Le hand-off désigne un destinataire clair.
+- Le hand-off désigne un destinataire clair, et le contrat d'entrée aval y trouve ce qu'il exige.
 
 ## Pourquoi un sub-agent n'apparaît pas (non-invocable)
 
@@ -143,11 +148,11 @@ Le harness **photographie la liste des agents au moment où le process `claude` 
 
 ## Modèle de SKILL.md à copier
 
-Voir `~/.claude/skills/supabase-toolkit/SKILL.md` ou `~/.claude/skills/perf-audit/SKILL.md` comme modèles aboutis.
+Voir `templates/profiles/dev-fullstack/skills/supabase-toolkit/SKILL.md` ou `skills/publication-store/SKILL.md` (section « D'où vient ce contenu » exemplaire) comme modèles aboutis.
 
 ## Modèle de sub-agent à copier
 
-Voir `~/.claude/agents/backend.md` ou `~/.claude/agents/frontend.md` comme modèles aboutis (pattern v2 strict + skills associés + MCPs explicités).
+Voir `templates/profiles/dev-fullstack/agents/backend.md` ou `agents/frontend.md` comme modèles aboutis (pattern v2 strict + `skills:` préchargés + MCPs nommés par le verbe).
 
 ## Critères d'évaluation (avant de livrer un nouveau composant)
 
@@ -162,4 +167,7 @@ Voir `~/.claude/agents/backend.md` ou `~/.claude/agents/frontend.md` comme modè
 - [ ] Anti-patterns interdits + Anti-hallucination.
 - [ ] Section Incidents source (vide est OK, présente obligatoire).
 - [ ] **Stack en défaut surpassable** (si l'agent en nomme une) : section « le projet décide » + garde-fous formulés en principes + découplage **propagé aux gates durs** (garde-fous, workflow, auto-check, checklist) avec N/A autorisé. Cf. § « Découplage de la stack ».
-- [ ] Référencement dans CLAUDE.md global + ORCHESTRATION.md + sub-agents connexes.
+- [ ] Référencement dans CLAUDE.md global + ORCHESTRATION.md (inventaire **et** registre des clés si le frontmatter en pose une) + sub-agents connexes.
+- [ ] `test-conformite-fiches-agents.sh` vert, `verifier-invariants.ps1 -Strict` vert, I5 mesuré avant/après.
+- [ ] Plugin régénéré, `--check` conforme, **version bumpée**, copie publique poussée.
+- [ ] Ligne de version dans `CHANGELOG.md` du profil ; propagation aux consommateurs notée dans `EN-ATTENTE-POSTE.md` si elle ne peut pas se faire d'ici.

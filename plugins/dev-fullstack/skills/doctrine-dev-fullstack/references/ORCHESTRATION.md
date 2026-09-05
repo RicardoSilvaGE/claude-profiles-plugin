@@ -1,6 +1,6 @@
 # Orchestration des sub-agents
 
-> Source canonique : `~/.claude/agents/ORCHESTRATION.md`
+> Source canonique : `templates/profiles/dev-fullstack/agents/ORCHESTRATION.md` (dépôt `claude-profiles`) ; la copie déployée vit dans `agents/` du home actif.
 > Dernière mise à jour : 04.09.2026 (v2.4 — skill `publication-store` inscrit, séquence 11 « Publication store » ajoutée. Mesuré sur un dépôt réel ayant atteint l'internal testing Play Store ; Android via Capacitor seulement, iOS hors périmètre. Frontières posées avec `growth` (copy), `designer` (visuels), `release` (web).) v2.3 (04.09.2026 — **le contrat devient bilatéral** : chaque fiche porte un « Contrat d'entrée », miroir du « Hand-off » — ce que le brief doit porter, ce que l'agent lit lui-même, ce qui le bloque — et le verdict `BLOQUÉ`, rendu à la place du livrable quand un input décisif manque, avec les options préparées pour l'utilisateur. Le v2.2 obligeait l'orchestrateur à bien briefer ; rien n'obligeait l'agent à refuser un brief incomplet, et un agent compétent comble un vide en silence. Pattern v2 : section 13bis. Banc : règle R20.) v2.2 (04.09.2026 — **la collaboration orchestrateur ↔ sub-agents devient explicite** : nouvelle section homonyme portant les quatre limites structurelles d'un sub-agent, le gabarit de brief en six champs, la table des preuves à constater au retour agent par agent, la boucle de reprise à deux itérations, la table d'arbitrage des contradictions et la règle de conflit d'écriture. Motif : les douze fiches décrivaient toutes ce qu'elles **rendent** — section « Hand-off » du pattern v2 — et aucune ce qu'elles **reçoivent** ; la délégation était à sens unique, et un brief incomplet ne produit pas un livrable dégradé mais un livrable à côté. Inscription du skill `charte-code` (créé le même jour) et mise à jour du registre des clés `skills:`.) v2.1 (02.07.2026 — **`quant` v3.2 : calibration marché crypto** — conventions 24/7/365 (√365, coupe UTC), microstructure perpétuels (funding réel par cycle, mark vs last, liquidation ≠ stop, ADL, cascades), régimes/queues crypto (corrélations → 1 en crash, survivance, plafonds d'API, alpha decay → expirations plus courtes), risques hors-modèle crypto (exchange/depeg/oracle/fork), baseline HODL BTC vol-targeté, et validation des stratégies de COPIE (répliquer ≠ sélectionner, vérification mécanique vs closedPnl des sources). Leçons du chantier copie <depot-prive> 27.06–02.07.) v2.0 (13.06.2026) — **passe qualité institutionnelle sur les 12 autres agents** (même traitement que `quant` v3.x : référentiels canoniques nommés, angles morts couverts, cycle de vie complet) : `architecte` v3.0 (one-way/two-way doors, NFR, signal de réexamen des ADR), `ux` v3.0 (Nielsen + Mode C audit heuristique, états étendus, undo > confirm), `designer` v3.0 (Mode D critique, hiérarchie/Gestalt, tokens sémantiques), `brainstormer` v2.0 (techniques de divergence forcées, prior art), `backend` v3.0 (expand/contract, idempotence, timeouts/retry, pagination), `frontend` v2.0 (budgets de perf, états étendus, formulaires, i18n), `qa` v2.0 (matrice pondérée risque, flaky, contrats), `reviewer` v2.0 (deux passes, ~400 lignes, review des tests), `securite` v3.0 (STRIDE, ASVS, supply chain, Mode D incident), `release` v2.0 (rollback pré-engagé, golden signals, Mode D incident), `redacteur` v2.0 (glossaire artefact, pseudo-localisation, CLDR), `growth` v2.0 (métrique pré-définie, A/B honnête via quant-toolkit, positionnement)). v1.9 — `quant` v3.1 + nouveau skill `quant-toolkit` : librairie Python auditée et testée (PSR/DSR/MinTRL/MDE/bootstrap/PBO — 20 tests d'auto-cohérence) remplaçant les formules récitées en session ; registre de recherche (N cumulatif) ; baselines triviales + prior de plausibilité + garde-fous fuites ML dans le quant). v1.8 (12.06.2026) — `quant` v3.0 niveau institutionnel : cadre de gouvernance SR 11-7 (effective challenge indépendant avant GO capital réel, validations à expiration), Mode E revue de portefeuille (corrélations en stress, risque agrégé, budget de risque — restriction + `docs/QUANT-PORTFOLIO-*`), stress tests/ES obligatoires avant capital réel, dimensionnement recommandé (Kelly fractionnel / vol targeting). v1.7 (12.06.2026) — `quant` v2.0 : Mode D suivi post-déploiement (contrat de suivi + critères d'arrêt pré-engagés, verdict CONTINUE/RÉDUIT/STOP), analyse de puissance dans le workflow, protocole de réglage des seuils co-validé par l'utilisateur. Séquence 9 étendue après la décision de capital ; restriction fichiers + `docs/QUANT-LIVE-*`). v1.6 (03.06.2026 — ajout sub-agent `growth` : go-to-market / positionnement / ASO / copy externe d'acquisition (FR-first multilingue). Inventaire + règle d'invocation (frontière `redacteur` interne vs `growth` externe vs `brainstormer` amont) + Séquence 10 GTM/lancement). v1.5 (03.06.2026 — ajout sub-agent `redacteur` : microcopy / voix de marque / i18n idiomatique multilingue. Inventaire + règle d'invocation + hand-off Séquence 1). v1.4 (02.06.2026) : ajout sub-agent `quant` : validation statistique de stratégies de trading. Inventaire + règle d'invocation + Séquence 9. v1.3 (31.05.2026) : ajout sub-agent `brainstormer` : idéation amont, inventaire + règle d'invocation + Séquence 0. v1.2 (21.05.2026) : ajout `qa` + 3 séquences audit/upgrade + alignement designer/securite pattern v2.
 
 Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les séquences typiques. Il complète le `CLAUDE.md` global et les frontmatters de chaque agent.
@@ -13,7 +13,7 @@ Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les
 | `architecte`| Cadrage feature/projet, ADR, SPEC                 | Non             | `docs/` uniquement                  |
 | `ux`        | Flows utilisateur, états système, audit heuristique, a11y | Non     | `docs/UX/` uniquement               |
 | `redacteur` | Microcopy, voix de marque, i18n idiomatique       | Oui (locales)   | Fichiers de locales + table de chaînes |
-| `growth`    | GTM, positionnement, ASO, copy externe d'acquisition | Non          | `docs/GROWTH-*` + assets copy externe |
+| `growth`    | GTM, positionnement, ASO, copy externe d'acquisition | Non          | `docs/GTM.md` + copy par asset et par locale |
 | `designer`  | Direction visuelle, DS, polish UI, critique structurée | Non        | `docs/DESIGN-*`, inline (Mode C)    |
 | `backend`   | Modèles DB, endpoints, validation, auth           | Oui             | Code projet                         |
 | `frontend`  | Pages, composants, intégration backend            | Oui             | Code projet                         |
@@ -230,7 +230,7 @@ orchestrateur
    ↓ (signalement explicite obligatoire)
 [securite Mode C] + [skill supabase-toolkit] → reality check DB (Phase 0)
    ↓
-[backend] → migration data legacy si gap détecté
+[backend] → migration data legacy si gap détecté (SPEC-lite si > 10 lignes : le rapport de securite en tient lieu s'il nomme objectif, périmètre, vérification)
    ↓
 [reviewer] → vérifie que le plan legacy est appliqué
    ↓
@@ -244,7 +244,7 @@ orchestrateur
    ↓
 [securite] (+ skill supabase-toolkit si Supabase) → rapport docs/SECURITY-AUDIT-<date>-<mode>.md
    ↓
-[backend] et/ou [frontend] → correctifs selon priorité (CRITIQUE → HAUT → ...)
+[backend] et/ou [frontend] → correctifs selon priorité (CRITIQUE → HAUT → ...) — chaque correctif > 10 lignes part avec sa SPEC-lite, le finding en tient lieu
    ↓
 [reviewer] → vérifie les correctifs
    ↓
@@ -277,7 +277,8 @@ orchestrateur
 selon nature des findings :
    - N+1 SQL / index manquant → [backend] (+ skill supabase-toolkit)
    - Re-renders / bundle / lazy load → [frontend]
-   - Cache Next.js / ISR → [backend] ou [frontend]
+   - Cache Next.js / ISR (ou l'équivalent de la stack) → [backend] ou [frontend]
+   (chaque correctif > 10 lignes part avec sa SPEC-lite ; le finding du rapport en tient lieu)
    ↓
 [reviewer] → vérifie les correctifs
    ↓
@@ -293,7 +294,7 @@ orchestrateur
    ↓
 [skill a11y-audit] → rapport BLOQUANT/SÉRIEUX/MODÉRÉ/MINEUR + critère WCAG cité
    ↓
-[frontend] → correctifs par sévérité (BLOQUANT en premier)
+[frontend] → correctifs par sévérité (BLOQUANT en premier ; SPEC-lite par correctif > 10 lignes, le finding en tient lieu)
    ↓
 [reviewer] → vérifie a11y dans le diff
    ↓
@@ -369,7 +370,7 @@ orchestrateur
    ↓
 [orchestrateur] → l'utilisateur choisit l'angle de positionnement via AskUserQuestion
    ↓
-[growth] → docs/GROWTH-*/ : positionnement, fiche store/ASO, copy de landing/sales, séquences d'emails cycle de vie
+[growth] → docs/GTM.md + copy par asset et par locale : positionnement, fiche store/ASO, copy de landing/sales, séquences d'emails cycle de vie
    ↓
 hand-off parallèle :
    ├─ [designer] → déclinaison visuelle des assets (landing, captures store, OG images)
@@ -408,12 +409,15 @@ Le skill ne dit jamais « publié » : la publication est constatée dans la Con
 Tous les sub-agents (v2 — depuis 21.05.2026) suivent le même squelette :
 
 1. **Frontmatter** : `name` + `description` courte (2-3 lignes max) focalisée sur le trigger. Les champs `tools` et `model` ne sont déclarés **que pour restreindre** un agent (liste blanche d'outils, ou modèle épinglé) ; omis, l'agent hérite de tous les outils et du modèle par défaut. Seul `brainstormer` les déclare aujourd'hui (`tools` sans `Edit`/`Bash`, car il ne modifie jamais le code ; `model: opus` pour le raisonnement divergent) — exception assumée, pas un oubli sur les onze autres.
-   **Registre des clés de frontmatter posées, au 19.08.2026** — les compter dans les fichiers, jamais dans ce tableau, qui est le reflet et non la source :
+   Onze fiches n'ont pas de `model:` parce que la Phase 1bis raisonne **par tâche**, pas par agent : un `model:` épinglé contredirait l'annonce de palier.
+
+   **Registre des clés de frontmatter posées, au 19.08.2026** (complété le 05.09.2026) — les compter dans les fichiers, jamais dans ce tableau, qui est le reflet et non la source :
 
    | Clé | Où | Ce qu'elle fait, et ce qui la casse |
    |---|---|---|
    | `skills:` | `backend` (`supabase-toolkit`, `charte-code`), `frontend` (`a11y-audit`, `charte-code`), `reviewer` (`charte-code`) | Précharge le skill en entier au démarrage. **Exclusif avec `paths:`** sur le skill visé : poser un `paths` vide la ligne de son effet **en silence** (vérifié par témoin le 17.08.2026, absent de la documentation officielle). **En revanche, PAS exclusif avec `context: fork`** : mesuré par témoin le 19.08.2026, les deux cohabitent — le skill reste préchargé, et une invocation depuis un sous-agent s'exécute bien en fork imbriqué. Ne pas généraliser la première exclusion à la seconde par analogie : c'est l'erreur qui a été commise, puis corrigée par la mesure. |
    | `observer:` + `observerMessage:` | `backend`, `frontend` | Lance un agent en observateur de fond pendant que l'agent travaille, et lui adresse des digests d'activité. Posé sur les agents qui **produisent** le code, jamais sur ceux qui le contrôlent : l'écart entre demandé et livré naît chez le producteur. `observerMessage` est restrictif à dessein (quatre motifs, silence sinon) — un observateur qui commente tout n'est plus lu. |
+   | `memory: user` | `reviewer` | Mémoire persistante propre à l'agent (`agent-memory/reviewer/` du home), pour que le même défaut vu sur trois dépôts devienne une règle. **Éphémère en session cloud** (plugin) : le home du conteneur ne survit pas. Absente de `backup-memoire.ps1` (à vérifier avant de s'y fier). |
 
 2. **Version** : ligne en tête juste après le frontmatter.
 3. **Modes** : A / B / C (parfois D), détectés en Phase 0, déclarés en début de livrable.
