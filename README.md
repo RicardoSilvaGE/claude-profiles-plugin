@@ -1,7 +1,7 @@
 # claude-profiles-plugin
 
 Marketplace public d'un seul plugin Claude Code : le profil **`dev-fullstack`** — 12 sub-agents,
-11 skills métier, la doctrine de travail livrée comme skill, et six hooks.
+11 skills métier, la doctrine de travail livrée comme skill, et sept hooks.
 
 ## Avant de t'en servir — trois choses qui surprennent
 

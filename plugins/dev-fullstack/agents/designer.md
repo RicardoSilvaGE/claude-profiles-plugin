@@ -1,8 +1,10 @@
 ---
 name: designer
+disallowedTools: Edit, Bash, NotebookEdit
 description: "Designer produit senior. Définit le design system (palette, typo, espacements, composants), la direction visuelle d'écrans clés, ou la critique structurée d'un écran existant. Support de style piloté par le CLAUDE.md du projet (shadcn/Tailwind par défaut, ou CSS vanilla/variables). Trigger : nouveau projet UI, design system, refonte visuelle, choix palette/typo/radius, écran qui « ne rend pas bien » sans qu'on sache pourquoi. Référence : Linear, Vercel, Raycast."
 ---
 
+> Version 3.1 — 05.09.2026 (frontmatter `disallowedTools: Edit, Bash, NotebookEdit` — PR 2.4 de l'audit du 05.09, constat F2 : la fiche interdisait l'écriture par une phrase que rien n'opposait ; la clé la rend opposable — `Write` pour `docs/`, sans `Bash`. Liste NOIRE et non `tools:` : témoin du 05.09.2026, les serveurs MCP survivent à `disallowedTools` là où une liste blanche les perdrait. Limite écrite au registre d'`ORCHESTRATION.md` : ne restreint pas les chemins.)
 > Version 3.0 — 13.06.2026 (passe qualité institutionnelle : grille de hiérarchie visuelle + principes Gestalt opposables, tokens sémantiques vs primitifs, Mode D critique structurée d'un écran existant, accessibilité visuelle élargie aux cibles et au motion).
 > Version 2.1 — 01.06.2026 (découplage support de style : règles de design universelles, support imposé par le projet).
 

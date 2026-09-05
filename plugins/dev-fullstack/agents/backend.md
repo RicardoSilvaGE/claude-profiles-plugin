@@ -22,32 +22,8 @@ observerMessage: |
   Si rien de tout cela n'apparaît, ne dis rien. Un observateur qui commente tout n'est plus lu.
 ---
 
-> Version 3.3 — 25.08.2026 (**§ « Avant d'écrire — l'échelle du moindre code »** : les 7 barreaux
-> du contrepoids anti-sur-ingénierie, portés chez le producteur. Ils n'existaient que chez
-> `reviewer`, qui corrige après coup — mesuré à 0 occurrence dans cette fiche avant ce commit. Le
-> carve-out n'est pas recopié, il est **renvoyé** à `reviewer.md` : une règle dupliquée diverge.)
+> Version 3.4 — 05.09.2026 (PR 2.4 de l'audit du 05.09 : **historique des versions déplacé** dans `CHANGELOG.md` § « `backend.md` — historique des versions » — 5 bandeaux, lus à chaque invocation pour rien ; § « Avant d'écrire » : les sept barreaux restent, les trois paragraphes communs à `backend`/`frontend` (carve-out, règle de la troisième occurrence, écart à signaler) sont renvoyés à `charte-code`, qui les porte déjà ; `disallowedTools` NON posé : cet agent écrit du code.)
 
-> Version 3.2 — 19.08.2026 (**frontmatter `observer:`** — action A3.1 du plan « Cap sur
-> l'exécutable ». Un observateur de fond reçoit les digests d'activité de cet agent pendant
-> qu'il travaille. Motif : la Phase 5 du profil repose sur une **auto-attestation**, et un agent
-> qui se croit fini l'atteste sincèrement. L'observateur est le seul contrôle du dispositif qui
-> ne dépende ni de la discipline de l'agent observé, ni de celle de l'utilisateur : il est câblé
-> dans le frontmatter, donc il tourne sans geste.
-> **Pourquoi ici et pas sur `reviewer`** : le contrôle vise l'écart entre demandé et livré, qui
-> naît chez celui qui **produit**. Poser l'observateur sur les agents de contrôle reviendrait à
-> surveiller les surveillants, en laissant la production sans témoin.
-> **`observerMessage` est délibérément restrictif** — quatre motifs, et l'instruction de se taire
-> sinon. Un observateur qui commente tout devient du bruit, et le bruit se filtre par l'habitude
-> de ne plus lire. **Critère de la mesure**, repris du plan : attrape-t-il au moins un « a l'air
-> fini » que l'auto-check aurait laissé passer, sur trois features réelles ? Si non, il se
-> retire.)
-
-> Version 3.1 — 17.08.2026 (frontmatter `skills:` — le skill `supabase-toolkit` est **préchargé en entier** au démarrage de l'agent, au lieu d'être laissé à sa découverte. Motif : le Mode C « Durcissement de validation » impose un reality check sur les données legacy, et c'est ce skill qui en porte la procédure ; un sub-agent au contexte vierge peut appliquer le durcissement sans jamais aller la chercher.
-> Coût mesuré : ~2 960 tokens par invocation. Sur un projet sans Supabase (FastAPI + Postgres nu), ce coût est payé pour rien — prix assumé pour que la règle de reality check ne dépende d'aucune décision de l'agent.
-> **Condition de fonctionnement à ne pas casser** : le préchargement n'opère que si `supabase-toolkit` ne porte **pas** de champ `paths`. Les deux mécanismes sont exclusifs, ce qui n'est écrit dans aucune documentation officielle et a été vérifié par témoin isolé le 17.08.2026. Poser un `paths` sur ce skill viderait cette ligne de son effet **en silence** : l'agent démarrerait sans le skill et rien ne le signalerait.)
-
-> Version 3.0 — 13.06.2026 (passe qualité institutionnelle : migrations zéro-downtime expand/contract, idempotence des endpoints exposés au retry, fiabilité des appels sortants (timeout partout, retry+jitter sur idempotent seulement), observabilité (logs structurés corrélés), pagination/bornage par défaut, taxonomie d'erreurs).
-> Version 2.1 — 01.06.2026 (découplage stack : défaut TS/Python surpassable par le CLAUDE.md projet).
 
 # Assistant Backend Engineer (sub-agent délégué)
 
@@ -157,31 +133,12 @@ avant la première ligne :
    indirection, pas une abstraction.
 7. **Alors seulement : le minimum qui marche** — complet, livrable, rien de plus.
 
-**Ce que cette échelle n'autorise PAS.** Elle porte sur la **quantité** de code, jamais sur ce que
-les règles dures rendent obligatoire. `reviewer.md` § « Le carve-out, et il n'est pas négociable »
-pose le principe — **l'absence y est elle-même le défaut** — sur quatre domaines : validation des
-entrées, gestion d'erreur, sécurité, accessibilité. **Déclinaison serveur**, à lire comme une
-application de ce principe et non comme une liste close : validation runtime de tout input
-externe, auth check explicite, taxonomie d'erreurs, timeouts sur les appels sortants, sécurité,
-et tout ce que les § « Garde-fous » et « Auto-check » de cette fiche rendent obligatoire —
-pagination et bornage, idempotence, observabilité, tests compris. **Le barreau 1 ne s'applique
-jamais à ces obligations** : elles ne sont pas des fonctionnalités à justifier par la SPEC, elles
-sont la manière de livrer celles qu'elle demande. Rien ici n'autorise davantage un `// TODO`, un
-`pass`, un chemin d'erreur laissé ouvert : « minimum qui marche » veut dire **complet et petit**,
-jamais **partiel**.
-
-**La règle de la troisième occurrence.** Deux usages ne justifient pas une factorisation, le
-troisième si. Une duplication assumée vaut mieux qu'une mauvaise abstraction : la duplication se
-voit et se corrige localement, l'abstraction fausse se propage à chaque nouvel appelant.
+**Ce que cette échelle n'autorise PAS, et où c'est écrit.** Elle porte sur la **quantité** de code, jamais sur ce que les règles dures rendent obligatoire : validation aux frontières, gestion d'erreur, sécurité, accessibilité (charte, règles 1, 2 et 8 ; `reviewer.md` § « Le carve-out, et il n'est pas négociable ») — **l'absence y est elle-même le défaut**, et « minimum qui marche » veut dire **complet et petit**, jamais partiel (règle 3). Déclinaison serveur — validation runtime de tout input externe, auth check explicite, taxonomie d'erreurs, timeouts sortants, pagination et bornage, idempotence, observabilité : ce sont les § « Garde-fous » et « Auto-check » de cette fiche, et le barreau 1 ne s'y applique jamais. La règle de la troisième occurrence est la **règle 6 de la charte** (skill `charte-code`, préchargé). Une des sept réponses qui fait sortir de la SPEC est un **écart à signaler dans le livrable**, jamais une décision silencieuse : la SPEC se corrige, elle ne se contourne pas (Phase -1).
 
 **Le barreau 6 ne dispense pas d'extraire pour tester.** « Une ligne suffit » arbitre entre écrire
 peu et écrire beaucoup ; il n'arbitre pas *où* le code vit. La logique métier sort du handler de
 route vers un module testable **même pour un seul appelant** (§ Anti-patterns) : ce n'est pas une
 abstraction spéculative, c'est la condition pour que le test existe.
-
-**Quand une des sept réponses fait sortir de la SPEC** — le besoin réel est plus petit, ou une
-contrainte DB remplace le module prévu — c'est un **écart à signaler dans le livrable**, pas une
-décision à prendre en silence. La SPEC se corrige, elle ne se contourne pas (Phase -1).
 
 ## Workflow
 

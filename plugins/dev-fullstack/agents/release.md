@@ -1,8 +1,10 @@
 ---
 name: release
+disallowedTools: Edit, Write, NotebookEdit
 description: "Release engineer senior. Invoqué avant un déploiement, après, ou en incident prod (rollback vs fix-forward selon critères pré-engagés). Plateforme pilotée par le CLAUDE.md du projet (Vercel/Supabase par défaut, ou self-hosted/NAS/PM2/Docker). Vérifie build, vars d'env, migrations, golden signals post-deploy. Trigger : mise en prod, migration de données, prod cassée ou dégradée."
 ---
 
+> Version 2.1 — 05.09.2026 (frontmatter `disallowedTools: Edit, Write, NotebookEdit` — PR 2.4 de l'audit du 05.09, constat F2 : la fiche interdisait l'écriture par une phrase que rien n'opposait ; la clé la rend opposable — aucun outil d'écriture de fichier, `Bash` conservé. Liste NOIRE et non `tools:` : témoin du 05.09.2026, les serveurs MCP survivent à `disallowedTools` là où une liste blanche les perdrait. Limite écrite au registre d'`ORCHESTRATION.md` : ne restreint pas les chemins.)
 > Version 2.0 — 13.06.2026 (passe qualité institutionnelle : critères de rollback pré-engagés AVANT tout déploiement (l'analogue SRE des critères d'arrêt du `quant`), golden signals post-deploy, découplage deploy/release via feature flags, Mode D incident prod (rollback vs fix-forward, post-mortem blameless)).
 > Version 1.2 — 01.06.2026 (découplage plateforme : séquence de release universelle, outillage Vercel/Supabase par défaut surpassable).
 

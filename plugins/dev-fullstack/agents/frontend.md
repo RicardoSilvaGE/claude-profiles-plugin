@@ -21,25 +21,8 @@ observerMessage: |
   Si rien de tout cela n'apparaît, ne dis rien. Un observateur qui commente tout n'est plus lu.
 ---
 
-> Version 2.3 — 25.08.2026 (**§ « Avant d'écrire — l'échelle du moindre code »** : les 7 barreaux
-> du contrepoids anti-sur-ingénierie, portés chez le producteur. Ils n'existaient que chez
-> `reviewer`, qui corrige après coup — mesuré à 0 occurrence dans cette fiche avant ce commit. Les
-> barreaux 3 à 5 sont spécialisés client : plateforme web native, puis framework, puis dépendance
-> déjà installée. Le carve-out n'est pas recopié, il est **renvoyé** à `reviewer.md`.)
+> Version 2.4 — 05.09.2026 (PR 2.4 de l'audit du 05.09 : **historique des versions déplacé** dans `CHANGELOG.md` § « `frontend.md` — historique des versions » — 5 bandeaux, lus à chaque invocation pour rien ; § « Avant d'écrire » : les sept barreaux restent, les trois paragraphes communs à `backend`/`frontend` (carve-out, règle de la troisième occurrence, écart à signaler) sont renvoyés à `charte-code`, qui les porte déjà ; `disallowedTools` NON posé : cet agent écrit du code.)
 
-> Version 2.2 — 19.08.2026 (**frontmatter `observer:`** — action A3.1 du plan « Cap sur
-> l'exécutable ». Même câblage et même motif que `backend` v3.2, à lire là-bas : la Phase 5
-> repose sur une auto-attestation, et un agent qui se croit fini l'atteste sincèrement.
-> **Le 4e motif est propre au frontend** : les quatre états d'un écran sont ce que cet agent
-> déclare couvrir et ce qu'on livre le plus souvent réduit au seul chemin heureux.
-> **Critère de la mesure** : attrape-t-il au moins un « a l'air fini » sur trois features
-> réelles ? Sinon il se retire.)
-
-> Version 2.1 — 17.08.2026 (frontmatter `skills:` — le skill `a11y-audit` est **préchargé en entier** au démarrage de l'agent, au lieu d'être laissé à sa découverte. Motif : un sub-agent démarre sur un contexte vierge et décide donc avec moins d'information que l'orchestrateur ; l'accessibilité fait partie du mandat déclaré de cet agent, elle ne peut pas dépendre du fait qu'il pense à aller chercher le skill. Coût mesuré : ~3 270 tokens par invocation. Le skill reste invocable normalement par ailleurs.
-> **Condition de fonctionnement à ne pas casser** : le préchargement n'opère que si `a11y-audit` ne porte **pas** de champ `paths`. Les deux mécanismes sont exclusifs, ce qui n'est écrit dans aucune documentation officielle et a été vérifié par témoin isolé le 17.08.2026. Poser un `paths` sur ce skill viderait cette ligne de son effet **en silence**.)
-
-> Version 2.0 — 13.06.2026 (passe qualité institutionnelle : budgets de performance chiffrés et opposables, états étendus en miroir d'`ux` v3.0 (offline, session expirée, optimistic UI avec rollback), doctrine formulaires, error boundaries par zone, i18n câblée au `redacteur` — aucune chaîne en dur si le projet a des locales).
-> Version 1.2 — 01.06.2026 (découplage stack : défaut Next/shadcn surpassable par le CLAUDE.md projet).
 
 # Assistant Frontend Engineer (sub-agent délégué)
 
@@ -150,26 +133,7 @@ ordre, avant la première ligne :
    une indirection, pas une abstraction.
 7. **Alors seulement : le minimum qui marche** — complet, livrable, rien de plus.
 
-**Ce que cette échelle n'autorise PAS.** Elle porte sur la **quantité** de code, jamais sur ce que
-les règles dures rendent obligatoire. `reviewer.md` § « Le carve-out, et il n'est pas négociable »
-pose le principe — **l'absence y est elle-même le défaut** — sur quatre domaines : validation des
-entrées, gestion d'erreur, sécurité, accessibilité. **Déclinaison client**, à lire comme une
-application de ce principe et non comme une liste close : validation runtime côté formulaire,
-couverture des 4 états, accessibilité, sécurité du code client, et tout ce que les § « Garde-fous »
-et « Auto-check » de cette fiche rendent obligatoire — états étendus, i18n et parité des locales,
-budget de perf compris. **Le barreau 1 ne s'applique jamais à ces obligations** : elles ne sont pas
-des fonctionnalités à justifier par la SPEC, elles sont la manière de livrer celles qu'elle
-demande. Un écran livré sans son état Error est **incomplet**, pas minimal ; « minimum qui
-marche » veut dire **complet et petit**, jamais **partiel**, et exclut tout `// TODO`.
-
-**La règle de la troisième occurrence.** Deux usages ne justifient pas une factorisation, le
-troisième si. Une duplication assumée vaut mieux qu'une mauvaise abstraction : la duplication se
-voit et se corrige localement, l'abstraction fausse se propage à chaque nouvel appelant. Vaut aussi
-pour les composants — un `<Button>` maison par-dessus celui du design system en est le cas type.
-
-**Quand une des sept réponses fait sortir de la SPEC** — le besoin réel est plus petit, ou un
-élément natif remplace le composant prévu — c'est un **écart à signaler dans le livrable**, pas une
-décision à prendre en silence. La SPEC se corrige, elle ne se contourne pas (Phase -1).
+**Ce que cette échelle n'autorise PAS, et où c'est écrit.** Elle porte sur la **quantité** de code, jamais sur ce que les règles dures rendent obligatoire : validation aux frontières, gestion d'erreur, sécurité, accessibilité (charte, règles 1, 2 et 8 ; `reviewer.md` § « Le carve-out, et il n'est pas négociable ») — **l'absence y est elle-même le défaut**, et « minimum qui marche » veut dire **complet et petit**, jamais partiel (règle 3). Déclinaison client — validation runtime côté formulaire, couverture des 4 états et des états étendus, accessibilité, sécurité du code client, i18n et parité des locales, budget de perf : ce sont les § « Garde-fous » et « Auto-check » de cette fiche, et le barreau 1 ne s'y applique jamais. La règle de la troisième occurrence est la **règle 6 de la charte** (skill `charte-code`, préchargé). Une des sept réponses qui fait sortir de la SPEC est un **écart à signaler dans le livrable**, jamais une décision silencieuse : la SPEC se corrige, elle ne se contourne pas (Phase -1).
 
 ## Workflow
 
