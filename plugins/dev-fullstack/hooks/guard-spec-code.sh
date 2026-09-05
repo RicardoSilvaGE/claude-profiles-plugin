@@ -45,7 +45,12 @@
 # bonne, seulement signaler qu'il n'en trouve aucune. Le faux negatif est assume, le harcelement
 # ne l'est pas — d'ou aussi le rappel unique par session et par depot.
 #
-# BORNE ASSUMEE : la recherche des SPEC*.md est bornee a 3 niveaux de profondeur. Le hook
+# DEUX FORMES DE SPEC, depuis le 05.09.2026 (audit, constat D2) : un SPEC*.md n'importe ou, OU un
+# .md sous un dossier specs/ — le chemin que spec-builder impose depuis le 18.08.2026
+# (specs/AAAA-MM-JJ-slug.md). Jusque-la le hook ne voyait que la premiere forme : sur un depot
+# conforme a la doctrine, il sonnait a chaque session, et refusait la premiere ecriture en cloud.
+#
+# BORNE ASSUMEE : la recherche des specs est bornee a 3 niveaux de profondeur. Le hook
 # PowerShell fait un -Recurse non borne ; sur un gros depot cela depasserait le timeout de 10 s.
 #
 # FAIL-OPEN PAR CONSTRUCTION : jq absent, payload vide ou invalide, chemin illisible, marqueur
@@ -104,7 +109,7 @@ done
 # renomme, et evite d'ecrire ici le nom d'un depot prive (cf. en-tete).
 [ -d "$DEPOT/templates/profiles" ] && exit 0
 
-# ---- 6. Un SPEC*.md existe-t-il, et est-il recent ? -------------------------------------------
+# ---- 6. Une spec (SPEC*.md, ou specs/*.md) existe-t-elle, et est-elle recente ? ----------------
 # Presence, pas pertinence. La date se lit par `stat`, dont les deux dialectes sont essayes ;
 # si aucun ne repond, le hook se tait plutot que de crier sur un depot qu'il ne sait pas dater.
 mtime() {
@@ -124,7 +129,7 @@ while IFS= read -r f; do
     if [ "$ts" -gt "$PLUS_RECENT_TS" ]; then PLUS_RECENT_TS="$ts"; PLUS_RECENT="$f"; fi
     [ "$ts" -gt "$SEUIL" ] && RECENT_TROUVE=1
 done <<EOF
-$(find "$DEPOT" -maxdepth 3 -type f -name 'SPEC*.md' 2>/dev/null | grep -Ev "$EXCLUS" | head -20)
+$(find "$DEPOT" -maxdepth 3 -type f \( -name 'SPEC*.md' -o -path '*/specs/*.md' \) 2>/dev/null | grep -Ev "$EXCLUS" | head -20)
 EOF
 
 [ "$RECENT_TROUVE" -eq 1 ] && exit 0
@@ -153,12 +158,12 @@ if [ -n "$PLUS_RECENT" ]; then
     DATE_LISIBLE="$(date -d "@$PLUS_RECENT_TS" '+%d.%m.%Y' 2>/dev/null \
                  || date -r "$PLUS_RECENT_TS" '+%d.%m.%Y' 2>/dev/null)"
     if [ -n "$DATE_LISIBLE" ]; then
-        ETAT="  Le SPEC*.md le plus recent du depot date du $DATE_LISIBLE (plus de 30 jours) : $(basename "$PLUS_RECENT")"
+        ETAT="  La spec la plus recente du depot (SPEC*.md ou specs/*.md) date du $DATE_LISIBLE (plus de 30 jours) : $(basename "$PLUS_RECENT")"
     else
-        ETAT="  Le SPEC*.md le plus recent du depot a plus de 30 jours : $(basename "$PLUS_RECENT")"
+        ETAT="  La spec la plus recente du depot (SPEC*.md ou specs/*.md) a plus de 30 jours : $(basename "$PLUS_RECENT")"
     fi
 else
-    ETAT="  Aucun SPEC*.md trouve dans ce depot (recherche bornee a 3 niveaux)."
+    ETAT="  Aucun SPEC*.md trouve dans ce depot, ni de .md sous specs/ (recherche bornee a 3 niveaux)."
 fi
 
 MODE="$(lire '.permission_mode')"; [ -n "$MODE" ] || MODE="inconnu"
