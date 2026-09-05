@@ -1,7 +1,7 @@
 # claude-profiles-plugin
 
 Marketplace public d'un seul plugin Claude Code : le profil **`dev-fullstack`** — 12 sub-agents,
-11 skills métier, la doctrine de travail livrée comme skill, et sept hooks.
+11 skills métier, la doctrine de travail livrée comme skill, et huit hooks.
 
 ## Avant de t'en servir — trois choses qui surprennent
 
@@ -74,7 +74,7 @@ après avoir constaté l'inverse pour un marketplace privé.
 | Sub-agents | `architecte`, `backend`, `brainstormer`, `designer`, `frontend`, `growth`, `qa`, `redacteur`, `release`, `reviewer`, `securite`, `ux` |
 | Skills | `a11y-audit`, `charte-code`, `debug-investigation`, `framework-upgrade`, `frontend-app-builder`, `librairie-maison`, `perf-audit`, `spec-builder`, `supabase-toolkit` |
 | Doctrine | `doctrine-dev-fullstack` — méthodologie en phases, règle absolue spec-builder, conventions |
-| Hooks | `SessionStart` (doctrine en contexte, puis préférences personnelles), `SubagentStart` (préférences), `PreToolUse` (règle spec-builder), `Stop` (compilation TypeScript), `PreToolUse` sur `Bash` (push direct sur `main` refusé), `PostToolUse` sur `Agent` (journal d'usage) |
+| Hooks | `SessionStart` (doctrine en contexte, puis préférences personnelles), `SubagentStart` (préférences), `PreToolUse` (règle spec-builder), `Stop` (compilation TypeScript), `PreToolUse` sur `Bash` (push direct sur `main` refusé ; message de commit hors convention `type(scope):` française refusé), `PreToolUse` sur `Write`/`Edit` (fichiers de secrets refusés par le nom), `PostToolUse` sur `Agent` (journal d'usage) |
 
 **Le `CLAUDE.md` racine d'un plugin n'est pas chargé** : c'est pour cela que la doctrine est un
 skill. Et comme un skill se charge *à la demande* là où un `CLAUDE.md` de profil est *résident*,

@@ -1,5 +1,6 @@
 {
   "name": "{{APP_NAME}}",
+  "description": "Gabarit frontend-app-builder — versions relevees le 26.08.2026 ; passer framework-upgrade avant de les prendre pour courantes",
   "private": true,
   "version": "0.1.0",
   "type": "module",

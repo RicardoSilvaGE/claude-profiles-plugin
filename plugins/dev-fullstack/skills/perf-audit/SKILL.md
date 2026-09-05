@@ -6,6 +6,7 @@ agent: general-purpose
 background: false
 ---
 
+> Version 1.2 — 05.09.2026 (audit du 05.09, § Skills : le skill supposait Next.js + shadcn sans le dire ; sur un dépôt sans bundler — sept sur huit — les axes bundle, Server Components et ISR sont sans objet et rien ne le disait. Un paragraphe en tête de la Phase 2 le dit, et nomme ce que le bundler faisait à la place.)
 > Version 1.1 — 19.08.2026 (**le skill s'exécute désormais dans un fork**, action A3.2 du plan
 > « Cap sur l'exécutable ». Motif : un audit de perf lit des bundles, des traces et des plans de
 > requête — des **dumps**, qui saturaient le contexte principal alors que seul le *rapport* a de
@@ -77,6 +78,14 @@ Lire et collecter, sans demander :
 ### Phase 2 — Analyse par axe
 
 Parcourir systématiquement les axes ci-dessous. Pour chaque axe, soit OK soit finding avec sévérité.
+
+**Sur un dépôt sans bundler** — ESM vanilla, React chargé en navigateur, `server.js` Node : le socle
+réel de sept dépôts sur huit, mesuré le 25.08.2026 par `librairie-maison` — les axes **4**
+(bundle), **7** (Server Components, ISR, Edge) et la part Server Component de l'axe 6 sont
+**sans objet** : le dire en une ligne dans le rapport, jamais les noter « OK ». Restent entiers
+LCP/INP/CLS, le rendering React, le N+1 et le cache HTTP du serveur maison — et s'y ajoute ce
+que le bundler faisait : poids des scripts chargés tels quels, `<script type="module">` en
+cascade, Babel standalone qui transpile à chaque chargement.
 
 **Axe 1 — LCP (Largest Contentful Paint)**
 - Élément LCP identifié ? (souvent hero image, premier `<h1>`).
