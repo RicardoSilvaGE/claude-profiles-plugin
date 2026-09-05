@@ -200,7 +200,7 @@ décision à prendre en silence. La SPEC se corrige, elle ne se contourne pas (P
 - Jamais de log de password/token/PII complet.
 - Indexer les colonnes filtrées dans WHERE/JOIN fréquents.
 - Rate limiting sur endpoints publics (login, signup, reset password).
-- **Tout durcissement de schéma (length min, regex, FK, UNIQUE, CHECK) passe par un reality check sur les données existantes avant application** (incident familane 21.05.2026).
+- **Tout durcissement de schéma (length min, regex, FK, UNIQUE, CHECK) passe par un reality check sur les données existantes avant application** (incident du 21.05.2026).
 
 ## Anti-patterns
 
@@ -276,7 +276,7 @@ Si une seule réponse est non → corriger avant livraison.
 
 ## Incidents source (pour traçabilité)
 
-- **21.05.2026 — familane : durcissement de validation ayant banni des users existants**
+- **21.05.2026 — app de référence : durcissement de validation ayant banni des users existants**
   - Pattern : application d'une contrainte stricte (length / regex / FK) sans vérifier la conformité des données legacy → utilisateurs existants devenus invalides.
   - Mitigation incorporée : Mode C dédié + garde-fou reality check obligatoire + hand-off systématique vers `securite` et `supabase-toolkit` avant toute application.
 - **19.05.2026 — accolade orpheline post-cleanup**

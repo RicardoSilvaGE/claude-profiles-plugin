@@ -438,7 +438,7 @@ Tous les sub-agents (v2 — depuis 21.05.2026) suivent le même squelette :
 - **Invoquer `frontend` ou `backend` sans SPEC.md** : violation règle 19.05.2026.
 - **Sauter `reviewer` pour gagner du temps** : on s'expose à des findings qu'on aurait détectés en 5 minutes.
 - **Sauter `release` Mode A** : on découvre les vars d'env manquantes en prod.
-- **Durcir une validation sans signaler à `securite`** : on bannit silencieusement des users existants (cf. familane 21.05.2026).
+- **Durcir une validation sans signaler à `securite`** : on bannit silencieusement des users existants (cf. incident du 21.05.2026).
 - **Faire écrire des tests sans matrice `qa` préalable** : tests sans stratégie cohérente.
 - **Faire tout en parallèle** : `ux` et `designer` peuvent, mais `backend` doit attendre `architecte`. `frontend` doit attendre `backend` (sauf si contrats stables et stub possible).
 

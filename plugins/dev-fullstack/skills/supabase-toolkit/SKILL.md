@@ -119,7 +119,7 @@ Selon le mode, produire :
 - **RLS désactivée « temporairement pour debug »** — c'est toujours permanent.
 - **Policy `USING (true)`** sur une table user-facing — c'est équivalent à pas de RLS.
 - **RPC SECURITY DEFINER sans validation interne** — l'attaquant passe les params qu'il veut.
-- **Migration durcissant sans plan data legacy** — bannit silencieusement les users existants (cf. familane 21.05.2026, join_code 4 chars).
+- **Migration durcissant sans plan data legacy** — bannit silencieusement les users existants (cf. incident du 21.05.2026 sur l'app de référence, join_code 4 chars).
 - **`service_role` exposé via `NEXT_PUBLIC_*`** — par définition public, faille critique.
 - **Migration sans `IF NOT EXISTS`** — casse la 2e application, casse le rollback.
 - **Modifier un schéma sans toucher la validation Zod correspondante** — drift garanti.
@@ -209,6 +209,6 @@ Si une seule réponse est non → corriger avant livraison.
 
 ## Incidents source
 
-- **21.05.2026 — familane join_code 4 chars data legacy**
+- **21.05.2026 — app de référence : join_code 4 chars, data legacy**
   - Pattern : durcissement Zod (4→6 chars) sans migration des données existantes → users bannis silencieusement au login depuis nouveau navigateur.
   - Mitigation incorporée : Phase 1 reality check obligatoire avant tout durcissement.
