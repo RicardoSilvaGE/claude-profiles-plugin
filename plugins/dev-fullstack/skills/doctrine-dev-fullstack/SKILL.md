@@ -84,10 +84,10 @@ délégation, eux, restent résidents : § Phase 1 ci-dessous.
 
 ### Skills à connaître (non sub-agents)
 
-Même chose : les onze skills déployées (`spec-builder`, `charte-code`, `supabase-toolkit`,
+Même chose : les douze skills déployées (`spec-builder`, `charte-code`, `supabase-toolkit`,
 `debug-investigation`, `perf-audit`, `a11y-audit`, `framework-upgrade`, `frontend-app-builder`,
-`librairie-maison`, `publication-store`, `garde-fous-powershell`) portent leur propre description,
-chargée par le harness.
+`librairie-maison`, `publication-store`, `garde-fous-powershell`, `doctrine-de-depot`) portent
+leur propre description, chargée par le harness.
 Cinq faits qu'aucune description ne peut donner :
 
 - **`charte-code` est préchargée** par `backend`, `frontend` et `reviewer` (clé `skills:` de leur
@@ -104,6 +104,11 @@ Cinq faits qu'aucune description ne peut donner :
   hors-ligne, `server.js` Node) ; `next-ts/` est le défaut *déclaré* du § Stack ci-dessous, qui ne
   correspond aujourd'hui qu'à un dépôt. **Un dépôt existant décide toujours** ; sur un projet neuf,
   demander plutôt que présumer.
+
+- **`doctrine-de-depot` porte des principes, pas un gabarit à recopier.** Le système dont il
+  est tiré avait **trois jours** quand il a été documenté, et son auteur interdit de le
+  transposer avant d'avoir vu trois cas qu'il n'a pas encore vus. Ses seuils et ses thèmes se
+  **re-dérivent** par la mesure sur le dépôt d'accueil ; la source fait foi, pas le skill.
 
 Les deux autres portent sur ce qui **n'est pas** là :
 
