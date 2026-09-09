@@ -418,6 +418,12 @@ Inventer une signature de fonction pour aller plus vite est une faute grave.
 
 **À NE PAS mémoriser** : état projet en cours (`git log` / `gh` suffit) ; conventions de code/archi (CLAUDE.md projet suffit) ; solutions de bug ponctuelles (commit message + postmortem suffisent) ; structure du repo (Glob à la demande).
 
+**L'index peut être un aiguillage à deux niveaux, et il n'est pas toujours chargé.** Quand il porte un dossier `familles/`, `MEMORY.md` ne garde que les **familles** et le détail vit dans `familles/<nom>.md`, puis dans la fiche. **Avant de conclure qu'aucune leçon n'existe sur un sujet** — un détecteur à écrire, un contrôle qui verdit, un fait d'infrastructure à affirmer, un piège PowerShell — ouvrir la famille concernée, pas seulement l'index. Une famille ne coûte rien tant qu'on ne l'ouvre pas ; c'est pour cela qu'elle ne s'ouvre pas toute seule.
+
+**Poser la ligne au bon étage, et l'étage se lit dans le dossier `memory/`.** Reposer une ligne de fiche dans `MEMORY.md` est le geste le plus court, c'est celui que prescrit l'instruction générique de mémoire, et il referait l'index à plat d'où il vient. **Un `familles/` existe** : la ligne va dans la famille qui convient, chemin `../<slug>.md`, et `MEMORY.md` ne reçoit une ligne que pour une famille **nouvelle**. **Pas de `familles/`** : elle va dans `MEMORY.md`, ce qui reste le cas courant. I11 refuse le premier cas mélangé au second, mais aucun contrôle n'écrit la ligne à ta place.
+
+L'index chargé est celui du **dossier de lancement** de la session, jamais du dossier de travail courant : une session lancée depuis un dépôt sans clé de projet n'en reçoit **aucun**, sans le moindre signal. C'est là que ce paragraphe sert — le chemin est `<home actif>/projects/<clé>/memory/`, le home actif étant `CLAUDE_CONFIG_DIR` s'il est défini, sinon `~/.claude`.
+
 ## Exemple
 
 <exemple_bon>
