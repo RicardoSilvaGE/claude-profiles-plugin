@@ -64,10 +64,47 @@ RE_M="(^|[[:space:]])-[a-zA-Z]*m[[:space:]]*(${DQ}([^${DQ}]*)${DQ}|${SQ}([^${SQ}
 # l'antislash du meme message (le diagnostic fautif est dans l'historique du depot, 6ea7be9).
 # On cherche donc le premier `git [options] commit` dans la commande ENTIERE, et l'extraction
 # du message est elle-meme bornee par les guillemets : un ';' dedans n'est plus un separateur.
+# Borne la zone d'extraction aux ARGUMENTS DU COMMIT : on s'arrete au premier ';', '&&', '||'
+# ou saut de ligne qui n'est PAS dans une chaine. Sans cela, une instruction POSTERIEURE au
+# commit portant une option qui finit par la lettre 'm' est capturee comme sujet, et un commit
+# dont le message vit dans un fichier (-F) est refuse. Mesure du 16.09.2026, en usage reel sur
+# le depot bureau : `git commit -F msg.txt; ... -Algorithm SHA256` refuse, avec un sujet annonce
+# valant "SHA256).Hash". Le `exit 0` prevu pour -F n'etait jamais atteint, la branche RE_M
+# matchant avant lui.
+# On ne peut PAS revenir au decoupage par instruction de l'origine (voir le commentaire
+# ci-dessus) : il coupait un ';' place DANS le message. D'ou un decoupage qui SUIT les
+# guillemets -- un separateur n'en est un qu'hors chaine.
+# LIMITE ASSUMEE, identique a celle des motifs d'extraction : l'echappement d'un guillemet
+# par antislash n'est pas suivi, pas plus que ne le font les classes [^"] et [^'].
+borner_args() {
+    local s="$1" n i c suiv q out
+    n=${#s}; i=0; q=''; out=''
+    while [ "$i" -lt "$n" ]; do
+        c="${s:$i:1}"
+        if [ -n "$q" ]; then
+            [ "$c" = "$q" ] && q=''
+        else
+            suiv="${s:$((i+1)):1}"
+            case "$c" in
+                '"'|"'") q="$c" ;;
+                ';') break ;;
+                '&') [ "$suiv" = '&' ] && break ;;
+                '|') [ "$suiv" = '|' ] && break ;;
+                '
+') break ;;
+            esac
+        fi
+        out="$out$c"
+        i=$((i+1))
+    done
+    printf '%s' "$out"
+}
+
 SUJET=""; TROUVE=0
 if [[ "$CMD" =~ $MOTIF ]]; then
     TROUVE=1
     rest="${CMD#*"${BASH_REMATCH[0]}"}"
+    rest="$(borner_args "$rest")"
     msg=""
     if [[ "$rest" =~ $RE_HEREDOC ]]; then
         marqueur="${BASH_REMATCH[1]}"
