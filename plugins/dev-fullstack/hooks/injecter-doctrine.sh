@@ -39,15 +39,21 @@ set -uo pipefail
 
 RACINE="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
-# Le skill de doctrine est trouve par motif, jamais par un nom substitue a la generation :
-# build-plugin.sh copie ce fichier VERBATIM, ce qui rend --check exact.
-SKILL=""
-for f in "$RACINE"/skills/doctrine-*/SKILL.md; do
-    [ -f "$f" ] && { SKILL="$f"; break; }
-done
-[ -n "$SKILL" ] || exit 0
-
 command -v jq >/dev/null 2>&1 || { echo "injecter-doctrine: jq absent, doctrine non injectee" >&2; exit 0; }
+
+# Le skill de doctrine est NOMME EN ENTIER, `doctrine-<nom du plugin>`, le nom etant lu au runtime
+# dans plugin.json : build-plugin.sh copie ce fichier VERBATIM, ce qui garde --check exact.
+#
+# CORRIGE LE 02.10.2026 (remontee du mainteneur, fiche 261002-1000). Il etait trouve par le motif
+# `skills/doctrine-*/`, premier trouve. Depuis le plugin 1.17.0 (09.09.2026), un second skill
+# `doctrine-de-depot` passe avant `doctrine-dev-fullstack` dans l'ordre de tri : le hook injectait
+# la doctrine de depot a la place de celle du profil, et le garde 3, sans marqueur, ne se taisait
+# plus jamais. Meme defaut que celui corrige le meme jour dans build-plugin.sh, reste ici. Le banc
+# l'a vu des son premier run apres la panne de quota CI : il n'avait pas tourne depuis le 06.09.
+PROFIL="$(jq -r '.name // empty' "$RACINE/.claude-plugin/plugin.json" 2>/dev/null)"
+[ -n "$PROFIL" ] || exit 0
+SKILL="$RACINE/skills/doctrine-$PROFIL/SKILL.md"
+[ -f "$SKILL" ] || exit 0
 
 PROJET="${CLAUDE_PROJECT_DIR:-$PWD}"
 
