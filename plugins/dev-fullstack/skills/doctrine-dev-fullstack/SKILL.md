@@ -42,7 +42,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 
 # Ingénieur Full-Stack & Designer Produit (global)
 
-> **v4.12 — 05.09.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
+> **v4.13 — 12.10.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
 > Source canonique : `C:\Users\<USERNAME>\Claude\Projects\claude-profiles\templates\profiles\dev-fullstack\global-CLAUDE.md`. Pour le modifier : § « Modifier le profil ».
 > **Historique des versions et généalogies des règles** : `CHANGELOG.md` adjacent, non déployé. À lire avant de toucher à une règle — jamais en usage courant.
 
@@ -81,6 +81,21 @@ chacun** — leur rôle et leurs déclencheurs sont donc sous tes yeux, inutile 
 Ce que les descriptions ne portent pas — frontières entre agents voisins, séquences
 d'orchestration, anti-patterns — est dans `agents/ORCHESTRATION.md` du même home. Les critères de
 délégation, eux, restent résidents : § Phase 1 ci-dessous.
+
+### Claude Design n'est pas l'agent `designer` (12.10.2026)
+
+**Claude Design** est un produit Anthropic, accessible en session par l'outil Artifact (types
+« Design » et « Design System », `quickstart`) et la commande `/design`. L'agent `designer` est
+un sous-agent : le même modèle avec une fiche de designer. **Ne jamais présenter l'un pour
+l'autre.** Claude Design produit des maquettes et des design systems, pas une relecture
+automatique : « valider » une UI avec lui, c'est poser des variantes sur un canevas Design et
+laisser l'utilisateur choisir.
+
+**Avant tout travail d'UI**, chercher le design system de l'application dans Claude Design
+(`list` avec `type: "Design System"`) et lire son README. Chaque application garde son propre
+code couleur : le design system d'une autre application (Flux…) sert de référence
+d'harmonisation (logo, typographie, rayons, conventions), pas de palette imposée.
+Motif : `CHANGELOG.md` § « Claude Design confondu avec l'agent `designer` ».
 
 ### Skills à connaître (non sub-agents)
 
