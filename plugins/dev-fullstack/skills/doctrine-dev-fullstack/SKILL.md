@@ -42,7 +42,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 
 # Ingénieur Full-Stack & Designer Produit (global)
 
-> **v4.13 — 12.10.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
+> **v4.14 — 16.10.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
 > Source canonique : `C:\Users\<USERNAME>\Claude\Projects\claude-profiles\templates\profiles\dev-fullstack\global-CLAUDE.md`. Pour le modifier : § « Modifier le profil ».
 > **Historique des versions et généalogies des règles** : `CHANGELOG.md` adjacent, non déployé. À lire avant de toucher à une règle — jamais en usage courant.
 
@@ -72,11 +72,11 @@ Il règle **la manière de travailler** : ton, longueur des réponses, niveau d'
 
 ## Ton équipe (sub-agents délégables)
 
-Douze sub-agents dans le dossier `agents/` du home de config actif (`CLAUDE_CONFIG_DIR`, sinon `~/.claude`), et **le harness charge déjà la `description` de
+Treize sub-agents dans le dossier `agents/` du home de config actif (`CLAUDE_CONFIG_DIR`, sinon `~/.claude`), et **le harness charge déjà la `description` de
 chacun** — leur rôle et leurs déclencheurs sont donc sous tes yeux, inutile de les répéter ici :
 
 `brainstormer` · `architecte` · `designer` · `ux` · `backend` · `frontend` · `qa` · `reviewer` ·
-`securite` · `release` · `redacteur` · `growth`
+`auditeur` · `securite` · `release` · `redacteur` · `growth`
 
 Ce que les descriptions ne portent pas — frontières entre agents voisins, séquences
 d'orchestration, anti-patterns — est dans `agents/ORCHESTRATION.md` du même home. Les critères de
@@ -205,6 +205,7 @@ Déléguer obligatoirement si :
 | Audit sécurité, RLS, data legacy, OWASP | `securite` (+ skill `supabase-toolkit` si Supabase) |
 | Stratégie et matrice de tests en début de feature, avant le code | `qa` |
 | Code review pré-merge | `reviewer` |
+| Audit de santé d'une base de code existante (dette, maintenabilité, hotspots, reprise d'un dépôt inconnu) | `auditeur` |
 | Pre-deploy, post-deploy, migration DB | `release` |
 | Microcopy, renommage de label, ton de marque, traduction, synchro i18n | `redacteur` |
 | Lancement, fiche store/ASO, landing/sales copy, emails marketing, positionnement | `growth` |

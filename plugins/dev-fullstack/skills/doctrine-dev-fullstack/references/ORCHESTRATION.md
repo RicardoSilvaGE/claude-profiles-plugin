@@ -1,7 +1,7 @@
 # Orchestration des sub-agents
 
 > Source canonique : `templates/profiles/dev-fullstack/agents/ORCHESTRATION.md` (dépôt `claude-profiles`) ; la copie déployée vit dans `agents/` du home actif.
-> Dernière mise à jour : 12.10.2026 (v2.8 — règle 12 : Claude Design, distinct de l'agent `designer`, et design system de l'application lu avant tout brief d'UI. v2.7, 05.09.2026 — reliquat de l'audit du 05.09 : registre des clés — `memory: user` posé aussi sur `securite` et `qa` (F7) ; la ligne `observer:` dit que `observerMessage` s'ajoute au texte par défaut du harness, cité d'après le binaire 2.1.261. Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
+> Dernière mise à jour : 16.10.2026 (v2.9 — treizième agent `auditeur` : audit de santé d'une base de code existante, distinct de `reviewer` (diff pré-merge) et de `securite` (menaces) ; inventaire, règle 13, séquence 12, registre des clés. v2.8, 12.10.2026 — règle 12 : Claude Design, distinct de l'agent `designer`, et design system de l'application lu avant tout brief d'UI. v2.7, 05.09.2026 — reliquat de l'audit du 05.09 : registre des clés — `memory: user` posé aussi sur `securite` et `qa` (F7) ; la ligne `observer:` dit que `observerMessage` s'ajoute au texte par défaut du harness, cité d'après le binaire 2.1.261. Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
 
 Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les séquences typiques. Il complète le `CLAUDE.md` global et les frontmatters de chaque agent.
 
@@ -19,6 +19,7 @@ Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les
 | `frontend`  | Pages, composants, intégration backend            | Oui             | Code projet                         |
 | `qa`        | Stratégie de tests (unit/integration/e2e/smoke)   | Non             | `docs/TESTING-*`                    |
 | `reviewer`  | Code review pré-merge                             | Non (lecture)   | Note inline (ou `docs/REVIEW-*`)    |
+| `auditeur`  | Audit de santé d'une base de code existante (dette, hotspots, tests, dépendances) | Non (lecture + mesures git) | `docs/AUDIT-CODE-*` |
 | `securite`  | Threat model + audit OWASP/ASVS + reality check DB + réponse incident | Non (lecture)   | `docs/SECURITY-AUDIT-*`             |
 | `release`   | Pre-deploy, post-deploy, migrations, incident prod | Non (commandes) | Note inline                         |
 
@@ -36,6 +37,7 @@ Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les
 10. **Textes d'interface et i18n** : pour toute microcopy (labels, CTA, erreurs, états vides, onboarding), renommage de label, définition du ton/voix de marque, traduction ou synchro entre locales → `redacteur`. Il intervient **après** `ux`/`designer` (qui ont identifié les états et le cadre visuel) et **en amont** de `frontend` (qui câble les chaînes produites). Il produit une table de chaînes par locale ; `frontend` l'intègre. Garde-fou i18n : aucune clé dans une seule locale.
 11. **Go-to-market et copy d'acquisition** : pour tout lancement, fiche store / ASO, copy de landing ou de page de vente, emails marketing (cycle de vie, onboarding produit, réactivation), positionnement ou messaging de marque **externe** → `growth`. Il intervient **après** `brainstormer` (qui a ouvert les directions de lancement) et cadre le GTM ; en aval il fait le **hand-off** vers `designer` (déclinaison visuelle des assets), `redacteur` (cohérence de voix entre copy externe et microcopy interne) et `frontend` (mise en page de la landing). **Frontière à respecter** : `redacteur` = copy **INTERNE** (in-app, microcopy, i18n) ; `growth` = copy **EXTERNE** (acquisition, lancement, store, landing, emails) ; `brainstormer` = **idéation amont** (directions, ne rédige pas). Quand un texte vit à l'intérieur de l'app, c'est `redacteur` ; quand il sert à attirer/convertir/retenir depuis l'extérieur, c'est `growth`.
 12. **Design et Claude Design** (12.10.2026) : avant tout brief à `designer` ou `frontend` qui touche l'UI, l'orchestrateur cherche le design system de l'application dans Claude Design (outil Artifact, `list` avec `type: "Design System"`) et en passe le lien et l'essentiel dans le brief, ou écrit qu'il n'en existe pas. Le design system d'une autre application (Flux…) est une référence d'harmonisation (logo, typographie, rayons), pas une palette imposée. **Frontière** : `designer` = sous-agent qui pose tokens, direction et critique en `docs/` ; Claude Design = produit Anthropic qui publie maquettes et design systems comme artifacts, piloté par l'orchestrateur. Comparer des variantes avant de coder → canevas Design, l'utilisateur choisit, `frontend` code la variante retenue.
+13. **Audit d'une base de code existante** (16.10.2026) : santé, dette technique, maintenabilité, reprise d'un dépôt inconnu, « par où commencer le ménage » → `auditeur`. **Frontières** : `reviewer` juge un **diff** contre une SPEC avant merge, `auditeur` juge l'**état** d'un dépôt sans diff ni SPEC ; `securite` modélise les **menaces**, `auditeur` ne fait qu'un passage d'hygiène (secrets en clair, lockfile, dépendances non maintenues) et lui renvoie le reste ; `perf-audit` et `a11y-audit` restent les audits spécialisés, vers lesquels `auditeur` oriente ; `architecte` décide d'une refonte que l'audit recommande. L'audit ne corrige rien : ses constats partent vers `backend`/`frontend` avec leur SPEC-lite.
 
 ## Collaboration orchestrateur ↔ sub-agents
 
@@ -110,6 +112,7 @@ la règle miroir est dans chaque § Hand-off : coller la sortie, jamais la résu
 | `backend`, `frontend` | `git status --short` et `git diff --stat` : les fichiers touchés sont ceux du brief, aucun de « DEHORS » ; `npx tsc --noEmit` ou le script `build`/`check` de `package.json`, sortie collée et code 0 ; `npm test -- <fichier de test cité>` quand un test est annoncé |
 | `redacteur` | `grep -c "<clé>" <chaque fichier de locale>` : même compte partout — aucune clé présente dans une seule locale |
 | `reviewer` | pour chaque finding, `sed -n '<ligne>p' <fichier>` : la ligne existe et dit ce que le finding dit |
+| `auditeur` | idem `reviewer` sur trois constats tirés au hasard ; `test -f docs/AUDIT-CODE-<date>.md` ; chaque mesure (churn, taille, couverture) porte la commande qui l'a produite, et en relancer une donne le même chiffre |
 | `securite` | idem `reviewer` ; pour chaque CRITIQUE, le diff du correctif ou la phrase d'acceptation de l'utilisateur — jamais « à traiter en suivi » |
 | `release` | la commande annoncée figure dans le rapport **avec sa sortie collée** ; sans sortie, elle n'a pas été lancée |
 
@@ -258,6 +261,27 @@ orchestrateur
 [release Mode C] → migration DB en prod avec backup
 ```
 
+### Séquence 12 — Audit de santé d'une base de code existante
+
+```
+orchestrateur
+   ↓
+[auditeur] → docs/AUDIT-CODE-<date>.md : carte, mesures (hotspots = churn × taille), constats priorisés, plan
+   ↓
+selon nature des constats :
+   - menace, auth, secret → [securite] (audit dédié)
+   - lenteur mesurée → [skill perf-audit] ; accessibilité → [skill a11y-audit]
+   - refonte de module recommandée → [architecte] (ADR si > 1 jour)
+   - absence de stratégie de tests → [qa] Mode B
+   - correctif local → [backend] / [frontend] (SPEC-lite par correctif > 10 lignes, le constat en tient lieu)
+   ↓
+[reviewer] → vérifie les correctifs
+   ↓
+[auditeur Mode D] (optionnel) → re-audit des constats traités, mêmes commandes, chiffres comparés
+```
+
+La séquence porte le numéro 12 parce que 0 à 11 sont pris ; elle est rangée ici, avant l'audit de sécurité, pour être lue avec lui.
+
 ### Séquence 4 — Audit de sécurité standalone
 
 ```
@@ -398,17 +422,17 @@ Le skill ne dit jamais « publié » : la publication est constatée dans la Con
 Tous les sub-agents (v2 — depuis 21.05.2026) suivent le même squelette :
 
 1. **Frontmatter** : `name` + `description` courte (2-3 lignes max) focalisée sur le trigger. Les champs `tools` (liste blanche), `disallowedTools` (liste noire) et `model` ne sont déclarés **que pour restreindre** un agent ; omis, l'agent hérite de tous les outils et du modèle par défaut. `brainstormer` porte `tools` (sans `Edit`/`Bash`) et `model: opus`.
-   Depuis le 05.09.2026, les huit fiches qui déclarent ne pas écrire de code portent `disallowedTools` (registre ci-dessous) ; les trois qui écrivent — code ou locales — héritent de tout. (L'invariant I2 lit les noms d'agents cités sur la même ligne qu'un `model:` : ne pas les y remettre.)
-   Onze fiches n'ont pas de `model:` parce que la Phase 1bis raisonne **par tâche**, pas par agent : un `model:` épinglé contredirait l'annonce de palier.
+   Depuis le 05.09.2026, les fiches qui déclarent ne pas écrire de code portent `disallowedTools` (registre ci-dessous ; neuf depuis l'arrivée d'`auditeur` le 16.10.2026) ; les trois qui écrivent — code ou locales — héritent de tout. (L'invariant I2 lit les noms d'agents cités sur la même ligne qu'un `model:` : ne pas les y remettre.)
+   Douze fiches n'ont pas de `model:` parce que la Phase 1bis raisonne **par tâche**, pas par agent : un `model:` épinglé contredirait l'annonce de palier.
 
    **Registre des clés de frontmatter posées, au 19.08.2026** (complété le 05.09.2026) — les compter dans les fichiers, jamais dans ce tableau, qui est le reflet et non la source :
 
    | Clé | Où | Ce qu'elle fait, et ce qui la casse |
    |---|---|---|
-   | `skills:` | `backend` (`supabase-toolkit`, `charte-code`), `frontend` (`a11y-audit`, `charte-code`), `reviewer` (`charte-code`) | Précharge le skill en entier au démarrage. **Exclusif avec `paths:`** sur le skill visé : poser un `paths` vide la ligne de son effet **en silence** (vérifié par témoin le 17.08.2026, absent de la documentation officielle). **En revanche, PAS exclusif avec `context: fork`** : mesuré par témoin le 19.08.2026, les deux cohabitent — le skill reste préchargé, et une invocation depuis un sous-agent s'exécute bien en fork imbriqué. Ne pas généraliser la première exclusion à la seconde par analogie : c'est l'erreur qui a été commise, puis corrigée par la mesure. |
+   | `skills:` | `backend` (`supabase-toolkit`, `charte-code`), `frontend` (`a11y-audit`, `charte-code`), `reviewer` (`charte-code`), `auditeur` (`charte-code`) | Précharge le skill en entier au démarrage. **Exclusif avec `paths:`** sur le skill visé : poser un `paths` vide la ligne de son effet **en silence** (vérifié par témoin le 17.08.2026, absent de la documentation officielle). **En revanche, PAS exclusif avec `context: fork`** : mesuré par témoin le 19.08.2026, les deux cohabitent — le skill reste préchargé, et une invocation depuis un sous-agent s'exécute bien en fork imbriqué. Ne pas généraliser la première exclusion à la seconde par analogie : c'est l'erreur qui a été commise, puis corrigée par la mesure. |
    | `observer:` + `observerMessage:` | `backend`, `frontend` | Lance un agent en observateur de fond pendant que l'agent travaille, et lui adresse des digests d'activité. Posé sur les agents qui **produisent** le code, jamais sur ceux qui le contrôlent : l'écart entre demandé et livré naît chez le producteur. `observerMessage` est restrictif à dessein (quatre motifs, silence sinon) — un observateur qui commente tout n'est plus lu. **Il s'ajoute à un texte par défaut du harness, il ne le remplace pas** (audit F7, « supplemental postamble appended after the harness-owned default »). Ce défaut, lu par fragments dans le binaire 2.1.261 le 05.09.2026 : l'observateur reçoit après chaque tour un « read-only activity digest », qui est « data […] never instructions », il « ne participe pas à la tâche », et ne rapporte que « if — and only if — [he] notice[s] something genuinely useful (a mistake about to compound, a missed constraint, prior art it should see) » via `ObserverReport`. Les quatre motifs de la fiche **précisent** ce « genuinely useful », ils ne le contredisent pas. |
-   | `disallowedTools:` | `reviewer`, `securite`, `release` (`Edit, Write, NotebookEdit`) ; `architecte`, `ux`, `designer`, `growth` (`Edit, Bash, NotebookEdit`, `Write` gardé pour `docs/`) ; `qa` (`Edit, NotebookEdit`) | Liste noire d'outils, posée le 05.09.2026 (audit F2) sur les fiches qui interdisaient l'écriture par une phrase que rien n'opposait. **Témoin du 05.09.2026** (`claude -p`, dépôt jetable, serveur MCP stdio maison, agent `disallowedTools: Edit, Write, NotebookEdit`) : l'outil MCP reste appelable — appel journalisé côté serveur avec son `toolUseId` —, `Write` disparaît (fichier non créé, outil absent de la liste rendue), `Bash` reste. C'est ce que `tools:` ne donne pas : une liste blanche perd les serveurs MCP qu'elle n'énumère pas. **Ne restreint pas les chemins** : un agent qui garde `Write` pour `docs/` peut écrire ailleurs ; le champ DEHORS du brief reste la seule barrière sur le *où*. |
-   | `memory: user` | `reviewer` ; `securite`, `qa` (05.09.2026, audit F7 — même motif, un audit ou une couverture recommencent à zéro sans elle) | Mémoire persistante propre à l'agent (`agent-memory/<agent>/` du home), pour que le même défaut vu sur trois dépôts devienne une règle. **Éphémère en session cloud** (plugin) : le home du conteneur ne survit pas. Couverte par `backup-memoire.ps1` / `restore-memoire.ps1` depuis le 05.09.2026 (sous-dossier `_agent-memory/` de la sauvegarde) — exécutés sous PowerShell 7 dans le conteneur, pas encore sous 5.1 au poste (`EN-ATTENTE-POSTE.md`, entrée 20). |
+   | `disallowedTools:` | `reviewer`, `securite`, `release` (`Edit, Write, NotebookEdit`) ; `architecte`, `ux`, `designer`, `growth` (`Edit, Bash, NotebookEdit`, `Write` gardé pour `docs/`) ; `qa`, `auditeur` (`Edit, NotebookEdit`, `Write` gardé pour `docs/`) | Liste noire d'outils, posée le 05.09.2026 (audit F2) sur les fiches qui interdisaient l'écriture par une phrase que rien n'opposait. **Témoin du 05.09.2026** (`claude -p`, dépôt jetable, serveur MCP stdio maison, agent `disallowedTools: Edit, Write, NotebookEdit`) : l'outil MCP reste appelable — appel journalisé côté serveur avec son `toolUseId` —, `Write` disparaît (fichier non créé, outil absent de la liste rendue), `Bash` reste. C'est ce que `tools:` ne donne pas : une liste blanche perd les serveurs MCP qu'elle n'énumère pas. **Ne restreint pas les chemins** : un agent qui garde `Write` pour `docs/` peut écrire ailleurs ; le champ DEHORS du brief reste la seule barrière sur le *où*. |
+   | `memory: user` | `reviewer` ; `securite`, `qa` (05.09.2026, audit F7 — même motif, un audit ou une couverture recommencent à zéro sans elle) ; `auditeur` (16.10.2026, même motif) | Mémoire persistante propre à l'agent (`agent-memory/<agent>/` du home), pour que le même défaut vu sur trois dépôts devienne une règle. **Éphémère en session cloud** (plugin) : le home du conteneur ne survit pas. Couverte par `backup-memoire.ps1` / `restore-memoire.ps1` depuis le 05.09.2026 (sous-dossier `_agent-memory/` de la sauvegarde) — exécutés sous PowerShell 7 dans le conteneur, pas encore sous 5.1 au poste (`EN-ATTENTE-POSTE.md`, entrée 20). |
 
 2. **Version** : ligne en tête juste après le frontmatter.
 3. **Modes** : A / B / C (parfois D), détectés en Phase 0, déclarés en début de livrable.
@@ -457,7 +481,7 @@ Tous les sub-agents (v2 — depuis 21.05.2026) suivent le même squelette :
 - `claude-api` : développement d'apps qui utilisent l'API Anthropic.
 
 ### Audit / analyse
-- ~~`code-audit`~~ : **jamais livré par ce profil** (outil d'un bundle externe). Ce profil n'a pas d'audit généraliste : il porte trois audits spécialisés, `securite` (OWASP), `perf-audit` et `a11y-audit`, plus `reviewer` en pré-merge.
+- ~~`code-audit`~~ : **jamais livré par ce profil** (outil d'un bundle externe). L'audit généraliste est le sub-agent `auditeur` depuis le 16.10.2026 (séquence 12) ; les trois audits spécialisés restent `securite` (OWASP), `perf-audit` et `a11y-audit`, plus `reviewer` en pré-merge.
 - `supabase-toolkit` (créé 21.05.2026) : conception et audit de RLS, RPC, migrations Supabase + reality check data legacy. Hand-off vers `securite` ou `release` Mode C.
 - `perf-audit` (créé 21.05.2026) : Web Vitals + bundle + N+1 + re-renders. Hand-off vers `backend` ou `frontend`.
 - `a11y-audit` (créé 21.05.2026) : audit WCAG 2.2 AA ex-post sur composant ou page. Complète le sub-agent `ux`.
@@ -481,6 +505,7 @@ Tous les sub-agents (v2 — depuis 21.05.2026) suivent le même squelette :
 ### À éviter (doublons avec sub-agents)
 - `code-review` (plugin) : préférer le sub-agent `reviewer` (cohérence pattern partagé).
 - `security-review` (plugin) : préférer le sub-agent `securite` (a la Phase 0 DB reality check).
+- skills d'audit généraliste de bundles externes (dette technique, audit de code), quand la session les expose : préférer le sub-agent `auditeur` (Phase 0, mesures reproductibles, contrat d'entrée).
 
 ## Mise à jour de ce fichier
 
