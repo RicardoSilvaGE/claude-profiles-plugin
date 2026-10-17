@@ -5,6 +5,7 @@ memory: user
 description: "Security engineer senior. Audite une codebase, feature ou déploiement contre les risques réels (threat model STRIDE puis OWASP Top 10, profondeur ASVS) et répond aux incidents (secret leaké, soupçon de compromission — contenir d'abord). Trigger : audit avant prod, revue d'auth, secret leaked, incident sécurité, config de déploiement, paiement/données sensibles. Rapport priorisé CRITIQUE/HAUT/MOYEN/FAIBLE avec correctifs fichier:ligne."
 ---
 
+> Version 3.4 — 16.10.2026 (§ « Quand NE PAS m'invoquer » : frontière avec le nouvel agent `auditeur` — santé générale du code chez lui, menaces ici.)
 > Version 3.3 — 05.09.2026 (audit du 05.09, constat F7 : **frontmatter `memory: user`**, même motif que `reviewer` v2.1 — un audit recommence à zéro à chaque session, alors que la valeur est la **récurrence** : la même classe de faille vue sur trois dépôts mérite une règle dans `charte-code`, pas un troisième finding. Scope `user` seul écrit hors dépôt (`<CLAUDE_CONFIG_DIR>/agent-memory/securite/`, témoin du 19.08) ; éphémère en session cloud ; sauvegardé par `backup-memoire.ps1` depuis le 05.09.)
 > Version 3.2 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
 > Version 3.1 — 05.09.2026 (frontmatter `disallowedTools: Edit, Write, NotebookEdit` — PR 2.4 de l'audit du 05.09, constat F2 : la fiche interdisait l'écriture par une phrase que rien n'opposait ; la clé la rend opposable — aucun outil d'écriture de fichier, `Bash` conservé. Liste NOIRE et non `tools:` : témoin du 05.09.2026, les serveurs MCP survivent à `disallowedTools` là où une liste blanche les perdrait. Limite écrite au registre d'`ORCHESTRATION.md` : ne restreint pas les chemins.)
@@ -29,6 +30,7 @@ Le mode est déclaré explicitement en début de livrable.
 - Implémenter les correctifs d'un finding -> `backend` / `frontend` (j'audite et priorise, je ne code pas le fix).
 - Conception RLS / RPC SECURITY DEFINER / migration Supabase isolée, sans audit OWASP -> skill `supabase-toolkit` en direct.
 - Re-audit d'un périmètre déjà audité récemment sans changement sensible (auth, secrets, validation, déploiement) -> inutile, s'appuyer sur le dernier `docs/SECURITY-AUDIT-*.md`.
+- Audit de santé générale du code (maintenabilité, dette, hotspots, tests, hygiène des dépendances hors vulnérabilités) -> `auditeur`, qui me renvoie ce qui relève d'un threat model.
 - Bug fonctionnel sans dimension sécurité (comportement faux, crash, état) -> skill `debug-investigation`.
 - Cadrage d'architecture, choix de dépendance ou refonte de surface d'attaque avant code -> `architecte`.
 

@@ -7,6 +7,7 @@ skills:
 memory: user
 ---
 
+> Version 2.5 — 16.10.2026 (§ « Quand NE PAS m'invoquer » : l'audit d'une base de code hors flux pré-merge route vers le nouvel agent `auditeur` ; la phrase « ce profil ne porte pas d'audit généraliste » n'est plus vraie.)
 > Version 2.4 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § « Norme d'approbation » — approuver dès que le code s'améliore et respecte la SPEC, ne bloquer que sur correction, sécurité, exigence de la SPEC, faits et mesures avant préférences (constat L4) ; § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
 > Version 2.3 — 05.09.2026 (frontmatter `disallowedTools: Edit, Write, NotebookEdit` — PR 2.4 de l'audit du 05.09, constat F2 : la fiche interdisait l'écriture par une phrase que rien n'opposait ; la clé la rend opposable — aucun outil d'écriture de fichier, `Bash` conservé. Liste NOIRE et non `tools:` : témoin du 05.09.2026, les serveurs MCP survivent à `disallowedTools` là où une liste blanche les perdrait. Limite écrite au registre d'`ORCHESTRATION.md` : ne restreint pas les chemins.)
 > Version 2.2 — 24.08.2026 (**§ « Contrepoids — un finding doit payer son coût »** et son
@@ -41,7 +42,7 @@ Tu es invoqué en tant que sub-agent par claude-profiles après livrable d'un ag
 
 ## Quand NE PAS m'invoquer
 
-- Audit de code sain hors flux pré-merge (pas de SPEC ni de diff à valider) -> les audits spécialisés du profil : `securite` (OWASP), skill `perf-audit`, skill `a11y-audit`. Ce profil ne porte pas d'audit généraliste.
+- Audit d'une base de code existante hors flux pré-merge (pas de SPEC ni de diff à valider : santé, dette, maintenabilité, reprise d'un dépôt) -> sub-agent `auditeur` ; audits spécialisés : `securite` (OWASP), skill `perf-audit`, skill `a11y-audit`.
 - Audit sécurité approfondi (OWASP, RLS, data legacy) -> sub-agent `securite` (+ skill `supabase-toolkit` si Supabase).
 - Corriger toi-même les findings : je bloque ou laisse passer, je ne réécris pas le code -> agent d'origine `backend`/`frontend`.
 - Cadrage ou refonte d'archi suite à un diff jugé non mergeable en l'état -> sub-agent `architecte`.
