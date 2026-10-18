@@ -53,12 +53,17 @@ def convertir_libreoffice(chemin_docx, chemin_pdf, soffice_bin):
     resultat = subprocess.run(
         [soffice_bin, "--headless", "--norestore", "--convert-to", "pdf",
          "--outdir", dossier_sortie, chemin_docx],
-        capture_output=True, text=True, timeout=SOFFICE_TIMEOUT_S,
+        capture_output=True, timeout=SOFFICE_TIMEOUT_S,
     )
     if resultat.returncode != 0:
+        # Sortie lue en OCTETS. soffice ecrit dans l'encodage de la console ; text=True la
+        # decodait avec celui de Python (UTF-8 sous -X utf8), et un accent dans un chemin levait
+        # UnicodeDecodeError a la place du vrai message. Meme defaut que _pids() de
+        # session_office_com.py, corrige le 17.10.2026.
+        sortie = resultat.stderr or resultat.stdout or b""
         raise RuntimeError(
             "soffice a echoue (code %s) : %s"
-            % (resultat.returncode, resultat.stderr or resultat.stdout)
+            % (resultat.returncode, sortie.decode("utf-8", errors="replace").strip())
         )
     # soffice nomme sa sortie d'apres le .docx SOURCE, jamais d'apres le nom de
     # sortie demande : sans ce renommage, le fichier attendu n'existe pas et
