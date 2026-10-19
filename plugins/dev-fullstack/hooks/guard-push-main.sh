@@ -127,7 +127,8 @@ if [ -f "$FICHIER_EXEMPT" ]; then
             motif="${motif%%#*}"
             motif="$(printf '%s' "$motif" | tr -d '[:space:]' | tr 'A-Z' 'a-z')"
             [ -n "$motif" ] || continue
-            # shellcheck disable=SC2254 — le motif NON quote est le joker voulu (`owner/*`).
+            # Le motif NON quote est le joker voulu (`owner/*`).
+            # shellcheck disable=SC2254
             case "$DEPOT" in $motif) exit 0 ;; esac
         done < "$FICHIER_EXEMPT"
     fi

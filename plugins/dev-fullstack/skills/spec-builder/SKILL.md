@@ -168,7 +168,7 @@ L'utilisateur teste sur `main` après le merge.
 
 ## Commit message attendu
 
-Type en français et sans accent (`fonctionnalite`, `correctif`, `entretien`, `doc`, `refonte`, `test`) :
+Type en français et sans accent (`fonctionnalite`, `correctif`, `entretien`, `doc`, `refonte`, `test`, `portage`) :
 table complète et motif au § « Conventions git » du `global-CLAUDE.md`.
 ```
 <type en français>(<scope>): <description en français>

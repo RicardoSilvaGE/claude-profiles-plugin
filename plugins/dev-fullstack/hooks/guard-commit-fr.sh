@@ -5,7 +5,9 @@
 # CE QU'IL FAIT. Refuse (`deny`) un `git commit` dont le SUJET — premiere ligne du message
 # passe par -m, --message ou par la forme heredoc `-m "$(cat <<'EOF' ... EOF)"` — ne suit pas la
 # convention git du profil : `type(scope): description`, TYPE FRANCAIS sans accent, pris dans
-# la table fonctionnalite | correctif | entretien | doc | refonte | test. Il ne juge que le
+# la table fonctionnalite | correctif | entretien | doc | refonte | test | portage (ce dernier,
+# sans equivalent anglais, pour un report venu d'un depot jumeau : audit du 17.10.2026, AC-10,
+# six commits ainsi types refuses en usage). Il ne juge que le
 # type et la forme `type(scope): ` : la langue de la description n'est pas verifiable par une
 # regle, et il ne l'essaie pas.
 #
@@ -133,7 +135,7 @@ fi
 case "$SUJET" in
     "Merge "*|"Revert "*|"fixup! "*|"squash! "*|"amend! "*) exit 0 ;;
 esac
-printf '%s' "$SUJET" | grep -Eq '^(fonctionnalite|correctif|entretien|doc|refonte|test)\([^)]+\)!?: [^[:space:]]' && exit 0
+printf '%s' "$SUJET" | grep -Eq '^(fonctionnalite|correctif|entretien|doc|refonte|test|portage)\([^)]+\)!?: [^[:space:]]' && exit 0
 
 # Exemptions locales, meme mecanique que guard-push-main.sh (~/.claude/.commit-fr-exempt).
 FICHIER_EXEMPT="${HOME:-/nonexistent}/.claude/.commit-fr-exempt"
@@ -161,6 +163,7 @@ MSG="Message de commit hors convention du profil (conventions git) : \"$SUJET\"
 Forme attendue : type(scope): description  —  en FRANCAIS, type sans accent, pris dans :
   feat -> fonctionnalite   fix -> correctif   chore -> entretien
   docs -> doc              refactor -> refonte   test -> test
+  et portage : report d'un changement venu d'un depot jumeau
 Exemple : correctif(readme): coquille corrigee dans la procedure
 Le type est un jeton qu'on grep ; la description s'accentue normalement. Merge, Revert, fixup!
 et squash! passent tels quels. Pour un depot qui adopte une autre convention (historique
