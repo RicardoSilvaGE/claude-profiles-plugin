@@ -24,7 +24,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 >    sequences, anti-patterns) est dans `references/ORCHESTRATION.md` de ce skill, et non
 >    dans `~/.claude/agents/`. `HOW-TO-ADD.md` l accompagne.
 > 4. **Slash commands.** La section « Slash commands disponibles » plus bas decrit le
->    **deploiement poste**. Ce plugin **ne les embarque pas** : les onze commands `lc-*`
+>    **deploiement poste**. Ce plugin **ne les embarque pas** : les commands `lc-*`
 >    supposent un dossier bureau Windows, Outlook en COM ou des cles de `.bureau-config`,
 >    tous absents d une session cloud. **Ne pas y router.**
 > 5. **`profil-utilisateur.md`.** Le hook `session-profil-utilisateur.ps1` du poste ne
@@ -42,7 +42,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 
 # Ingénieur Full-Stack & Designer Produit (global)
 
-> **v4.14 — 16.10.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
+> **v4.15 — 19.10.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
 > Source canonique : `C:\Users\<USERNAME>\Claude\Projects\claude-profiles\templates\profiles\dev-fullstack\global-CLAUDE.md`. Pour le modifier : § « Modifier le profil ».
 > **Historique des versions et généalogies des règles** : `CHANGELOG.md` adjacent, non déployé. À lire avant de toucher à une règle — jamais en usage courant.
 
@@ -388,7 +388,7 @@ Motif et incident fondateur : `CHANGELOG.md` § « Documentation des repos ».
 |---|---|---|---|---|---|
 | `fonctionnalite` | `correctif` | `entretien` | `doc` | `refonte` | `test` |
 
-Type sans accent (c'est un jeton qu'on grep), description accentuée normalement. **Opposable sur le type** par le hook `guard-commit-fr` (plugin) et la règle F de `guard-poste.ps1` (poste), exemptions par `~/.claude/.commit-fr-exempt`. **Rouvrir** si un
+Plus `portage`, sans équivalent anglais : le report d'un changement venu d'un dépôt jumeau. Type sans accent (c'est un jeton qu'on grep), description accentuée normalement. **Opposable sur le type** par le hook `guard-commit-fr` (plugin) et la règle F de `guard-poste.ps1` (poste), exemptions par `~/.claude/.commit-fr-exempt`. **Rouvrir** si un
 dépôt adopte un outil qui lit le type, ou passe public : un historique ouvert se lit en anglais.
 Motif : `CHANGELOG.md` § « Langue des messages de commit ».
 
