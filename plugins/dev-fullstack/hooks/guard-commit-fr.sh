@@ -22,7 +22,9 @@
 #
 # CE QU'IL LAISSE PASSER, A DESSEIN :
 #   - les formes que git ecrit lui-meme : `Merge ...`, `Revert "..."`, `fixup! ...`, `squash! ...` ;
-#   - un commit sans message en ligne : -F/--file, editeur, --amend --no-edit, --help ;
+#   - un commit sans message en ligne : editeur, --amend --no-edit, --help ;
+#   - un message par fichier (-F/--file) qu'on ne peut pas lire : fichier absent, chemin dans
+#     une variable, entree standard venue d'un tube. Lisible, il est juge (22.10.2026) ;
 #   - tout ce qui n'est pas `git [options globales] commit` ;
 #   - les depots declares dans ~/.claude/.commit-fr-exempt (« owner/repo », joker `*`) — c'est
 #     la clause « rouvrir si un depot passe public » de la doctrine, rendue locale et sans
@@ -56,6 +58,7 @@ DQ='"'; SQ="'"
 RE_HEREDOC="<<-?[[:space:]]*[${SQ}${DQ}]?([A-Za-z_][A-Za-z0-9_]*)[${SQ}${DQ}]?"
 RE_MESSAGE="--message=(${DQ}([^${DQ}]*)${DQ}|${SQ}([^${SQ}]*)${SQ}|([^[:space:]]+))"
 RE_M="(^|[[:space:]])-[a-zA-Z]*m[[:space:]]*(${DQ}([^${DQ}]*)${DQ}|${SQ}([^${SQ}]*)${SQ}|([^[:space:]]+))"
+RE_F="(^|[[:space:]])(-[a-zA-Z]*F[[:space:]]*|--file(=|[[:space:]]+))(${DQ}([^${DQ}]*)${DQ}|${SQ}([^${SQ}]*)${SQ}|([^[:space:]]+))"
 
 # PAS DE DECOUPAGE PAR INSTRUCTION AVANT L'EXTRACTION. La premiere version decoupait sur ';',
 # '&&' et '||' comme guard-push-main.sh, puis cherchait le commit dans chaque instruction. Un
@@ -102,10 +105,46 @@ borner_args() {
     printf '%s' "$out"
 }
 
+# Sujet d'un message passe par FICHIER (-F <chemin>, --file=<chemin>) ou par l'entree standard
+# alimentee d'un heredoc (`git commit -F - <<'EOF'`) : premiere ligne non vide, ou rien.
+# MOTIF, 22.10.2026 : -F passait sans examen ; deux commits `ci(...)` hors convention sont passes
+# ainsi (par fichier, et par `-F -` + heredoc), le troisieme, en -m, a ete refuse. Le garde
+# gardait une forme d'appel, pas la convention. Fail-open sur tout ce qui ne se lit pas ; un
+# chemin relatif se resout contre le cwd de la session (apres un `cd` ou un `git -C`, il peut
+# ne pas se trouver, et la regle se tait). $1 : arguments bornes ; $2 : les memes, non bornes,
+# d'ou se lit le corps du heredoc (borner_args coupe au saut de ligne).
+lire_message_fichier() {
+    local args="$1" brut="$2" chemin marqueur corps ligne
+    [[ "$args" =~ $RE_F ]] || return 0
+    chemin="${BASH_REMATCH[5]}${BASH_REMATCH[6]}${BASH_REMATCH[7]}"
+    if [ "$chemin" = "-" ]; then
+        [[ "$args" =~ $RE_HEREDOC ]] || return 0
+        marqueur="${BASH_REMATCH[1]}"
+        corps="${brut#*"${BASH_REMATCH[0]}"}"
+        corps="${corps#*$'\n'}"
+        while IFS= read -r ligne; do
+            [ "$(printf '%s' "$ligne" | tr -d '[:space:]')" = "$marqueur" ] && return 0
+            if [ -n "$(printf '%s' "$ligne" | tr -d '[:space:]')" ]; then printf '%s' "$ligne"; return 0; fi
+        done <<EOF_CORPS_F
+$corps
+EOF_CORPS_F
+        return 0
+    fi
+    case "$chemin" in "~/"*) chemin="${HOME:-/nonexistent}/${chemin#"~/"}" ;; esac
+    case "$chemin" in /*|[A-Za-z]:*) ;; *) chemin="$CWD/$chemin" ;; esac
+    [ -f "$chemin" ] && [ -r "$chemin" ] || return 0
+    while IFS= read -r ligne || [ -n "$ligne" ]; do
+        ligne="${ligne%$'\r'}"
+        if [ -n "$(printf '%s' "$ligne" | tr -d '[:space:]')" ]; then printf '%s' "$ligne"; return 0; fi
+    done < "$chemin"
+    return 0
+}
+
 SUJET=""; TROUVE=0
 if [[ "$CMD" =~ $MOTIF ]]; then
     TROUVE=1
     rest="${CMD#*"${BASH_REMATCH[0]}"}"
+    rest_brut="$rest"
     rest="$(borner_args "$rest")"
     msg=""
     if [[ "$rest" =~ $RE_HEREDOC ]]; then
@@ -118,12 +157,16 @@ if [[ "$CMD" =~ $MOTIF ]]; then
         done <<EOF_CORPS
 $corps
 EOF_CORPS
+        # Corps absent de la zone bornee : le heredoc alimente l'entree standard de `-F -`
+        # (22.10.2026), il ne vit pas dans un -m "$(cat <<EOF ...)".
+        [ -n "$msg" ] || msg="$(lire_message_fichier "$rest" "$rest_brut")"
     elif [[ "$rest" =~ $RE_MESSAGE ]]; then
         msg="${BASH_REMATCH[2]}${BASH_REMATCH[3]}${BASH_REMATCH[4]}"
     elif [[ "$rest" =~ $RE_M ]]; then
         msg="${BASH_REMATCH[3]}${BASH_REMATCH[4]}${BASH_REMATCH[5]}"
     else
-        exit 0                                                    # -F, editeur, --amend --no-edit, --help
+        msg="$(lire_message_fichier "$rest" "$rest_brut")"            # -F / --file, lu depuis le 22.10.2026
+        [ -n "$msg" ] || exit 0                                    # editeur, --amend --no-edit, --help, fichier illisible
     fi
     SUJET="${msg%%$'\n'*}"
     SUJET="$(printf '%s' "$SUJET" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
