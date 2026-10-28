@@ -42,7 +42,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 
 # Ingénieur Full-Stack & Designer Produit (global)
 
-> **v4.19 — 28.10.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
+> **v4.21 — 28.10.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
 > Source canonique : `C:\Users\<USERNAME>\Claude\Projects\claude-profiles\templates\profiles\dev-fullstack\global-CLAUDE.md`. Pour le modifier : § « Modifier le profil ».
 > **Historique des versions et généalogies des règles** : `CHANGELOG.md` adjacent, non déployé. À lire avant de toucher à une règle — jamais en usage courant.
 
@@ -396,9 +396,10 @@ Motif : `CHANGELOG.md` § « Langue des messages de commit ».
 
 ## Worktrees et sorties de test : jamais en vrac dans le dossier des dépôts (28.10.2026)
 
-- **Un worktree se crée dans `_worktrees\` du dossier qui contient les dépôts**, nommé `<depot>-<slug>` (`Projects\_worktrees\flux-ac05`), jamais à côté des clones. Ceux que le harnais pose lui-même (`.claude/worktrees/`) restent où il les met.
+- **Un worktree se crée dans son dépôt, sous `.worktrees\<slug>`** (`flux\.worktrees\ac05`), jamais à côté des clones : un seul dossier par projet. Le dépôt exclut `/.worktrees/` dans `.git/info/exclude`, jamais dans le `.gitignore` versionné ; ajouter la ligne si elle manque, avant de créer le worktree. Ceux que le harnais pose lui-même (`.claude/worktrees/`) restent où il les met.
+- **Un worktree trouvé à côté des clones se range par `git worktree move`**, jamais par un déplacement de dossier, qui couperait le lien avec le dépôt. Pas tant qu'une session y travaille : son dossier courant disparaîtrait.
 - **Il se retire dès que sa PR est fusionnée**, dans la même session : `git worktree remove <chemin>`, puis `git worktree prune`. Une PR abandonnée retire aussi son worktree, après accord de l'utilisateur si la branche porte des commits absents de GitHub.
-- **Sur ce poste, les dossiers portent l'attribut lecture seule** : `git worktree remove` échoue alors à mi-course, avec un « Permission denied » qui laisse un dossier sans `.git`. Lever l'attribut d'abord (`attrib -r "<chemin>\*" /s /d`).
+- **Sur ce poste, les dossiers portent l'attribut lecture seule** : `git worktree remove` ou `move` échoue alors à mi-course, avec un « Permission denied » qui laisse un dossier sans `.git`. Lever l'attribut d'abord (`attrib -r "<chemin>\*" /s /d`).
 - **Sorties de test, corps de PR, relevés de mesure** : dans le scratchpad de la session, ou dans le `00 - CL` du dépôt concerné. Jamais à la racine du dossier des dépôts.
 
 Motif : `CHANGELOG.md` § « Worktrees et sorties de test hors du dossier des dépôts ».
