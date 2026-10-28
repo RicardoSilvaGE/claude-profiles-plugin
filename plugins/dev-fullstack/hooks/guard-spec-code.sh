@@ -113,10 +113,23 @@ done
 [ -d "$DEPOT/templates/profiles" ] && exit 0
 
 # ---- 6. Une spec (SPEC*.md, ou specs/*.md) existe-t-elle, et est-elle recente ? ----------------
-# Presence, pas pertinence. La date se lit par `stat`, dont les deux dialectes sont essayes ;
-# si aucun ne repond, le hook se tait plutot que de crier sur un depot qu'il ne sait pas dater.
+# Presence, pas pertinence. Une spec suivie et intacte se date par son dernier commit : la date du
+# fichier ment apres un clone, ou chaque spec a l'age du clone, et le plugin vise justement des
+# sessions cloud qui clonent a chaque fois (audit dev-fullstack du 27.10.2026, AC-04). Une spec
+# non suivie ou modifiee se date par `stat`, dont les deux dialectes sont essayes ; si rien ne
+# repond, le hook se tait plutot que de crier sur un depot qu'il ne sait pas dater.
 mtime() {
     stat -c %Y "$1" 2>/dev/null || stat -f %m "$1" 2>/dev/null
+}
+SUIVIES="$(git -C "$DEPOT" ls-files -- '*.md' 2>/dev/null)"
+MODIFIEES="$(git -C "$DEPOT" diff HEAD --name-only -- '*.md' 2>/dev/null)"
+date_spec() { # date_spec <chemin absolu>
+    local rel="${1#"$DEPOT"/}" ct
+    if printf '%s\n' "$SUIVIES" | grep -Fxq -- "$rel" && ! printf '%s\n' "$MODIFIEES" | grep -Fxq -- "$rel"; then
+        ct="$(git -C "$DEPOT" log -1 --format=%ct -- "$rel" 2>/dev/null)"
+        case "$ct" in ''|*[!0-9]*) ;; *) printf '%s' "$ct"; return ;; esac
+    fi
+    mtime "$1"
 }
 MAINTENANT="$(date +%s 2>/dev/null)" || exit 0
 case "$MAINTENANT" in ''|*[!0-9]*) exit 0 ;; esac
@@ -127,7 +140,7 @@ PLUS_RECENT=""
 PLUS_RECENT_TS=0
 while IFS= read -r f; do
     [ -n "$f" ] || continue
-    ts="$(mtime "$f")"
+    ts="$(date_spec "$f")"
     case "$ts" in ''|*[!0-9]*) continue ;; esac
     if [ "$ts" -gt "$PLUS_RECENT_TS" ]; then PLUS_RECENT_TS="$ts"; PLUS_RECENT="$f"; fi
     [ "$ts" -gt "$SEUIL" ] && RECENT_TROUVE=1

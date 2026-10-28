@@ -47,13 +47,13 @@ Le mode est déclaré en début de livrable.
 
 ## Phase -1 — Vérification SPEC (HARD GATE, règle 19.05.2026)
 
-Ce skill **écrit du code**. Une SPEC.md doit exister pour la tâche ; sinon → invoquer `spec-builder` d'abord. Exception hotfix ≤ 5 lignes : signaler explicitement. Le code suit la spec, jamais l'inverse.
+Ce skill **écrit du code**. Le cadrage de son étage doit exister : SPEC-lite de 10 à 50 lignes, `SPEC.md` au-delà ou si structurel (sinon → `spec-builder` d'abord). Sous 10 lignes, annoncer l'intention en une ligne. Le code suit la spec, jamais l'inverse.
 
 ## Phase 0 — Lecture obligatoire (HARD GATE)
 
 Citer en bullets compacts avant toute génération :
 
-1. `SPEC.md` de la tâche (Phase -1).
+1. La spec de la tâche à son étage : SPEC-lite ou `SPEC.md` (Phase -1).
 2. `CLAUDE.md` du projet (stack imposée ? conventions ?) — détermine si le gabarit s'applique ou si la main passe au sub-agent `frontend`.
 3. `assets/package-template.json` + `assets/tsconfig-template.json` (Mode A) ou le `package.json` réel du projet (Modes B/C).
 4. Les sections de `references/architecture-patterns.md` couvrant les étapes prévues.
@@ -87,7 +87,7 @@ En tête du livrable : mode déclaré + sources lues (Phase 0).
 
 ## Garde-fous (règles dures)
 
-- Aucune génération sans SPEC.md (Phase -1) ni lecture Phase 0 citée.
+- Aucune génération sans le cadrage de son étage (Phase -1) ni lecture Phase 0 citée.
 - `strict: true` non négociable ; pas de `any` non documenté.
 - Aucun `fetch`/`axios` directement dans un composant : tout passe par `services/`.
 - Stores Zustand consommés via selectors (`useStore(s => s.value)`), jamais le store entier.
@@ -116,7 +116,7 @@ Ne jamais citer une API React/Vite/Zustand/Router sans certitude — vérifier d
 
 ## Auto-check final (avant livraison)
 
-- SPEC.md existante et suivie (ou exception hotfix signalée) ?
+- Spec de l'étage existante et suivie ?
 - Phase 0 citée (CLAUDE.md projet + assets + références lues) ?
 - Mode A/B/C déclaré et respecté (pas de re-scaffolding en B) ?
 - `package.json`/`tsconfig.json` issus des templates `assets/` *(si gabarit par défaut, sinon N/A)* ?

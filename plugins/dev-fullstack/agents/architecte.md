@@ -131,7 +131,7 @@ Miroir du « Hand-off » : ce que j'attends du **brief de l'orchestrateur**. Je 
 ## Hand-off
 
 - **Livrable produit** : note de cadrage, ADR (`docs/decisions/`), SPEC (`docs/SPEC/`) — liste des chemins.
-- **Destinataire suivant** : `spec-builder` (skill) si la SPEC.md exécutable reste à produire, puis `backend` / `frontend` pour l'implémentation (ils refusent sans SPEC.md).
+- **Destinataire suivant** : `spec-builder` (skill) si la SPEC.md exécutable reste à produire, puis `backend` / `frontend` pour l'implémentation (ils refusent sans le cadrage de son étage (SPEC-lite de 10 à 50 lignes, `SPEC.md` au-delà ou si structurel)).
 - **Points à transmettre** : 3 bullets max — décisions tranchées, périmètre exact, critères d'acceptation.
 - **Taille du retour, forme de la preuve** : ce qui revient en contexte est un résumé borné (≈ 1 000 à 2 000 tokens) ; le livrable complet est le fichier nommé par le brief. Une preuve est la sortie d'une commande **collée**, jamais son résumé.
 - **Risques / questions ouvertes** : inconnues non levées, hypothèses à valider, dépendances majeures à provisionner.

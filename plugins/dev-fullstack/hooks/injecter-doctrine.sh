@@ -10,7 +10,7 @@
 # elles sont lues AVANT le premier geste, pas apres. Ce hook restaure la residence en injectant
 # le corps du skill de doctrine en `additionalContext`.
 #
-# CE QU'IL COUTE, ET C'EST LE POINT A PESER. 11 321 tokens dans CHAQUE session ou le
+# CE QU'IL COUTE, ET C'EST LE POINT A PESER. Le corps de la doctrine (mesure par I5) dans CHAQUE session ou le
 # plugin est actif, y compris celles ou l'on ne code pas. Pour le desactiver sans desinstaller
 # le plugin : `CLAUDE_DOCTRINE_RESIDENTE=0`.
 #

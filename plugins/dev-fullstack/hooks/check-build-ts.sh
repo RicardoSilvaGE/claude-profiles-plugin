@@ -43,11 +43,14 @@
 #   - stop_hook_active = true => exit 0 immediat. Documente par Anthropic : « true when Claude
 #     Code is already continuing as a result of a stop hook. Check this value [...] to avoid
 #     blocking on a condition that will never resolve. » Plafond harness : 8 continuations.
-#   - marqueur build-<session>-<cle>.flag, pose AVANT la compilation : une compilation qui echoue
-#     ne doit pas se rejouer a chaque stop. Un seul rapport par session et par depot.
+#   - marqueur build-<session>-<cle>-<etat>.flag, pose AVANT la compilation : un meme etat des
+#     sources touchees ne se recompile pas (un echec ne se rejoue pas a chaque stop), un etat
+#     change se recompile. Jusqu'au 28.10.2026 le marqueur ne dependait que de la session : un
+#     build vert au premier stop rendait muette toute retouche ulterieure (audit dev-fullstack
+#     du 27.10.2026, AC-01).
 #
-# COUT : tsc --noEmit prend 5 a 30 s sur un projet moyen. Une seule fois par session, et
-# seulement si des .ts ont bouge. Timeout dur a 90 s, au-dela on abandonne en silence plutot que
+# COUT : tsc --noEmit prend 5 a 30 s sur un projet moyen. Seulement si des .ts ont bouge, et
+# seulement si les sources touchees ont change depuis le dernier passage. Timeout dur a 90 s, au-dela on abandonne en silence plutot que
 # de faire attendre. Le timeout declare dans hooks.json (100 s) doit rester SUPERIEUR, sinon le
 # harness tue le hook avant qu'il ne rende son verdict. L'attente est une boucle `sleep 1` +
 # `kill` : une seule voie, POSIX, sans dependre de coreutils — une voie unique est une voie
@@ -119,10 +122,38 @@ else
 fi
 [ -n "$CLE" ] || CLE="nokey"
 
+# Etat des sources touchees : chemin + empreinte git du contenu (statut compris en TypeScript, pour
+# qu'une suppression change l'etat). Sans outil d'empreinte, etat constant : retour au marqueur de
+# session, plutot que de recompiler a chaque stop.
+if [ "$BRANCHE" = ts ]; then
+    FICHIERS_ETAT="$(printf '%s\n' "$TOUCHES" | sed -E 's/^.. //; s/^.* -> //; s/^"(.*)"$/\1/')"
+    ENTETE_ETAT="$TOUCHES"
+else
+    FICHIERS_ETAT="$(printf '%s\n%s\n' "$TOUCHES_JS" "$TOUCHES_PY" | grep .)"
+    ENTETE_ETAT=""
+fi
+etat_brut() {
+    printf '%s\n' "$ENTETE_ETAT" | LC_ALL=C sort
+    printf '%s\n' "$FICHIERS_ETAT" | LC_ALL=C sort | while IFS= read -r p; do
+        [ -n "$p" ] || continue
+        printf '%s|' "$p"
+        [ -f "$CWD/$p" ] && git -C "$CWD" hash-object -- "$p" 2>/dev/null
+        echo
+    done
+}
+if command -v cksum >/dev/null 2>&1; then
+    ETAT="$(etat_brut | cksum | tr -cd '0-9')"
+elif command -v md5sum >/dev/null 2>&1; then
+    ETAT="$(etat_brut | md5sum | cut -d' ' -f1)"
+fi
+[ -n "${ETAT:-}" ] || ETAT="x"
+
 DIR_MARQ="${TMPDIR:-/tmp}/claude-guard"
 mkdir -p "$DIR_MARQ" 2>/dev/null || exit 0
-MARQ="$DIR_MARQ/build-$SID-$CLE.flag"
+MARQ="$DIR_MARQ/build-$SID-$CLE-$ETAT.flag"
 [ -f "$MARQ" ] && exit 0
+# Un seul marqueur par session et par depot : l'etat precedent n'a plus a etre retenu.
+rm -f "$DIR_MARQ/build-$SID-$CLE-"*.flag 2>/dev/null
 : > "$MARQ" 2>/dev/null || exit 0
 
 # ---- 6bis. Branche HORS TYPESCRIPT (05.09.2026) -------------------------------------------------------
@@ -217,7 +248,7 @@ Attention a l'attribution : le hook rapporte l'ETAT du depot, pas la faute. Si c
 preexistaient a la session, le dire plutot que de les corriger en passant.
 
 Sorties : corriger, ou constater que l'erreur est heritee et l'annoncer en une ligne.
-Ce rapport n'apparait qu'une fois par session et par depot."
+Ce rapport ne revient que si les sources touchees changent."
     jq -n --arg r "$MSG" '{ decision: "block", reason: $r }'
     exit 0
 fi
@@ -277,7 +308,7 @@ Attention a l'attribution : le hook rapporte l'ETAT du depot, pas la faute. Si c
 preexistaient a la session, le dire plutot que de les corriger en passant.
 
 Sorties : corriger, ou constater que l'erreur est heritee et l'annoncer en une ligne.
-Ce rapport n'apparait qu'une fois par session et par depot."
+Ce rapport ne revient que si les sources touchees changent."
 
 # ---- 11. Sortie : decision et reason A LA RACINE, format documente pour Stop -------------------
 jq -n --arg r "$MSG" '{ decision: "block", reason: $r }'
