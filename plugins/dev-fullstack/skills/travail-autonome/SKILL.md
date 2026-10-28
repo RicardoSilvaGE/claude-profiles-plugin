@@ -1,10 +1,14 @@
 ---
 name: travail-autonome
-description: "Méthode d'une étape de mission autonome (moteur scripts/travail-autonome/, ADR-0006) : lire mission.md et etat.json, faire UN incrément, le prouver, commiter sur la branche de mission, écrire resume.md, réécrire etat.json en dernier, inscrire une question au lieu de la poser. Sert aussi en session normale pour écrire une mission (mission.md, contrat 1) et pour répondre à « où en est la mission ? ». Déclencheurs : mission autonome, travail autonome, étape de mission, lanceur.py, etat.json, rédiger une mission, où en est la mission, relancer une mission bloquée."
+description: "Méthode d'une étape de mission autonome (moteur scripts/travail-autonome/, ADR-0006) : lire mission.md et etat.json, faire UN incrément, le prouver, commiter sur la branche de mission, écrire resume.md, réécrire etat.json en dernier, inscrire une question au lieu de la poser ; en mode cloud (tâche planifiée Claude Code), état sur la branche de mission et push par l'étape. Sert aussi en session normale pour écrire une mission (mission.md, contrat 1) et pour répondre à « où en est la mission ? ». Déclencheurs : mission autonome, travail autonome, étape de mission, lanceur.py, etat.json, rédiger une mission, où en est la mission, relancer une mission bloquée."
 ---
 
 # Travail autonome : la méthode d'une étape
 
+> Version 1.2.1 — 28.10.2026 (§ 9 : la ligne de journal ne porte plus de hash, impossible à connaître avant le
+> commit qui la contient ; relevé à l'étape 1 de la mission d'essai).
+> Version 1.2 — 28.10.2026 (§ 9 « Mode cloud » : une étape par exécution de tâche planifiée, état sur la branche ;
+> `docs/SPEC-travail-autonome-cloud.md`).
 > Version 1.1 — 28.10.2026 (session cloud : le moteur n'existe que sur le poste).
 > Version 1.0 — 27.10.2026 (création, lot 3 de l'ADR-0006). Ce fichier est **injecté tel quel** dans chaque étape
 > par `lanceur.py` (`--append-system-prompt-file`), depuis sa copie installée. Contrats complets :
@@ -16,9 +20,12 @@ Deux usages, à ne pas confondre :
   devant l'écran.
 - **Dans une session normale avec l'utilisateur** : écrire une mission (§ 7), dire où elle en est (§ 8).
 
-**En session cloud** (plugin) : `lanceur.py` et le moteur `scripts/travail-autonome/` n'existent que sur le poste.
-Seul le second usage vaut : écrire une mission, ou dire où elle en est si le dépôt est cloné. Ne jamais annoncer
-qu'une étape est lancée.
+**En session cloud**, deux cas :
+
+- **Exécution d'une tâche planifiée** dont la consigne renvoie à ce fichier : c'est une étape en **mode cloud**.
+  Appliquer § 1 à § 6, **avec les différences du § 9**, qui priment.
+- **Toute autre session cloud** : `lanceur.py` n'existe que sur le poste. Seul le second usage vaut. Ne jamais
+  annoncer qu'une étape est lancée.
 
 ## 1. Ce qu'est une étape
 
@@ -144,3 +151,50 @@ Lire, sans rien modifier : `lanceur.py statut` (copie installée, `%LOCALAPPDATA
 effectif et pourquoi, dernier incrément prouvé, questions ouvertes avec leur recommandation, part de quota, et le
 geste attendu de l'utilisateur s'il y en a un (`reprendre`, répondre à une question, retirer `STOP`). Ne jamais lancer
 `etape` ni `reprendre` sans sa demande.
+
+En mode cloud, lire la branche de mission sur `origin` : `docs/missions/<slug>/etat.json`, la fin de `journal.md`,
+le dernier `etapes/*/resume.md`. Le geste attendu de l'utilisateur est alors : répondre à une question (en éditant
+`etat.json` sur la branche), retirer `STOP`, ou désactiver la tâche sur claude.ai/code/routines.
+
+## 9. Mode cloud : ce qui change
+
+Pas de lanceur : **l'étape tient elle-même les garde-fous d'entrée et publie sa branche**. Une garde
+(`.claude/hooks/garde_cloud.py`) refuse tout push hors `claude/…`, toute fusion, toute écriture par l'API GitHub
+sauf l'ouverture d'une PR, et toute écriture sous `.claude/` ou `.github/`.
+
+**Où sont les fichiers** (tous sur la branche de mission, dans le dépôt) :
+
+| Fichier | Rôle |
+|---|---|
+| `docs/missions/<slug>/mission.md` | La mission. Ne jamais la modifier |
+| `docs/missions/<slug>/etat.json` | Le contrat du § 3, inchangé |
+| `docs/missions/<slug>/journal.md` | Une ligne ajoutée par étape : `<maj> · étape <n> · <statut> · <incrément>` (pas de hash : la ligne est dans le commit qu'elle décrirait ; `git log` le donne) |
+| `docs/missions/<slug>/etapes/<nnn>/resume.md` | Le § 4, `<nnn>` sur trois chiffres (`007`) |
+| `docs/missions/<slug>/STOP` | Posé par l'utilisateur : arrêt |
+
+**Avant tout travail, dans cet ordre** (une condition vraie = ne rien faire d'autre que ce qui est dit) :
+
+1. `STOP` existe → ne rien écrire, finir sur « Étape — : arrêtée (STOP) ».
+2. `etat.statut` n'est pas `en-cours` → ne rien écrire, finir en rappelant le statut et en demandant de désactiver
+   la tâche.
+3. `bornes.echeance` dépassée (heure obtenue par une commande) → `statut = "echeance"` ; `etat.etape` ≥
+   `bornes.etapes_max`, ou un compteur ≥ sa borne (`essais_max`) → `statut = "bornes-atteintes"`. Écrire alors
+   seulement `etat.json` (sans changer `etape`) et la ligne de journal, commiter, pousser, finir. Ce sont les deux
+   seuls statuts du lanceur que l'étape écrit, et seulement ici.
+
+**Pendant l'étape** :
+
+- Numéro de l'étape = `etat.etape + 1`. Le dossier de l'étape est `etapes/<nnn>/`.
+- `bornes.fenetres`, `notifier` et `methode` sont sans objet. `duree_etape_min` reste la durée visée : une
+  exécution qui dépasse l'heure chevauche la suivante.
+- **Commiter puis pousser** (étape 6 du § 2, remplacée) : un seul commit en fin d'étape, qui contient le travail,
+  `resume.md`, la ligne de `journal.md` et `etat.json` réécrit en dernier ; puis `git push -u origin <branche>`.
+  Push refusé parce que la branche distante a avancé : `git fetch`, lire son `etat.json` ; si son `etape` est ≥ la
+  tienne, une autre exécution a travaillé : **abandonner sans forcer**, finir en le disant. Sinon, `git rebase` puis
+  pousser à nouveau, une fois.
+- **À `termine`** : si `publication = "pr"`, ouvrir la PR de la branche vers la base par
+  `gh api repos/<owner>/<repo>/pulls -X POST -f title=… -f head=<branche> -f base=<base> -f body=…` (`gh pr create`
+  ne marche pas en cloud). Si `publication = "branche-seule"`, ne rien ouvrir.
+- Interdits du § 5 inchangés, **sauf** pousser la branche de mission et, à `termine` sous `"pr"`, ouvrir sa PR. Lire
+  `.claude/` se fait avec l'outil Read seulement : la garde refuse toute commande qui le nomme.
+- Fin de réponse : une seule ligne `Étape <n> : <statut> — <incrément en une phrase>`.
