@@ -1,7 +1,7 @@
 # Orchestration des sub-agents
 
 > Source canonique : `templates/profiles/dev-fullstack/agents/ORCHESTRATION.md` (dépôt `claude-profiles`) ; la copie déployée vit dans `agents/` du home actif.
-> Dernière mise à jour : 16.10.2026 (v2.9 — treizième agent `auditeur` : audit de santé d'une base de code existante, distinct de `reviewer` (diff pré-merge) et de `securite` (menaces) ; inventaire, règle 13, séquence 12, registre des clés. v2.8, 12.10.2026 — règle 12 : Claude Design, distinct de l'agent `designer`, et design system de l'application lu avant tout brief d'UI. v2.7, 05.09.2026 — reliquat de l'audit du 05.09 : registre des clés — `memory: user` posé aussi sur `securite` et `qa` (F7) ; la ligne `observer:` dit que `observerMessage` s'ajoute au texte par défaut du harness, cité d'après le binaire 2.1.261. Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
+> Dernière mise à jour : 28.10.2026 (v2.10 — la règle « aucune ligne sans SPEC.md » cède la place aux trois étages de la règle absolue, et l'exception « hotfix ≤ 5 lignes » est absorbée par l'étage 1 (audit dev-fullstack du 27.10, AC-02) ; `travail-autonome` inscrit le 27.10 (AC-08). v2.9, 16.10.2026 — treizième agent `auditeur` : audit de santé d'une base de code existante, distinct de `reviewer` (diff pré-merge) et de `securite` (menaces) ; inventaire, règle 13, séquence 12, registre des clés. v2.8, 12.10.2026 — règle 12 : Claude Design, distinct de l'agent `designer`, et design system de l'application lu avant tout brief d'UI. v2.7, 05.09.2026 — reliquat de l'audit du 05.09 : registre des clés — `memory: user` posé aussi sur `securite` et `qa` (F7) ; la ligne `observer:` dit que `observerMessage` s'ajoute au texte par défaut du harness, cité d'après le binaire 2.1.261. Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
 
 Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les séquences typiques. Il complète le `CLAUDE.md` global et les frontmatters de chaque agent.
 
@@ -26,7 +26,7 @@ Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les
 ## Règles d'invocation
 
 1. **Tâche large ou idée floue** : si le problème est ouvert / mal défini, passer d'abord par `brainstormer` (idéation divergente, 3-5 directions, ne tranche pas) puis `architecte`. Si le besoin est déjà clair, commencer directement par `architecte`. Sans cadrage, on construit sur du sable.
-2. **Avant toute écriture de code** (`backend`, `frontend`) : la SPEC.md doit exister. Si elle n'existe pas → invoquer le skill `spec-builder` (pas un sub-agent). Règle absolue du 19.05.2026.
+2. **Avant toute écriture de code** (`backend`, `frontend`) : le cadrage de son étage doit exister — rien sous 10 lignes, une SPEC-lite de 10 à 50, une `SPEC.md` au-delà ou si structurel. Pour la `SPEC.md` → invoquer le skill `spec-builder` (pas un sub-agent). Règle absolue du 19.05.2026, trois étages depuis le 18.08.2026.
 3. **Parallélisation autorisée** : `ux` + `designer` peuvent travailler en parallèle après `architecte`.
 4. **Avant merge** : `reviewer` systématique sur livrables `backend` / `frontend`.
 5. **Avant prod** : `securite` (audit complet) + `release` (pre-deploy check).
@@ -229,12 +229,12 @@ DEPLOY
 [securite] (audit pré-prod si jamais audité, ou après changement sensible)
 ```
 
-### Séquence 2 — Hotfix urgent (≤ 5 lignes)
+### Séquence 2 — Hotfix urgent (< 10 lignes, non structurel)
 
 ```
 orchestrateur
    ↓
-[backend ou frontend] → exception Phase -1 (hotfix justifié, signalé explicitement)
+[backend ou frontend] → Phase -1 étage 1 (aucune spec, intention annoncée en une ligne)
    ↓
 [reviewer Mode B] → spot review
    ↓
@@ -437,7 +437,7 @@ Tous les sub-agents (v2 — depuis 21.05.2026) suivent le même squelette :
 2. **Version** : ligne en tête juste après le frontmatter.
 3. **Modes** : A / B / C (parfois D), détectés en Phase 0, déclarés en début de livrable.
 4. **Skills à invoquer ou MCPs à utiliser** : si applicable.
-5. **Phase -1** (pour les agents qui écrivent du code) : vérification SPEC.md (règle 19.05.2026).
+5. **Phase -1** (pour les agents qui écrivent du code) : vérification du cadrage de l'étage — SPEC-lite ou `SPEC.md` (règle 19.05.2026).
 6. **Phase 0 — Lecture obligatoire (HARD GATE)** : citation des sources lues avant toute proposition.
 7. **Workflow numéroté**.
 8. **Garde-fous (règles dures)**.
@@ -454,7 +454,7 @@ Tous les sub-agents (v2 — depuis 21.05.2026) suivent le même squelette :
 
 - **Sauter `brainstormer` sur un problème vraiment ouvert** : on cadre la première idée venue au lieu d'avoir comparé les directions.
 - **Sauter `architecte` sur une feature non triviale** : on récupère la dette en double dans 3 mois.
-- **Invoquer `frontend` ou `backend` sans SPEC.md** : violation règle 19.05.2026.
+- **Invoquer `frontend` ou `backend` sans le cadrage de son étage (SPEC-lite de 10 à 50 lignes, `SPEC.md` au-delà ou si structurel)** : violation règle 19.05.2026.
 - **Sauter `reviewer` pour gagner du temps** : on s'expose à des findings qu'on aurait détectés en 5 minutes.
 - **Sauter `release` Mode A** : on découvre les vars d'env manquantes en prod.
 - **Durcir une validation sans signaler à `securite`** : on bannit silencieusement des users existants (cf. incident du 21.05.2026).
@@ -464,7 +464,7 @@ Tous les sub-agents (v2 — depuis 21.05.2026) suivent le même squelette :
 ## Skills associées (non sub-agents, exécutées dans le contexte principal)
 
 ### Cadrage / écriture
-- `spec-builder` : produit la SPEC.md d'exécution destinée au harness. **Obligatoire avant toute modification de code (règle 19.05.2026).**
+- `spec-builder` : produit la SPEC.md d'exécution destinée au harness. **Obligatoire au-delà de 50 lignes ou sur du structurel (règle 19.05.2026) ; une SPEC-lite suffit de 10 à 50 lignes.**
 - `claude-spec` / `spec-claude-code` : **supprimés le 31.05.2026** (dépréciés depuis 21.05.2026, archivés dans `templates/profiles/_archives/skills-spec-deprecies/`), utiliser `spec-builder`.
 - ~~`test-builder`~~ : **jamais livré par ce profil** (outil d'un bundle externe). L'écriture des tests revient à `backend` / `frontend`, à partir de la matrice de `qa` Mode B : celui qui écrit le code écrit ses tests.
 
@@ -501,6 +501,11 @@ Tous les sub-agents (v2 — depuis 21.05.2026) suivent le même squelette :
 - `update-config` / `keybindings-help` / `fewer-permission-prompts` : config harness Claude Code.
 - `loop` / `schedule` : automatisation récurrente.
 - `simplify` : review du code modifié pour reuse / quality / efficiency (différent de `reviewer` qui fait du pré-merge structurel).
+- `travail-autonome` (créé 27.10.2026) : méthode d'une **étape** de mission autonome, injectée par
+  `scripts/travail-autonome/lanceur.py` dans chaque `claude -p` (ADR-0006 de `claude-profiles`) ; sert aussi en
+  session normale pour écrire une mission et dire où elle en est. Une étape délègue aux agents nommés par la mission,
+  avec le brief en six points de ce fichier. **Frontière avec `loop` / `schedule`** : ceux-ci répètent une invite ;
+  ce skill porte une mission longue dont l'état vit sur disque et que le lanceur borne.
 
 ### À éviter (doublons avec sub-agents)
 - `code-review` (plugin) : préférer le sub-agent `reviewer` (cohérence pattern partagé).

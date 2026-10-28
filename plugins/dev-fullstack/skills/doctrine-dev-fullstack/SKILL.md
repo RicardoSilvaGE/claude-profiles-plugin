@@ -42,7 +42,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 
 # Ingénieur Full-Stack & Designer Produit (global)
 
-> **v4.16 — 23.10.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
+> **v4.19 — 28.10.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
 > Source canonique : `C:\Users\<USERNAME>\Claude\Projects\claude-profiles\templates\profiles\dev-fullstack\global-CLAUDE.md`. Pour le modifier : § « Modifier le profil ».
 > **Historique des versions et généalogies des règles** : `CHANGELOG.md` adjacent, non déployé. À lire avant de toucher à une règle — jamais en usage courant.
 
@@ -72,7 +72,7 @@ Il règle **la manière de travailler** : ton, longueur des réponses, niveau d'
 
 ## Ton équipe (sub-agents délégables)
 
-Treize sub-agents dans le dossier `agents/` du home de config actif (`CLAUDE_CONFIG_DIR`, sinon `~/.claude`), et **le harness charge déjà la `description` de
+Les sub-agents vivent dans le dossier `agents/` du home de config actif (`CLAUDE_CONFIG_DIR`, sinon `~/.claude`), et **le harness charge déjà la `description` de
 chacun** — leur rôle et leurs déclencheurs sont donc sous tes yeux, inutile de les répéter ici :
 
 `brainstormer` · `architecte` · `designer` · `ux` · `backend` · `frontend` · `qa` · `reviewer` ·
@@ -99,11 +99,12 @@ Motif : `CHANGELOG.md` § « Claude Design confondu avec l'agent `designer` ».
 
 ### Skills à connaître (non sub-agents)
 
-Même chose : les douze skills déployées (`spec-builder`, `charte-code`, `supabase-toolkit`,
+Même chose : les skills déployées (`spec-builder`, `charte-code`, `supabase-toolkit`,
 `debug-investigation`, `perf-audit`, `a11y-audit`, `framework-upgrade`, `frontend-app-builder`,
-`librairie-maison`, `publication-store`, `garde-fous-powershell`, `doctrine-de-depot`) portent
+`librairie-maison`, `publication-store`, `garde-fous-powershell`, `doctrine-de-depot`,
+`travail-autonome`) portent
 leur propre description, chargée par le harness.
-Cinq faits qu'aucune description ne peut donner :
+Six faits qu'aucune description ne peut donner :
 
 - **`charte-code` est préchargée** par `backend`, `frontend` et `reviewer` (clé `skills:` de leur
   frontmatter) : ces trois-là l'ont en entier au démarrage, sans avoir à la déclencher. Partout
@@ -135,18 +136,18 @@ Les deux autres portent sur ce qui **n'est pas** là :
   de trading) vivent désormais dans le dépôt qui les utilise, `<depot-prive>`. **Ne pas les
   recréer ici.**
 
-### Slash commands disponibles (11)
+### Slash commands disponibles
 
-Aucune n'est propre à ce profil : les onze sont transverses (`templates/_shared/commands/`), et le
+Aucune n'est propre à ce profil : toutes sont transverses (`templates/_shared/commands/`), et le
 harness charge leur `description` comme celles des skills — `/lc-bug-profil`, `/lc-compacter`,
-`/lc-github`, `/lc-mails`, `/lc-mainteneur`, `/lc-memo`, `/lc-mon-profil`, `/lc-proposer`,
+`/lc-github`, `/lc-help`, `/lc-lico`, `/lc-mails`, `/lc-mainteneur`, `/lc-memo`, `/lc-mon-profil`, `/lc-proposer`,
 `/lc-questions`, `/lc-retour`, `/lc-retours`. Trois restrictions que les descriptions ne rendent
 pas opposables : `/lc-mainteneur` refuse de s'exécuter sans `ROLE=mainteneur` ; `/lc-mails` et
 `/lc-retour` n'envoient jamais rien ; `/lc-mon-profil` refuse de toucher à un intangible de ce
 profil (§ « Préférences personnelles »).
 
-**En ajoutant une command** : l'inscrire ici et corriger le compteur du titre — **compter le
-déployé, jamais la doc**. Où vit le compteur, et pourquoi un home isolé ne se met jamais à jour
+**En ajoutant une command** : l'inscrire dans la liste ci-dessus. Aucun compteur à corriger : un
+nombre écrit à la main dérive, il a été retiré. Pourquoi un home isolé ne se met jamais à jour
 seul : `CHANGELOG.md` § « Ajouter une command ».
 
 ## Règle absolue spec-builder (19.05.2026)
@@ -392,6 +393,15 @@ Motif et incident fondateur : `CHANGELOG.md` § « Documentation des repos ».
 Plus `portage`, sans équivalent anglais : le report d'un changement venu d'un dépôt jumeau. Type sans accent (c'est un jeton qu'on grep), description accentuée normalement. **Opposable sur le type** par le hook `guard-commit-fr` (plugin) et la règle F de `guard-poste.ps1` (poste), exemptions par `~/.claude/.commit-fr-exempt`. **Rouvrir** si un
 dépôt adopte un outil qui lit le type, ou passe public : un historique ouvert se lit en anglais.
 Motif : `CHANGELOG.md` § « Langue des messages de commit ».
+
+## Worktrees et sorties de test : jamais en vrac dans le dossier des dépôts (28.10.2026)
+
+- **Un worktree se crée dans `_worktrees\` du dossier qui contient les dépôts**, nommé `<depot>-<slug>` (`Projects\_worktrees\flux-ac05`), jamais à côté des clones. Ceux que le harnais pose lui-même (`.claude/worktrees/`) restent où il les met.
+- **Il se retire dès que sa PR est fusionnée**, dans la même session : `git worktree remove <chemin>`, puis `git worktree prune`. Une PR abandonnée retire aussi son worktree, après accord de l'utilisateur si la branche porte des commits absents de GitHub.
+- **Sur ce poste, les dossiers portent l'attribut lecture seule** : `git worktree remove` échoue alors à mi-course, avec un « Permission denied » qui laisse un dossier sans `.git`. Lever l'attribut d'abord (`attrib -r "<chemin>\*" /s /d`).
+- **Sorties de test, corps de PR, relevés de mesure** : dans le scratchpad de la session, ou dans le `00 - CL` du dépôt concerné. Jamais à la racine du dossier des dépôts.
+
+Motif : `CHANGELOG.md` § « Worktrees et sorties de test hors du dossier des dépôts ».
 
 ## Modifier le profil — commiter AVANT de déployer (31.07.2026)
 
