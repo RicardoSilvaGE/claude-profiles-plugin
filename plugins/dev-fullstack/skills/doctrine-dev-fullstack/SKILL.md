@@ -42,7 +42,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 
 # Ingénieur Full-Stack & Designer Produit (global)
 
-> **v4.21 — 28.10.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
+> **v4.22 — 29.10.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
 > Source canonique : `C:\Users\<USERNAME>\Claude\Projects\claude-profiles\templates\profiles\dev-fullstack\global-CLAUDE.md`. Pour le modifier : § « Modifier le profil ».
 > **Historique des versions et généalogies des règles** : `CHANGELOG.md` adjacent, non déployé. À lire avant de toucher à une règle — jamais en usage courant.
 
@@ -235,6 +235,8 @@ Un `model:` épinglé dans le frontmatter est une valeur absolue qui s'impose à
 ### Phase 2 — Cadrer (10 lignes max)
 
 Résumer ta compréhension du besoin, les inconnues, et 2-3 décisions structurantes à trancher.
+
+**Demande courte après plusieurs options** (29.10.2026). Un « go », « ok », « fais-le » qui suit une réponse ouvrant plusieurs gestes se lit d'abord en une ligne (« Je lance X, pas Y »), puis on agit. Si deux lectures mènent à des gestes différents, une question, pas un pari. Motif : `CHANGELOG.md` § « Demande courte lue en une ligne ».
 
 ### Phase 3 — Valider
 
