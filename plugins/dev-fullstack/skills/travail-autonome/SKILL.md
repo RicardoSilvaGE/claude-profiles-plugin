@@ -5,6 +5,12 @@ description: "Méthode d'une étape de mission autonome (moteur scripts/travail-
 
 # Travail autonome : la méthode d'une étape
 
+> Version 1.2.5 — 29.10.2026 (§ 9 : ne récupérer que la base et la branche de mission ; à l'étape 1 de
+> `labo-strategies`, un `git fetch origin` nu a tourné dix minutes sur une branche d'archive de 12 Go, puis a été
+> arrêté).
+> Version 1.2.4 — 29.10.2026 (§ 9 : la règle « aucun `;` » de la 1.2.3 est retirée ; cause établie : un
+> environnement cloud en cache garde un `origin/main` figé, et le hook y lisait la toute première garde, du 28.10 à
+> 10:32, la seule version qui coupait sur un `;` entre guillemets).
 > Version 1.2.3 — 29.10.2026 (§ 9 : aucun `;` dans une commande Bash, même entre guillemets ; refusé en cloud par
 > la garde, tâche de diagnostic du 29.10.2026, cause non établie).
 > Version 1.2.2 — 29.10.2026 (§ 3 : `maj` recopiée de la sortie de la commande ; § 9 : une commande Bash simple
@@ -194,14 +200,17 @@ sauf l'ouverture d'une PR, et toute écriture sous `.claude/` ou `.github/`.
 - **Commandes Bash simples**, une par appel : un programme et ses arguments écrits en clair. La garde refuse ce
   qu'elle ne sait pas lire (substitution `$(…)`, variable qui compose un nom de commande ou de chemin, heredoc
   ambigu) ; un refus coûte un tour sans rien rapporter. Écrire et modifier les fichiers avec Write et Edit, jamais
-  par `printf`, `cat <<` ou `sed -i`. **Aucun `;` dans une commande, même entre guillemets** : en cloud, la garde
-  refuse `python3 -c "import a; a.f()"` qu'elle accepte en local. Du code de plus d'une instruction s'écrit dans un
-  fichier (Write), puis se lance par `python3 <fichier>.py`.
+  par `printf`, `cat <<` ou `sed -i`. Du code Python de plus d'une instruction s'écrit dans un fichier (Write),
+  puis se lance par `python3 <fichier>.py` : plus lisible, et rejouable par l'étape suivante. **La garde est lue
+  depuis `origin/<base>`** : tant que le `git fetch origin <base>` de la consigne n'a pas tourné, un environnement en
+  cache peut servir une garde périmée, plus stricte que l'actuelle. **Jamais de `git fetch origin` nu** : il
+  rapatrie toutes les branches, archives comprises ; nommer la branche voulue.
 - `bornes.fenetres`, `notifier` et `methode` sont sans objet. `duree_etape_min` reste la durée visée : une
   exécution qui dépasse l'heure chevauche la suivante.
 - **Commiter puis pousser** (étape 6 du § 2, remplacée) : un seul commit en fin d'étape, qui contient le travail,
   `resume.md`, la ligne de `journal.md` et `etat.json` réécrit en dernier ; puis `git push -u origin <branche>`.
-  Push refusé parce que la branche distante a avancé : `git fetch`, lire son `etat.json` ; si son `etape` est ≥ la
+  Push refusé parce que la branche distante a avancé : `git fetch origin <branche>:refs/remotes/origin/<branche>`,
+  lire son `etat.json` ; si son `etape` est ≥ la
   tienne, une autre exécution a travaillé : **abandonner sans forcer**, finir en le disant. Sinon, `git rebase` puis
   pousser à nouveau, une fois.
 - **À `termine`** : si `publication = "pr"`, ouvrir la PR de la branche vers la base par
