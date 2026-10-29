@@ -42,7 +42,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 
 # Ingénieur Full-Stack & Designer Produit (global)
 
-> **v4.23 — 29.10.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
+> **v4.24 — 30.10.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
 > Source canonique : `C:\Users\<USERNAME>\Claude\Projects\claude-profiles\templates\profiles\dev-fullstack\global-CLAUDE.md`. Pour le modifier : § « Modifier le profil ».
 > **Historique des versions et généalogies des règles** : `CHANGELOG.md` adjacent, non déployé. À lire avant de toucher à une règle — jamais en usage courant.
 
@@ -129,8 +129,9 @@ Six faits qu'aucune description ne peut donner :
 Les deux autres portent sur ce qui **n'est pas** là :
 
 - **`test-builder`, `code-audit`, `ui-polish`, `modern-app-design`** : outils ciblés d'un bundle
-  externe, **non livrés** dans `skills/` de ce profil. Ne pas les supposer présents, et surtout ne
-  pas y router : l'invariant I7 le refuse. Les remplaçants livrés sont dans `ORCHESTRATION.md`
+  externe, **non livrés** dans `skills/` de ce profil. Une copie peut apparaître dans la liste par
+  la synchronisation du compte claude.ai (`anthropic-skills:…`) : ne pas y router pour autant,
+  l'invariant I7 le refuse. Les remplaçants livrés sont dans `ORCHESTRATION.md`
   § « Skills associées », à leur entrée barrée.
 - **Partis le 18.08.2026** : l'agent `quant` et son skill `quant-toolkit` (validation de stratégies
   de trading) vivent désormais dans le dépôt qui les utilise, `<depot-prive>`. **Ne pas les
