@@ -32,10 +32,15 @@
 #     la clause « rouvrir si un depot passe public » de la doctrine, rendue locale et sans
 #     commit ; CLAUDE_GUARD_COMMIT_FR=0 coupe le garde.
 #
-# LIMITES ASSUMEES : ne voit que l'outil Bash (pas les outils MCP GitHub) ; un `git commit`
-# cite dans une chaine d'une autre commande (`echo "git commit -m x"`) est pris pour un commit ;
-# seul le PREMIER -m est lu (c'est le sujet). Fail-open : jq absent, payload vide ou invalide,
-# message introuvable -> silence, exit 0.
+# SEUL UN COMMIT EN TETE D'INSTRUCTION EST JUGE (29.10.2026) : debut de commande, ou apres ';',
+# '&', '|', '(', '{', saut de ligne, hors chaine, corps de heredoc et commentaire. Un
+# `grep "git commit"`, un `echo`, un --body de PR ou un corps de heredoc qui cite un commit
+# n'est pas un commit (sonde du 29.10.2026 : ils etaient refuses, et un corps de heredoc
+# conforme masquait le vrai commit qui le suivait).
+#
+# LIMITES ASSUMEES : ne voit que l'outil Bash (pas les outils MCP GitHub) ; une commande portee
+# par un $(...) entre guillemets doubles n'est pas jugee ; seul le PREMIER -m est lu (c'est le
+# sujet). Fail-open : jq absent, payload vide ou invalide, message introuvable -> silence, exit 0.
 #
 # Aucun nom de bureau ni de depot prive ici : `controler_publiable()` de build-plugin.sh grep
 # les .sh. Parite poste : regle F de scripts/guard-poste.ps1.
@@ -107,6 +112,70 @@ borner_args() {
     printf '%s' "$out"
 }
 
+# Imprime ce qui SUIT le premier `git [options] commit` place en TETE D'INSTRUCTION ; code 1 s'il
+# n'y en a aucun. Tete : debut de la commande, ou apres ';', '&', '|', '(', '{' ou un saut de
+# ligne, hors chaine, eventuellement precede d'affectations NOM=valeur, de env, then, do, else,
+# time ou '!'. Le parcours suit les guillemets et l'antislash, saute les corps de heredoc
+# (<<MARQ jusqu'a la ligne MARQ) et les commentaires ('#' en debut de mot). Parite : fonction
+# Trouver-CommitEnTete de scripts/guard-poste.ps1. Locale C : l'indexation ${s:i:1} reste en
+# temps constant (en UTF-8 elle recompte depuis le debut), seuls des delimiteurs ASCII comptent.
+RE_TETE="^[[:space:]]*((then|do|else|time|env|!)[[:space:]]+|[A-Za-z_][A-Za-z0-9_]*=(${DQ}[^${DQ}]*${DQ}|${SQ}[^${SQ}]*${SQ}|[^[:space:]]*)[[:space:]]+|&[[:space:]]*)*git([[:space:]]+$OPT)*[[:space:]]+commit([^[:alnum:]_-]|$)"
+RE_HEREDOC_TETE="^<<-?[[:blank:]]*[${SQ}${DQ}]?([A-Za-z_][A-Za-z0-9_]*)[${SQ}${DQ}]?"
+commit_en_tete() {
+    local LC_ALL=C
+    local s="$1" n i c q='' tete=1 marqueur='' reste avant ligne prec p clos
+    n=${#s}; i=0
+    while [ "$i" -lt "$n" ]; do
+        if [ -n "$q" ]; then
+            # Saut direct au guillemet fermant (ou a l'antislash, entre guillemets doubles) : un
+            # corps de PR de 8 Ko entre guillemets coutait 1,4 s caractere par caractere.
+            reste="${s:$i}"
+            if [ "$q" = '"' ]; then avant="${reste%%[\"\\]*}"; else avant="${reste%%\'*}"; fi
+            i=$((i + ${#avant}))
+            [ "$i" -lt "$n" ] || break
+            if [ "${s:$i:1}" = '\' ]; then i=$((i+2)); continue; fi
+            q=''; i=$((i+1)); continue
+        fi
+        if [ "$tete" -eq 1 ]; then
+            if [[ "${s:$i}" =~ $RE_TETE ]]; then printf '%s' "${s:$((i + ${#BASH_REMATCH[0]}))}"; return 0; fi
+            tete=0
+        fi
+        c="${s:$i:1}"
+        case "$c" in
+            '\') i=$((i+2)); continue ;;
+            $'\n')
+                if [ -n "$marqueur" ]; then
+                    # Corps du heredoc : de la ligne suivante jusqu'a la ligne du marqueur incluse.
+                    p=$((i+1)); clos=0
+                    while [ "$p" -le "$n" ]; do
+                        ligne="${s:$p}"; ligne="${ligne%%$'\n'*}"
+                        if [ "${ligne//[[:space:]]/}" = "$marqueur" ]; then clos=1; p=$((p + ${#ligne})); break; fi
+                        p=$((p + ${#ligne} + 1))
+                    done
+                    marqueur=''
+                    [ "$clos" -eq 1 ] || return 1
+                    i=$p
+                fi
+                tete=1; i=$((i+1)); continue ;;
+            '"'|"'") q="$c"; i=$((i+1)); continue ;;
+            '#')
+                prec="${s:$((i-1)):1}"
+                if [ "$i" -eq 0 ] || [[ "$prec" =~ ^[[:space:]\;\&\|]$ ]]; then
+                    reste="${s:$i}"
+                    case "$reste" in *$'\n'*) ligne="${reste%%$'\n'*}"; i=$((i + ${#ligne})); continue ;; *) return 1 ;; esac
+                fi ;;
+            '<')
+                if [ "${s:$i:3}" = '<<<' ]; then i=$((i+3)); continue; fi
+                if [[ "${s:$i}" =~ $RE_HEREDOC_TETE ]]; then
+                    marqueur="${BASH_REMATCH[1]}"; i=$((i + ${#BASH_REMATCH[0]})); continue
+                fi ;;
+            ';'|'&'|'|'|'('|'{') tete=1 ;;
+        esac
+        i=$((i+1))
+    done
+    return 1
+}
+
 # Sujet d'un message passe par FICHIER (-F <chemin>, --file=<chemin>) ou par l'entree standard
 # alimentee d'un heredoc (`git commit -F - <<'EOF'`) : premiere ligne non vide, ou rien.
 # MOTIF, 22.10.2026 : -F passait sans examen ; deux commits `ci(...)` hors convention sont passes
@@ -147,9 +216,10 @@ SUJET=""; TROUVE=0
 # nu, heredoc a marqueur nu). Entre apostrophes, dans un heredoc a marqueur cite ou dans un
 # fichier, un `$` reste un `$` et le sujet se juge a la lettre.
 DEVELOPPE=0
-if [[ "$CMD" =~ $MOTIF ]]; then
+# Le motif sur la commande entiere n'est qu'un pre-filtre bon marche : c'est commit_en_tete qui
+# decide si un commit est en tete d'instruction, et d'ou partent ses arguments.
+if [[ "$CMD" =~ $MOTIF ]] && rest="$(commit_en_tete "$CMD")"; then
     TROUVE=1
-    rest="${CMD#*"${BASH_REMATCH[0]}"}"
     rest_brut="$rest"
     rest="$(borner_args "$rest")"
     msg=""
