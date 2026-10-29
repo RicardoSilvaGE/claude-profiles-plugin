@@ -5,6 +5,9 @@ description: "Méthode d'une étape de mission autonome (moteur scripts/travail-
 
 # Travail autonome : la méthode d'une étape
 
+> Version 1.2.2 — 29.10.2026 (§ 3 : `maj` recopiée de la sortie de la commande ; § 9 : une commande Bash simple
+> par appel, fichiers par Write/Edit. Leçons de la mission d'essai `essai-dates` : un refus de la garde à
+> chacune des étapes 1 et 2, `maj` décalée de 30 à 40 s aux mêmes étapes).
 > Version 1.2.1 — 28.10.2026 (§ 9 : la ligne de journal ne porte plus de hash, impossible à connaître avant le
 > commit qui la contient ; relevé à l'étape 1 de la mission d'essai).
 > Version 1.2 — 28.10.2026 (§ 9 « Mode cloud » : une étape par exécution de tâche planifiée, état sur la branche ;
@@ -79,7 +82,8 @@ Réécrire le fichier **en entier**, en gardant tel quel ce qui n'a pas changé 
 
 - `etape` = le numéro donné par l'invite. `maj` = l'heure **réelle** de l'écriture, avec décalage horaire, obtenue
   par une commande (`python -c "import datetime;print(datetime.datetime.now().astimezone().isoformat(timespec='seconds'))"`),
-  jamais inventée.
+  et **recopiée telle quelle** dans `etat.json` et le journal : jamais inventée, ni estimée à partir d'une heure
+  lue plus tôt.
 - `statut` : `en-cours` ; `termine` si la `condition_de_fin` est remplie, **preuve citée** dans `resume.md` ;
   `impossible` si la mission ne peut pas aboutir, raison écrite ; `attente-utilisateur` s'il ne reste **rien** à faire
   sans une réponse. Aucune autre valeur : les autres statuts appartiennent au lanceur.
@@ -185,6 +189,10 @@ sauf l'ouverture d'une PR, et toute écriture sous `.claude/` ou `.github/`.
 **Pendant l'étape** :
 
 - Numéro de l'étape = `etat.etape + 1`. Le dossier de l'étape est `etapes/<nnn>/`.
+- **Commandes Bash simples**, une par appel : un programme et ses arguments écrits en clair. La garde refuse ce
+  qu'elle ne sait pas lire (substitution `$(…)`, variable qui compose un nom de commande ou de chemin, heredoc
+  ambigu) ; un refus coûte un tour sans rien rapporter. Écrire et modifier les fichiers avec Write et Edit, jamais
+  par `printf`, `cat <<` ou `sed -i`.
 - `bornes.fenetres`, `notifier` et `methode` sont sans objet. `duree_etape_min` reste la durée visée : une
   exécution qui dépasse l'heure chevauche la suivante.
 - **Commiter puis pousser** (étape 6 du § 2, remplacée) : un seul commit en fin d'étape, qui contient le travail,
