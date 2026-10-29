@@ -5,6 +5,8 @@ description: "Méthode d'une étape de mission autonome (moteur scripts/travail-
 
 # Travail autonome : la méthode d'une étape
 
+> Version 1.2.3 — 29.10.2026 (§ 9 : aucun `;` dans une commande Bash, même entre guillemets ; refusé en cloud par
+> la garde, tâche de diagnostic du 29.10.2026, cause non établie).
 > Version 1.2.2 — 29.10.2026 (§ 3 : `maj` recopiée de la sortie de la commande ; § 9 : une commande Bash simple
 > par appel, fichiers par Write/Edit. Leçons de la mission d'essai `essai-dates` : un refus de la garde à
 > chacune des étapes 1 et 2, `maj` décalée de 30 à 40 s aux mêmes étapes).
@@ -192,7 +194,9 @@ sauf l'ouverture d'une PR, et toute écriture sous `.claude/` ou `.github/`.
 - **Commandes Bash simples**, une par appel : un programme et ses arguments écrits en clair. La garde refuse ce
   qu'elle ne sait pas lire (substitution `$(…)`, variable qui compose un nom de commande ou de chemin, heredoc
   ambigu) ; un refus coûte un tour sans rien rapporter. Écrire et modifier les fichiers avec Write et Edit, jamais
-  par `printf`, `cat <<` ou `sed -i`.
+  par `printf`, `cat <<` ou `sed -i`. **Aucun `;` dans une commande, même entre guillemets** : en cloud, la garde
+  refuse `python3 -c "import a; a.f()"` qu'elle accepte en local. Du code de plus d'une instruction s'écrit dans un
+  fichier (Write), puis se lance par `python3 <fichier>.py`.
 - `bornes.fenetres`, `notifier` et `methode` sont sans objet. `duree_etape_min` reste la durée visée : une
   exécution qui dépasse l'heure chevauche la suivante.
 - **Commiter puis pousser** (étape 6 du § 2, remplacée) : un seul commit en fin d'étape, qui contient le travail,

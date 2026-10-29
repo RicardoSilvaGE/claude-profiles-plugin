@@ -25,6 +25,8 @@
 #   - un commit sans message en ligne : editeur, --amend --no-edit, --help ;
 #   - un message par fichier (-F/--file) qu'on ne peut pas lire : fichier absent, chemin dans
 #     une variable, entree standard venue d'un tube. Lisible, il est juge (22.10.2026) ;
+#   - un sujet illisible dans la commande : `-m "$MSG"`, `${X}`, `$(...)`, accents graves, dans
+#     une zone que le shell developpe (29.10.2026) ;
 #   - tout ce qui n'est pas `git [options globales] commit` ;
 #   - les depots declares dans ~/.claude/.commit-fr-exempt (« owner/repo », joker `*`) — c'est
 #     la clause « rouvrir si un depot passe public » de la doctrine, rendue locale et sans
@@ -141,6 +143,10 @@ EOF_CORPS_F
 }
 
 SUJET=""; TROUVE=0
+# DEVELOPPE=1 : le texte extrait vit dans une zone que le SHELL developpe (guillemets doubles, mot
+# nu, heredoc a marqueur nu). Entre apostrophes, dans un heredoc a marqueur cite ou dans un
+# fichier, un `$` reste un `$` et le sujet se juge a la lettre.
+DEVELOPPE=0
 if [[ "$CMD" =~ $MOTIF ]]; then
     TROUVE=1
     rest="${CMD#*"${BASH_REMATCH[0]}"}"
@@ -148,6 +154,7 @@ if [[ "$CMD" =~ $MOTIF ]]; then
     rest="$(borner_args "$rest")"
     msg=""
     if [[ "$rest" =~ $RE_HEREDOC ]]; then
+        case "${BASH_REMATCH[0]}" in *"$SQ"*|*"$DQ"*) DEVELOPPE=0 ;; *) DEVELOPPE=1 ;; esac
         marqueur="${BASH_REMATCH[1]}"
         corps="${rest#*"${BASH_REMATCH[0]}"}"
         corps="${corps#*$'\n'}"                                   # ce qui suit la ligne du marqueur
@@ -161,8 +168,10 @@ EOF_CORPS
         # (22.10.2026), il ne vit pas dans un -m "$(cat <<EOF ...)".
         [ -n "$msg" ] || msg="$(lire_message_fichier "$rest" "$rest_brut")"
     elif [[ "$rest" =~ $RE_MESSAGE ]]; then
+        case "${BASH_REMATCH[1]}" in "$SQ"*) DEVELOPPE=0 ;; *) DEVELOPPE=1 ;; esac
         msg="${BASH_REMATCH[2]}${BASH_REMATCH[3]}${BASH_REMATCH[4]}"
     elif [[ "$rest" =~ $RE_M ]]; then
+        case "${BASH_REMATCH[2]}" in "$SQ"*) DEVELOPPE=0 ;; *) DEVELOPPE=1 ;; esac
         msg="${BASH_REMATCH[3]}${BASH_REMATCH[4]}${BASH_REMATCH[5]}"
     else
         msg="$(lire_message_fichier "$rest" "$rest_brut")"            # -F / --file, lu depuis le 22.10.2026
@@ -179,6 +188,15 @@ case "$SUJET" in
     "Merge "*|"Revert "*|"fixup! "*|"squash! "*|"amend! "*) exit 0 ;;
 esac
 printf '%s' "$SUJET" | grep -Eq '^(fonctionnalite|correctif|entretien|doc|refonte|test|portage)\([^)]+\)!?: [^[:space:]]' && exit 0
+
+# Sujet ILLISIBLE dans la commande : variable ($X, ${X}), substitution $(...) ou accents graves,
+# dans une zone que le shell developpe. Le hook ne lit que le texte de la commande, pas ce que le
+# shell en fera : il ne juge pas, il ne devine pas, il laisse passer. MOTIF : `git commit -m "$MSG"`
+# refuse avec un sujet annonce "$MSG" (sessions du 22 au 29.10.2026). LIMITE ASSUMEE :
+# `-m "Fix $V"` passe aussi, le sujet entier etant inconnu. Le `-F -` alimente d'un heredoc suit
+# la meme regle que le heredoc ; un fichier, lu tel quel, est toujours juge.
+# shellcheck disable=SC2016
+[ "$DEVELOPPE" -eq 1 ] && printf '%s' "$SUJET" | grep -Eq '[$][A-Za-z_{(0-9]|`' && exit 0
 
 # Exemptions locales, meme mecanique que guard-push-main.sh (~/.claude/.commit-fr-exempt).
 FICHIER_EXEMPT="${HOME:-/nonexistent}/.claude/.commit-fr-exempt"
