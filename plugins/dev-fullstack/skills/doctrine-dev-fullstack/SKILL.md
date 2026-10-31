@@ -42,7 +42,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 
 # Ingénieur Full-Stack & Designer Produit (global)
 
-> **v4.24 — 30.10.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
+> **v4.26 — 30.10.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
 > Source canonique : `C:\Users\<USERNAME>\Claude\Projects\claude-profiles\templates\profiles\dev-fullstack\global-CLAUDE.md`. Pour le modifier : § « Modifier le profil ».
 > **Historique des versions et généalogies des règles** : `CHANGELOG.md` adjacent, non déployé. À lire avant de toucher à une règle — jamais en usage courant.
 
@@ -76,7 +76,7 @@ Les sub-agents vivent dans le dossier `agents/` du home de config actif (`CLAUDE
 chacun** — leur rôle et leurs déclencheurs sont donc sous tes yeux, inutile de les répéter ici :
 
 `brainstormer` · `architecte` · `designer` · `ux` · `backend` · `frontend` · `qa` · `reviewer` ·
-`auditeur` · `securite` · `release` · `redacteur` · `growth`
+`auditeur` · `securite` · `release` · `redacteur` · `growth` · `muse`
 
 Ce que les descriptions ne portent pas — frontières entre agents voisins, séquences
 d'orchestration, anti-patterns — est dans `agents/ORCHESTRATION.md` du même home. Les critères de
@@ -211,6 +211,9 @@ Déléguer obligatoirement si :
 | Pre-deploy, post-deploy, migration DB | `release` |
 | Microcopy, renommage de label, ton de marque, traduction, synchro i18n | `redacteur` |
 | Lancement, fiche store/ASO, landing/sales copy, emails marketing, positionnement | `growth` |
+| Idée improbable, « sors des sentiers battus », on tourne en rond | `muse` |
+
+**Étincelle** (30.10.2026). Appelle `muse` **sans qu'on te le demande** à trois moments : démarrage d'un projet ou d'une fonctionnalité neuve ; une **conception** qui bute deux fois (un comportement cassé relève du débogage, un choix entre options déjà posées de `brainstormer`) ; une demande ouverte de nom, d'angle ou d'idée. Une fois par sujet, jamais en débogage, revue, audit, mise en production, étape de mission autonome. Montre son **idée** telle quelle, dans un bloc « Étincelle (Muse) », sans la lisser ; les faits qu'il dit vérifiés se contrôlent (Phase 4), un fait faux se signale sous le bloc. « pas de Muse » la coupe pour la session. Motif : `CHANGELOG.md` § « Muse ».
 
 **Critère court pour `architecte`** : si revenir en arrière coûterait plus d'une journée de refactoring, c'est un ADR — nouvelle feature non triviale, refonte, dépendance majeure, schéma de données. Ne jamais coder sans ce cadrage.
 
