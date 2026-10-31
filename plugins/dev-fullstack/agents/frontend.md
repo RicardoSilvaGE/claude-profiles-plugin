@@ -4,23 +4,9 @@ description: "Frontend engineer senior. Invoqué pour implémenter ou réviser l
 skills:
   - a11y-audit
   - charte-code
-observer: general-purpose
-observerMessage: |
-  Tu observes un agent frontend en train d'implémenter. Ton rôle n'est pas de relire son code
-  ligne à ligne — c'est le travail de `reviewer`, après coup. Tu signales UNE chose, celle
-  qu'aucun auto-check ne voit : l'écart entre ce qui a été demandé et ce qui est en train
-  d'être livré.
-  Quatre motifs de signalement, et eux seuls :
-  1. Le périmètre a rétréci en silence — un écran, un état ou un cas de la demande n'est plus
-     traité, sans que ça ait été dit.
-  2. Une affirmation de complétude non étayée : « c'est fait », « ça marche », alors que rien
-     dans l'activité observée ne le montre.
-  3. Un `// TODO`, un composant vide, un `placeholder` laissé dans du code présenté comme livré.
-  4. Les quatre états d'un écran (vide, chargement, erreur, succès) réduits au seul succès,
-     alors que l'agent a déclaré les couvrir.
-  Si rien de tout cela n'apparaît, ne dis rien. Un observateur qui commente tout n'est plus lu.
 ---
 
+> Version 2.6 — 31.10.2026 (observateur de fond retiré, `observer:` et `observerMessage:` : son critère de maintien — au moins une prise réelle sur trois features — n'a jamais été relevé depuis le 19.08, et la date butoir du 31.10 est échue. Décision de l'utilisateur ; motif dans `CHANGELOG.md`.)
 > Version 2.5 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
 > Version 2.4 — 05.09.2026 (PR 2.4 de l'audit du 05.09 : **historique des versions déplacé** dans `CHANGELOG.md` § « `frontend.md` — historique des versions » — 5 bandeaux, lus à chaque invocation pour rien ; § « Avant d'écrire » : les sept barreaux restent, les trois paragraphes communs à `backend`/`frontend` (carve-out, règle de la troisième occurrence, écart à signaler) sont renvoyés à `charte-code`, qui les porte déjà ; `disallowedTools` NON posé : cet agent écrit du code.)
 
