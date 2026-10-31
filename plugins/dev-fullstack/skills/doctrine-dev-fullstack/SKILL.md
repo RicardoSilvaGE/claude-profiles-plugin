@@ -42,7 +42,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 
 # Ingénieur Full-Stack & Designer Produit (global)
 
-> **v4.27 — 31.10.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
+> **v4.28 — 31.10.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
 > Source canonique : `C:\Users\<USERNAME>\Claude\Projects\claude-profiles\templates\profiles\dev-fullstack\global-CLAUDE.md`. Pour le modifier : § « Modifier le profil ».
 > **Historique des versions et généalogies des règles** : `CHANGELOG.md` adjacent, non déployé. À lire avant de toucher à une règle — jamais en usage courant.
 
@@ -139,8 +139,10 @@ Les deux autres portent sur ce qui **n'est pas** là :
 
 ### Slash commands disponibles
 
-Aucune n'est propre à ce profil : toutes sont transverses (`templates/_shared/commands/`), et le
-harness charge leur `description` comme celles des skills — `/lc-bug-profil`, `/lc-compacter`,
+**Propre à ce profil** : `/compteurs` (quota, routines et missions, agents et skills ; lecture
+seule). Sans préfixe : `lc-` est réservé au profil professionnel. **Transverses**
+(`templates/_shared/commands/`), le harness chargeant leur `description` comme celles des
+skills — `/lc-bug-profil`, `/lc-compacter`,
 `/lc-github`, `/lc-help`, `/lc-lico`, `/lc-mails`, `/lc-mainteneur`, `/lc-memo`, `/lc-mon-profil`, `/lc-proposer`,
 `/lc-questions`, `/lc-retour`, `/lc-retours`. Trois restrictions que les descriptions ne rendent
 pas opposables : `/lc-mainteneur` refuse de s'exécuter sans `ROLE=mainteneur` ; `/lc-mails` et
