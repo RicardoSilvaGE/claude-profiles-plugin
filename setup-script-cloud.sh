@@ -94,6 +94,33 @@ PROFIL="dev-fullstack"
 # PREFERENCES
 # ----------------------------------------------------------------------------------------------
 
+# ----------------------------------------------------------------------------------------------
+# SOURCE LOCALE D'ABORD (31.10.2026, essai du passage du marketplace en PRIVE)
+#
+# La documentation de l'environnement cloud dit qu'un depot prive dont le setup script a besoin
+# s'ajoute sous « Repositories » dans les reglages de l'environnement (absent de l'environnement
+# par defaut) : il est alors clone avec l'authentification de la session. Si le depot du
+# marketplace y est ajoute, ce script le trouve sur le disque et installe le plugin DEPUIS LUI,
+# sans clone anonyme — c'est ce qui permettrait de repasser le depot en prive. A defaut, il
+# retombe sur le clone anonyme du depot PUBLIC, comme avant : ce changement ne casse rien tant
+# que le depot reste public.
+#
+# DEUX FAITS MESURES le 31.10.2026 (claude 2.1.316, home de config jetable) qui dictent la forme :
+#   1. Un marketplace de type « directory » est LU SUR PLACE, pas copie : `claude plugin list`
+#      donne « Read from: <dossier>/plugins/dev-fullstack ».
+#   2. Le dossier retire, le plugin passe en « failed to load : cache-miss ».
+# D'ou la COPIE dans /root, qui survit au cache de l'environnement (cf. piege 2 ci-dessus), au
+# lieu de pointer le clone du depot, dont rien ne garantit qu'il soit au meme endroit — ni
+# meme present — dans une session ouverte sur un environnement en cache.
+#
+# CE QUE L'ESSAI DOIT ENCORE MONTRER, et que rien ici ne prouve : que le depot est deja clone
+# au moment ou ce script tourne, et ou. Le journal liste donc les emplacements candidats.
+# ----------------------------------------------------------------------------------------------
+NOM_DEPOT="${MARKETPLACE##*/}"
+COPIE_LOCALE="${COPIE_LOCALE:-/root/marketplace-$NOM_DEPOT}"
+JOURNAL="${JOURNAL:-/root/plugin-setup.log}"
+CANDIDATS="${CANDIDATS:-/home/user/$NOM_DEPOT /workspace/$NOM_DEPOT}"
+
 export PATH="/opt/node22/bin:$PATH"
 
 {
@@ -103,13 +130,36 @@ export PATH="/opt/node22/bin:$PATH"
         echo "ECHEC : la commande 'claude' est introuvable, meme apres l'ajout de /opt/node22/bin."
         echo "PATH = $PATH"
     else
-        # Depot PUBLIC : clone anonyme, aucune authentification, aucun secret.
-        claude plugin marketplace add "$MARKETPLACE"
-        claude plugin install "${PROFIL}@${MARKETPLACE##*/}" --yes
+        echo "--- emplacements candidats d'un clone local de $NOM_DEPOT ---"
+        local_src=""
+        for d in $CANDIDATS; do
+            if [ -f "$d/.claude-plugin/marketplace.json" ]; then
+                echo "  TROUVE  $d"
+                [ -z "$local_src" ] && local_src="$d"
+            else
+                echo "  absent  $d"
+            fi
+        done
+        echo "  (contenu de /home/user : $(ls /home/user 2>/dev/null | tr '\n' ' '))"
+        echo "  (contenu de /workspace : $(ls /workspace 2>/dev/null | tr '\n' ' '))"
+
+        if [ -n "$local_src" ]; then
+            echo "--- source : COPIE LOCALE de $local_src -> $COPIE_LOCALE ---"
+            rm -rf "$COPIE_LOCALE"
+            mkdir -p "$COPIE_LOCALE"
+            cp -a "$local_src/." "$COPIE_LOCALE/"
+            rm -rf "$COPIE_LOCALE/.git"
+            claude plugin marketplace add "$COPIE_LOCALE"
+        else
+            # Depot PUBLIC : clone anonyme, aucune authentification, aucun secret.
+            echo "--- source : GITHUB, clone anonyme de $MARKETPLACE ---"
+            claude plugin marketplace add "$MARKETPLACE"
+        fi
+        claude plugin install "${PROFIL}@${NOM_DEPOT}" --yes
 
         echo "--- etat final ---"
         claude plugin list
     fi
-} > /root/plugin-setup.log 2>&1
+} > "$JOURNAL" 2>&1
 
 exit 0
