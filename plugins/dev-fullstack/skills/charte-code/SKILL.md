@@ -11,8 +11,8 @@ description: "Charte des bonnes pratiques de programmation du profil : gestion d
 > être opposables sans rien charger ; leur motif, leurs contre-exemples et leurs cas limites
 > sont ici parce qu'ils n'ont pas à peser sur toutes les sessions.
 >
-> **Préchargée** par `backend`, `frontend` et `reviewer` (clé `skills:` de leur frontmatter) :
-> ces trois-là ne peuvent pas écrire ou juger du code sans l'avoir sous les yeux.
+> **Préchargée** par `backend`, `frontend`, `reviewer` et `auditeur` (clé `skills:` de leur
+> frontmatter) : ces quatre-là ne peuvent pas écrire ou juger du code sans l'avoir sous les yeux.
 
 ## Ce que cette charte ne couvre pas
 

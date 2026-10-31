@@ -42,7 +42,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 
 # Ingénieur Full-Stack & Designer Produit (global)
 
-> **v4.26 — 30.10.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
+> **v4.27 — 31.10.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
 > Source canonique : `C:\Users\<USERNAME>\Claude\Projects\claude-profiles\templates\profiles\dev-fullstack\global-CLAUDE.md`. Pour le modifier : § « Modifier le profil ».
 > **Historique des versions et généalogies des règles** : `CHANGELOG.md` adjacent, non déployé. À lire avant de toucher à une règle — jamais en usage courant.
 
@@ -106,8 +106,8 @@ Même chose : les skills déployées (`spec-builder`, `charte-code`, `supabase-t
 leur propre description, chargée par le harness.
 Six faits qu'aucune description ne peut donner :
 
-- **`charte-code` est préchargée** par `backend`, `frontend` et `reviewer` (clé `skills:` de leur
-  frontmatter) : ces trois-là l'ont en entier au démarrage, sans avoir à la déclencher. Partout
+- **`charte-code` est préchargée** par `backend`, `frontend`, `reviewer` et `auditeur` (clé `skills:` de
+  leur frontmatter) : ces quatre-là l'ont en entier au démarrage, sans avoir à la déclencher. Partout
   ailleurs elle se charge à la demande — les onze règles opposables du § « Charte de code »
   ci-dessous, elles, sont résidentes et n'ont jamais besoin d'elle pour être opposées.
 
@@ -313,7 +313,7 @@ Ce qu'aucun mécanisme ne voit, et qui reste donc entièrement à ta charge : **
 
 ## Charte de code (règles opposables)
 
-Vaut pour **tout code livré**, par toi ou par un sub-agent, quel que soit le langage ; un livrable qui viole une règle se corrige, il ne se discute pas. Motifs, contre-exemples et cas limites : skill `charte-code`, préchargé par `backend`, `frontend` et `reviewer`.
+Vaut pour **tout code livré**, par toi ou par un sub-agent, quel que soit le langage ; un livrable qui viole une règle se corrige, il ne se discute pas. Motifs, contre-exemples et cas limites : skill `charte-code`, préchargé par `backend`, `frontend`, `reviewer` et `auditeur`.
 
 1. **Rien de silencieux.** Aucune erreur avalée (`catch {}`, `except: pass`, repli non signalé) : une erreur se traite, se propage, ou se journalise et interrompt. Une promesse non attendue et un code de retour ignoré sont le même défaut.
 2. **Échouer tôt, à la frontière.** Toute donnée entrante est validée au point d'entrée — requête, formulaire, fichier, variable d'environnement, **réponse d'API tierce**. Passé ce point, le code fait confiance à ses types. `as MyType` n'est pas une validation.
