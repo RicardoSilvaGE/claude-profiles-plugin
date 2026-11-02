@@ -1,12 +1,6 @@
 # Comment ajouter un nouveau sub-agent ou skill
 
 > Version 1.6 — 02.11.2026 (longueur des descriptions : pas de cible chiffrée, arbitrage du 02.11.2026 écrit)
-> Version 1.5 — 31.10.2026 (clé `observer:` : posée puis retirée, la ligne le dit ; motif dans `CHANGELOG.md`)
-> Version 1.4 — 05.09.2026 (PR 1.3 de l'audit du 05.09, constat D6 : la procédure faisait créer agents et skills **dans `~/.claude/`**, que `sync-global.ps1` vide au sync suivant — contre la règle dure « la source est toujours le repo » ; elle ignorait les clés de frontmatter posées depuis (`skills:`, `observer:`, `memory:`), le banc de conformité, le plugin et son bump, les registres générés et la propagation aux consommateurs. Réécrite sur `templates/profiles/dev-fullstack/` avec la checklist complète. `securite` ajouté aux agents découplés de la stack.)
-> Version 1.3 — 01.06.2026 (§ « Découplage de la stack » ajouté : la stack d'un agent est un défaut surpassable par le CLAUDE.md projet, à propager aux gates durs — incident 01.06.2026)
-> Version 1.2 — 27.05.2026 (§ « Pourquoi un sub-agent n'apparaît pas » réécrit : la cause primaire prouvée est le CRLF dans le frontmatter, pas la longueur de description — théorie ~319 char réfutée par `qa.md` qui charge à 329 char)
-> Version 1.1 — 26.05.2026 (ajout § « Pourquoi un sub-agent n'apparaît pas » : plafond description ~319 char + set figé au démarrage du process)
-> Version 1.0 — 21.05.2026
 > Référence pour l'utilisateur (et pour Claude qui orchestre les modifications).
 
 ## Sub-agent ou skill ?

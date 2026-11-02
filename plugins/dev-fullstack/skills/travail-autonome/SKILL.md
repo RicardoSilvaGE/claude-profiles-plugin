@@ -6,23 +6,7 @@ description: "Méthode d'une étape de mission autonome (moteur scripts/travail-
 # Travail autonome : la méthode d'une étape
 
 > Version 1.2.6 — 02.11.2026 (audit du 01.11.2026, AC-17 : la `description` ne résume plus la procédure d'une étape, qui reste aux §§ 2 et 3 ; elle route.)
-> Version 1.2.5 — 29.10.2026 (§ 9 : ne récupérer que la base et la branche de mission ; à l'étape 1 de
-> `labo-strategies`, un `git fetch origin` nu a tourné dix minutes sur une branche d'archive de 12 Go, puis a été
-> arrêté).
-> Version 1.2.4 — 29.10.2026 (§ 9 : la règle « aucun `;` » de la 1.2.3 est retirée ; cause établie : un
-> environnement cloud en cache garde un `origin/main` figé, et le hook y lisait la toute première garde, du 28.10 à
-> 10:32, la seule version qui coupait sur un `;` entre guillemets).
-> Version 1.2.3 — 29.10.2026 (§ 9 : aucun `;` dans une commande Bash, même entre guillemets ; refusé en cloud par
-> la garde, tâche de diagnostic du 29.10.2026, cause non établie).
-> Version 1.2.2 — 29.10.2026 (§ 3 : `maj` recopiée de la sortie de la commande ; § 9 : une commande Bash simple
-> par appel, fichiers par Write/Edit. Leçons de la mission d'essai `essai-dates` : un refus de la garde à
-> chacune des étapes 1 et 2, `maj` décalée de 30 à 40 s aux mêmes étapes).
-> Version 1.2.1 — 28.10.2026 (§ 9 : la ligne de journal ne porte plus de hash, impossible à connaître avant le
-> commit qui la contient ; relevé à l'étape 1 de la mission d'essai).
-> Version 1.2 — 28.10.2026 (§ 9 « Mode cloud » : une étape par exécution de tâche planifiée, état sur la branche ;
-> `docs/SPEC-travail-autonome-cloud.md`).
-> Version 1.1 — 28.10.2026 (session cloud : le moteur n'existe que sur le poste).
-> Version 1.0 — 27.10.2026 (création, lot 3 de l'ADR-0006). Ce fichier est **injecté tel quel** dans chaque étape
+> Ce fichier est **injecté tel quel** dans chaque étape
 > par `lanceur.py` (`--append-system-prompt-file`), depuis sa copie installée. Contrats complets :
 > `docs/SPEC-travail-autonome.md` du dépôt `claude-profiles`.
 

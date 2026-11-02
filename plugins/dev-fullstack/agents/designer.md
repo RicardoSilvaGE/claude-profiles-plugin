@@ -5,10 +5,6 @@ description: "Designer produit senior. Définit le design system (palette, typo,
 ---
 
 > Version 3.3 — 12.10.2026 (Phase 0 : lire le design system de l'application dans Claude Design ; frontière avec Claude Design, § « Quand NE PAS m'invoquer ».)
-> Version 3.2 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
-> Version 3.1 — 05.09.2026 (frontmatter `disallowedTools: Edit, Bash, NotebookEdit` — PR 2.4 de l'audit du 05.09, constat F2 : la fiche interdisait l'écriture par une phrase que rien n'opposait ; la clé la rend opposable — `Write` pour `docs/`, sans `Bash`. Liste NOIRE et non `tools:` : témoin du 05.09.2026, les serveurs MCP survivent à `disallowedTools` là où une liste blanche les perdrait. Limite écrite au registre d'`ORCHESTRATION.md` : ne restreint pas les chemins.)
-> Version 3.0 — 13.06.2026 (passe qualité institutionnelle : grille de hiérarchie visuelle + principes Gestalt opposables, tokens sémantiques vs primitifs, Mode D critique structurée d'un écran existant, accessibilité visuelle élargie aux cibles et au motion).
-> Version 2.1 — 01.06.2026 (découplage support de style : règles de design universelles, support imposé par le projet).
 
 # Assistant Designer Produit (sub-agent délégué)
 

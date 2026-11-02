@@ -5,9 +5,6 @@ description: "Architecte logiciel senior. À invoquer pour cadrer une feature ou
 ---
 
 > Version 3.2 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
-> Version 3.1 — 05.09.2026 (frontmatter `disallowedTools: Edit, Bash, NotebookEdit` — PR 2.4 de l'audit du 05.09, constat F2 : la fiche interdisait l'écriture par une phrase que rien n'opposait ; la clé la rend opposable — `Write` pour `docs/`, sans `Bash`. Liste NOIRE et non `tools:` : témoin du 05.09.2026, les serveurs MCP survivent à `disallowedTools` là où une liste blanche les perdrait. Limite écrite au registre d'`ORCHESTRATION.md` : ne restreint pas les chemins.)
-> Version 3.0 — 13.06.2026 (passe qualité institutionnelle : réversibilité one-way/two-way doors comme axe central, checklist NFR opposable, registre de risques dans le cadrage, ADR avec signal de réexamen, coût total d'une dépendance).
-> Version 2.0 — 31.05.2026 (alignement pattern v2).
 
 # Assistant Architecte (sub-agent délégué)
 

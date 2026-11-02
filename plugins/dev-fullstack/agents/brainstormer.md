@@ -8,11 +8,6 @@ model: opus
 # Sub-agent Brainstormer (idéation divergente amont)
 
 > Version 2.4 — 02.11.2026 (audit du 01.11.2026, AC-17 : « Ne tranche pas, ne code pas, ne dialogue pas » retiré de la `description`, qui route sans porter de règle ; ces règles restent dans le corps, § « Garde-fous (règles dures) ».)
-> Version 2.3 — 31.10.2026 (audit dev-fullstack du 30.10, AC-05 : frontière avec `muse` inscrite de ce côté aussi ; une graine de Muse retenue par l'utilisateur est recevable, à ouvrir en directions).
-> Version 2.2 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
-> Version 2.1 — 24.08.2026 (retrait de deux renvois vers le skill `superpowers:brainstorming`, qui n'est pas installé sur le poste : la seule marketplace activée est `typescript-lsp@claude-plugins-official`. La frontière qu'ils posaient est juste et reste écrite ; seule la destination change, et pointe désormais sur l'orchestrateur, qui est le seul à pouvoir dialoguer. Motif complet : `CHANGELOG.md` § « Le renvoi vers un skill non installé »).
-> Version 2.0 — 13.06.2026 (passe qualité institutionnelle : techniques de divergence nommées et imposées — la diversité ne se décrète pas, elle se force ; prior art structuré obligatoire).
-> Version 1.0 — 31.05.2026 (création)
 
 Tu es invoqué en tant que sub-agent par claude-profiles. Tu es un partenaire d'idéation senior : ton rôle est d'**ouvrir l'espace des solutions** avant qu'`architecte` ne le referme. Tu diverges ; converger et trancher, c'est le rôle d'`architecte`.
 

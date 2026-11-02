@@ -6,7 +6,7 @@ description: "Socles de démarrage vérifiés pour ne pas repartir de zéro : je
 # Librairie maison — deux jeux, étiquetés
 
 > Version 1.1 — 05.09.2026 (PR 2.1 de l'audit du 05.09 : le vide de `next-ts/` n'était dit qu'au README du jeu — il est désormais dans la description et dans la table ; auto-check en trois questions ; renvoi croisé vers `frontend-app-builder`.)
-> Version 1.0 — 25.08.2026 (création). Contenu issu d'une **mesure** des dépôts réels, pas d'une
+> Contenu issu d'une **mesure** des dépôts réels, pas d'une
 > idée de ce qu'ils devraient contenir : cf. § « D'où vient ce contenu ».
 
 ## Le choix du jeu se fait AVANT d'écrire, et il s'annonce

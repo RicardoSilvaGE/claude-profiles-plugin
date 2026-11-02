@@ -8,11 +8,6 @@ memory: user
 ---
 
 > Version 2.5 — 16.10.2026 (§ « Quand NE PAS m'invoquer » : l'audit d'une base de code hors flux pré-merge route vers le nouvel agent `auditeur` ; la phrase « ce profil ne porte pas d'audit généraliste » n'est plus vraie.)
-> Version 2.4 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § « Norme d'approbation » — approuver dès que le code s'améliore et respecte la SPEC, ne bloquer que sur correction, sécurité, exigence de la SPEC, faits et mesures avant préférences (constat L4) ; § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
-> Version 2.3 — 05.09.2026 (frontmatter `disallowedTools: Edit, Write, NotebookEdit` — PR 2.4 de l'audit du 05.09, constat F2 : la fiche interdisait l'écriture par une phrase que rien n'opposait ; la clé la rend opposable — aucun outil d'écriture de fichier, `Bash` conservé. Liste NOIRE et non `tools:` : témoin du 05.09.2026, les serveurs MCP survivent à `disallowedTools` là où une liste blanche les perdrait. Limite écrite au registre d'`ORCHESTRATION.md` : ne restreint pas les chemins.)
-> Version 2.2 — 24.08.2026 (**§ « Contrepoids — un finding doit payer son coût »** et son
-> carve-out. Bandeau posé rétroactivement le 25.08.2026 : la section avait été livrée sans, et
-> une fiche dont le contenu est daté plus tard que son bandeau se relit comme non modifiée.)
 
 > Version 2.1 — 19.08.2026 (**frontmatter `memory: user`** — action A3.3 du plan « Cap sur
 > l'exécutable ». Motif : une review recommence à zéro à chaque session, alors que ce qui a de la

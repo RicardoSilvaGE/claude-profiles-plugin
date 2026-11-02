@@ -60,7 +60,9 @@
 # modifie sans bump de version est invisible d'un environnement en cache. D'ou, dans
 # build-plugin.sh, la regle : bumper VERSION_PLUGIN a chaque changement. Et dans une session
 # d'un environnement en cache, le geste de rattrapage est `claude plugin update <plugin>` — qui
-# ne fait quelque chose que si la version a bouge.
+# ne fait quelque chose que si la version a bouge. EXCEPTION, depuis la source locale (plus bas) :
+# le marketplace est alors une COPIE dans /root, que `plugin update` relit sans la rafraichir ; une
+# nouvelle version n'arrive qu'au prochain rejeu de ce script.
 #
 # ----------------------------------------------------------------------------------------------
 # LE BIAIS DE MESURE A CONNAITRE AVANT DE TESTER QUOI QUE CE SOIT ICI. Trois affirmations fausses
@@ -121,7 +123,7 @@ COPIE_LOCALE="${COPIE_LOCALE:-/root/marketplace-$NOM_DEPOT}"
 JOURNAL="${JOURNAL:-/root/plugin-setup.log}"
 CANDIDATS="${CANDIDATS:-/home/user/$NOM_DEPOT /workspace/$NOM_DEPOT}"
 
-export PATH="/opt/node22/bin:$PATH"
+export PATH="${CLAUDE_BIN_DIR:-/opt/node22/bin}:$PATH"   # CLAUDE_BIN_DIR : surcharge du banc (claude factice)
 
 {
     echo "=== $(date -u +%FT%TZ) — installation du profil $PROFIL en plugin ==="
@@ -143,14 +145,22 @@ export PATH="/opt/node22/bin:$PATH"
         echo "  (contenu de /home/user : $(ls /home/user 2>/dev/null | tr '\n' ' '))"
         echo "  (contenu de /workspace : $(ls /workspace 2>/dev/null | tr '\n' ' '))"
 
+        # REPLI (audit du 01.11.2026, AC-21) : si la copie locale echoue (copie impossible,
+        # marketplace refuse), on retombe sur le clone anonyme, comme avant l'essai. Sans ce repli,
+        # un clone local illisible laissait la session sans plugin.
+        source_ok=0
         if [ -n "$local_src" ]; then
             echo "--- source : COPIE LOCALE de $local_src -> $COPIE_LOCALE ---"
             rm -rf "$COPIE_LOCALE"
-            mkdir -p "$COPIE_LOCALE"
-            cp -a "$local_src/." "$COPIE_LOCALE/"
-            rm -rf "$COPIE_LOCALE/.git"
-            claude plugin marketplace add "$COPIE_LOCALE"
-        else
+            if mkdir -p "$COPIE_LOCALE" && cp -a "$local_src/." "$COPIE_LOCALE/" \
+                    && rm -rf "$COPIE_LOCALE/.git" && claude plugin marketplace add "$COPIE_LOCALE"; then
+                source_ok=1
+            else
+                echo "--- ECHEC de la copie locale : repli sur le clone anonyme ---"
+                rm -rf "$COPIE_LOCALE"
+            fi
+        fi
+        if [ "$source_ok" -eq 0 ]; then
             # Depot PUBLIC : clone anonyme, aucune authentification, aucun secret.
             echo "--- source : GITHUB, clone anonyme de $MARKETPLACE ---"
             claude plugin marketplace add "$MARKETPLACE"
