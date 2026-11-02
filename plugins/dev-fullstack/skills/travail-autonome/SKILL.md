@@ -1,10 +1,11 @@
 ---
 name: travail-autonome
-description: "Méthode d'une étape de mission autonome (moteur scripts/travail-autonome/, ADR-0006) : lire mission.md et etat.json, faire UN incrément, le prouver, commiter sur la branche de mission, écrire resume.md, réécrire etat.json en dernier, inscrire une question au lieu de la poser ; en mode cloud (tâche planifiée Claude Code), état sur la branche de mission et push par l'étape. Sert aussi en session normale pour écrire une mission (mission.md, contrat 1) et pour répondre à « où en est la mission ? ». Déclencheurs : mission autonome, travail autonome, étape de mission, lanceur.py, etat.json, rédiger une mission, où en est la mission, relancer une mission bloquée."
+description: "Méthode d'une étape de mission autonome (moteur scripts/travail-autonome/, ADR-0006), en local ou en mode cloud (tâche planifiée Claude Code). Sert aussi en session normale pour écrire une mission (mission.md, contrat 1) et pour répondre à « où en est la mission ? ». Déclencheurs : mission autonome, travail autonome, étape de mission, lanceur.py, etat.json, rédiger une mission, où en est la mission, relancer une mission bloquée."
 ---
 
 # Travail autonome : la méthode d'une étape
 
+> Version 1.2.6 — 02.11.2026 (audit du 01.11.2026, AC-17 : la `description` ne résume plus la procédure d'une étape, qui reste aux §§ 2 et 3 ; elle route.)
 > Version 1.2.5 — 29.10.2026 (§ 9 : ne récupérer que la base et la branche de mission ; à l'étape 1 de
 > `labo-strategies`, un `git fetch origin` nu a tourné dix minutes sur une branche d'archive de 12 Go, puis a été
 > arrêté).

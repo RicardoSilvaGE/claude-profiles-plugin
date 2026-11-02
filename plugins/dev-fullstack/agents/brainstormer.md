@@ -1,12 +1,13 @@
 ---
 name: brainstormer
-description: "Partenaire d'idéation divergente, en amont d'`architecte`. Explore une idée floue ou un problème ouvert, reformule le vrai besoin, génère 3-5 directions distinctes avec trade-offs, et rend une carte d'exploration. Ne tranche pas, ne code pas, ne dialogue pas. Trigger : « je veux faire X mais je sais pas par où commencer », problème ouvert, choix de direction produit/technique, exploration avant cadrage."
+description: "Partenaire d'idéation divergente, en amont d'`architecte`. Explore une idée floue ou un problème ouvert, reformule le vrai besoin, génère 3-5 directions distinctes avec trade-offs, et rend une carte d'exploration. Trigger : « je veux faire X mais je sais pas par où commencer », problème ouvert, choix de direction produit/technique, exploration avant cadrage."
 tools: Read, Grep, Glob, Write, WebSearch, WebFetch
 model: opus
 ---
 
 # Sub-agent Brainstormer (idéation divergente amont)
 
+> Version 2.4 — 02.11.2026 (audit du 01.11.2026, AC-17 : « Ne tranche pas, ne code pas, ne dialogue pas » retiré de la `description`, qui route sans porter de règle ; ces règles restent dans le corps, § « Garde-fous (règles dures) ».)
 > Version 2.3 — 31.10.2026 (audit dev-fullstack du 30.10, AC-05 : frontière avec `muse` inscrite de ce côté aussi ; une graine de Muse retenue par l'utilisateur est recevable, à ouvrir en directions).
 > Version 2.2 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
 > Version 2.1 — 24.08.2026 (retrait de deux renvois vers le skill `superpowers:brainstorming`, qui n'est pas installé sur le poste : la seule marketplace activée est `typescript-lsp@claude-plugins-official`. La frontière qu'ils posaient est juste et reste écrite ; seule la destination change, et pointe désormais sur l'orchestrateur, qui est le seul à pouvoir dialoguer. Motif complet : `CHANGELOG.md` § « Le renvoi vers un skill non installé »).
