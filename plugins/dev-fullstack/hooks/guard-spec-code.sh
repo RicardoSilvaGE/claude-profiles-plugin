@@ -53,8 +53,19 @@
 # (specs/AAAA-MM-JJ-slug.md). Jusque-la le hook ne voyait que la premiere forme : sur un depot
 # conforme a la doctrine, il sonnait a chaque session, et refusait la premiere ecriture en cloud.
 #
-# BORNE ASSUMEE : la recherche des specs est bornee a 3 niveaux de profondeur. Le hook
-# PowerShell fait un -Recurse non borne ; sur un gros depot cela depasserait le timeout de 10 s.
+# LISTE PAR GIT, MEME PATHSPEC QUE LE HOOK POWERSHELL (audit du 01.11.2026, AC-20) : suivies et
+# non suivies, hors .gitignore, `**/SPEC*.md` et `**/specs/*.md` a toute profondeur, chemins non
+# echappes (core.quotePath=false), 40 au plus apres un tri decroissant. Jusque-la ce hook faisait
+# un `find -maxdepth 3` : il ne voyait pas une spec a 4 niveaux, et un nom accentue, rendu entre
+# guillemets par git, retombait sur la date du clone. Les deux versions rendaient deux verdicts
+# differents sur le meme depot.
+#
+# CLONE SUPERFICIEL (audit du 01.11.2026, AC-19 ; arbitrage du mainteneur du 02.11.2026). Les
+# sessions cloud clonent sans tout l'historique : le commit frontiere y apparait comme celui qui
+# cree tous les fichiers, et une vieille spec prenait la date du dernier commit. Quand le commit
+# rendu pour une spec est une frontiere (.git/shallow), sa date est INCONNUE : la spec compte comme
+# ancienne, et le hook rappelle. Le sens de l'erreur est choisi : un rappel de trop par session
+# plutot qu'une regle muette la ou le plugin est son seul vehicule.
 #
 # FAIL-OPEN PAR CONSTRUCTION : jq absent, payload vide ou invalide, chemin illisible, marqueur
 # non ecrivable, date de fichier illisible — le hook se tait et sort en 0. Un garde-fou qui
@@ -121,15 +132,33 @@ done
 mtime() {
     stat -c %Y "$1" 2>/dev/null || stat -f %m "$1" 2>/dev/null
 }
-SUIVIES="$(git -C "$DEPOT" ls-files -- '*.md' 2>/dev/null)"
-MODIFIEES="$(git -C "$DEPOT" diff HEAD --name-only -- '*.md' 2>/dev/null)"
-date_spec() { # date_spec <chemin absolu>
-    local rel="${1#"$DEPOT"/}" ct
+GITQ() { git -C "$DEPOT" -c core.quotePath=false "$@" 2>/dev/null; }
+LISTE="$(GITQ ls-files -c -o --exclude-standard -- ':(glob,icase)**/SPEC*.md' ':(glob,icase)**/specs/*.md')" || exit 0
+SUIVIES="$(GITQ ls-files -- '*.md')"
+MODIFIEES="$(GITQ diff HEAD --name-only -- '*.md')"
+# Frontieres d'un clone superficiel. Illisibles alors que le depot se dit superficiel : aucune date
+# de commit n'est sure, toutes sont inconnues.
+FRONTIERES=""
+if [ "$(GITQ rev-parse --is-shallow-repository)" = "true" ]; then
+    FRONTIERES="$(cat "$(GITQ rev-parse --path-format=absolute --git-path shallow)" 2>/dev/null)"
+    [ -n "$FRONTIERES" ] || FRONTIERES="illisibles"
+fi
+date_spec() { # date_spec <chemin relatif> : epoch, ou « inconnue » (frontiere d'un clone superficiel)
+    local rel="$1" ligne h ct
     if printf '%s\n' "$SUIVIES" | grep -Fxq -- "$rel" && ! printf '%s\n' "$MODIFIEES" | grep -Fxq -- "$rel"; then
-        ct="$(git -C "$DEPOT" log -1 --format=%ct -- "$rel" 2>/dev/null)"
-        case "$ct" in ''|*[!0-9]*) ;; *) printf '%s' "$ct"; return ;; esac
+        ligne="$(GITQ log -1 --format='%H %ct' -- "$rel")"
+        h="${ligne%% *}"; ct="${ligne#* }"
+        case "$ct" in
+            ''|*[!0-9]*) ;;
+            *)
+                if [ -n "$FRONTIERES" ] && { [ "$FRONTIERES" = "illisibles" ] \
+                        || printf '%s\n' "$FRONTIERES" | grep -Fxq -- "$h"; }; then
+                    printf 'inconnue'; return
+                fi
+                printf '%s' "$ct"; return ;;
+        esac
     fi
-    mtime "$1"
+    mtime "$DEPOT/$rel"
 }
 MAINTENANT="$(date +%s 2>/dev/null)" || exit 0
 case "$MAINTENANT" in ''|*[!0-9]*) exit 0 ;; esac
@@ -138,14 +167,22 @@ SEUIL=$((MAINTENANT - 30 * 24 * 3600))
 RECENT_TROUVE=0
 PLUS_RECENT=""
 PLUS_RECENT_TS=0
-while IFS= read -r f; do
-    [ -n "$f" ] || continue
-    ts="$(date_spec "$f")"
+INCONNUES=0
+NOM_INCONNUE=""
+while IFS= read -r rel; do
+    [ -n "$rel" ] || continue
+    printf '/%s' "$rel" | grep -Eq "$EXCLUS" && continue
+    [ -f "$DEPOT/$rel" ] || continue
+    ts="$(date_spec "$rel")"
+    if [ "$ts" = "inconnue" ]; then
+        INCONNUES=$((INCONNUES + 1)); [ -n "$NOM_INCONNUE" ] || NOM_INCONNUE="$(basename "$rel")"
+        continue
+    fi
     case "$ts" in ''|*[!0-9]*) continue ;; esac
-    if [ "$ts" -gt "$PLUS_RECENT_TS" ]; then PLUS_RECENT_TS="$ts"; PLUS_RECENT="$f"; fi
+    if [ "$ts" -gt "$PLUS_RECENT_TS" ]; then PLUS_RECENT_TS="$ts"; PLUS_RECENT="$rel"; fi
     [ "$ts" -gt "$SEUIL" ] && RECENT_TROUVE=1
 done <<EOF
-$(find "$DEPOT" -maxdepth 3 -type f \( -name 'SPEC*.md' -o -path '*/specs/*.md' \) 2>/dev/null | grep -Ev "$EXCLUS" | head -20)
+$(printf '%s\n' "$LISTE" | sort -ru | head -40)
 EOF
 
 [ "$RECENT_TROUVE" -eq 1 ] && exit 0
@@ -178,8 +215,14 @@ if [ -n "$PLUS_RECENT" ]; then
     else
         ETAT="  La spec la plus recente du depot (SPEC*.md ou specs/*.md) a plus de 30 jours : $(basename "$PLUS_RECENT")"
     fi
-else
-    ETAT="  Aucun SPEC*.md trouve dans ce depot, ni de .md sous specs/ (recherche bornee a 3 niveaux)."
+elif [ "$INCONNUES" -eq 0 ]; then
+    ETAT="  Aucun SPEC*.md trouve dans ce depot, ni de .md sous specs/."
+fi
+if [ "$INCONNUES" -gt 0 ]; then
+    ETAT="${ETAT:+$ETAT
+}  Date inconnue pour $INCONNUES spec(s), dont $NOM_INCONNUE : clone superficiel, l'historique
+  s'arrete avant leur dernier commit. Elles comptent comme anciennes ; si l'une est recente et
+  couvre la tache, le dire en une ligne et passer."
 fi
 
 MODE="$(lire '.permission_mode')"; [ -n "$MODE" ] || MODE="inconnu"
