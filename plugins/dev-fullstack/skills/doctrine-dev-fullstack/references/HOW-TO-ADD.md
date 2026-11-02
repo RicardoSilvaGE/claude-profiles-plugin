@@ -1,5 +1,6 @@
 # Comment ajouter un nouveau sub-agent ou skill
 
+> Version 1.6 — 02.11.2026 (longueur des descriptions : pas de cible chiffrée, arbitrage du 02.11.2026 écrit)
 > Version 1.5 — 31.10.2026 (clé `observer:` : posée puis retirée, la ligne le dit ; motif dans `CHANGELOG.md`)
 > Version 1.4 — 05.09.2026 (PR 1.3 de l'audit du 05.09, constat D6 : la procédure faisait créer agents et skills **dans `~/.claude/`**, que `sync-global.ps1` vide au sync suivant — contre la règle dure « la source est toujours le repo » ; elle ignorait les clés de frontmatter posées depuis (`skills:`, `observer:`, `memory:`), le banc de conformité, le plugin et son bump, les registres générés et la propagation aux consommateurs. Réécrite sur `templates/profiles/dev-fullstack/` avec la checklist complète. `securite` ajouté aux agents découplés de la stack.)
 > Version 1.3 — 01.06.2026 (§ « Découplage de la stack » ajouté : la stack d'un agent est un défaut surpassable par le CLAUDE.md projet, à propager aux gates durs — incident 01.06.2026)
@@ -44,6 +45,8 @@ Tout nouveau sub-agent ou skill suit ces 13 sections (ORCHESTRATION.md « Patter
    > lui-même** au § « Pourquoi un sub-agent n'apparaît pas » (`qa.md` charge à 329). Elle avait
    > survécu à sa propre réfutation. Le critère réel : **assez de déclencheurs pour router, rien
    > de plus**. Ce qui déborde de ce critère n'est pas trop long, il est **au mauvais endroit**.
+   > Arbitrage de l'utilisateur du 02.11.2026 (audit du 01.11.2026, AC-17) : cette consigne fait foi ; la
+   > cible « sous ~350 octets » de l'audit système du 29.10.2026 (piste 5) est écartée.
 
    **Autres clés admises, et ce qu'elles engagent** (registre tenu dans `ORCHESTRATION.md` § « Pattern partagé », qui fait foi) : `tools:` ou `disallowedTools:` — seulement pour **restreindre** (omis = tout hérité, serveurs MCP compris) ; préférer `disallowedTools:`, qui laisse les serveurs MCP là où `tools:` les perd (témoin du 05.09.2026), et se souvenir qu'aucun des deux ne restreint les **chemins** ; `model:` — seulement pour épingler, et alors la doctrine doit l'annoncer (invariant I2), toutes les fiches sauf une n'en ont pas parce que la Phase 1bis raisonne par tâche (les compter dans les fichiers, jamais ici) ; `skills:` — précharge des skills entiers au démarrage, **exclusif avec `paths:`** sur le skill visé (invariant I3, règle R18 du banc) ; `observer:` + `observerMessage:` — observateur de fond ; posé sur `backend` et `frontend` le 19.08.2026, retiré le 31.10.2026 faute d'une seule mesure de son utilité : ne le reposer qu'avec un relevé prévu et daté ; `memory: user` — mémoire persistante propre à l'agent, éphémère en cloud. Toute clé nouvelle passe l'invariant I8 (YAML valide) sans être comprise : le registre est le seul endroit où elle est expliquée.
 2. **Version** : ligne `> Version X.Y — DD.MM.AAAA (changement résumé)` juste après le frontmatter.
