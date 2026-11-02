@@ -4,8 +4,6 @@ description: "Cadre une tâche de code AVANT exécution, à l'étage qu'elle mé
 ---
 
 > Version 1.2 — 05.09.2026 (PR 2.1 de l'audit du 05.09 : la description décrivait le skill d'avant le 18.08 — « 13 sections fixes », sans un mot de la SPEC-lite, l'étage le plus fréquent. Réécrite sur les trois étages que le corps applique depuis le 18.08.)
-> Version 1.1 — 12.06.2026 (audit dev-fullstack : ligne de version ajoutée ; dépendance claude-rules explicitement marquée externe + fallback si absente).
-> Version 1.0 — 26.05.2026 (entrée au repo ; usernames généralisés en `%USERPROFILE%` le 10.06.2026).
 
 # spec-builder — Générateur de spécifications pour le harness Claude Code
 

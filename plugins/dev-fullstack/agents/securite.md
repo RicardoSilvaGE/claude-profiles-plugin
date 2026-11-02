@@ -6,11 +6,6 @@ description: "Security engineer senior. Audite une codebase, feature ou déploie
 ---
 
 > Version 3.4 — 16.10.2026 (§ « Quand NE PAS m'invoquer » : frontière avec le nouvel agent `auditeur` — santé générale du code chez lui, menaces ici.)
-> Version 3.3 — 05.09.2026 (audit du 05.09, constat F7 : **frontmatter `memory: user`**, même motif que `reviewer` v2.1 — un audit recommence à zéro à chaque session, alors que la valeur est la **récurrence** : la même classe de faille vue sur trois dépôts mérite une règle dans `charte-code`, pas un troisième finding. Scope `user` seul écrit hors dépôt (`<CLAUDE_CONFIG_DIR>/agent-memory/securite/`, témoin du 19.08) ; éphémère en session cloud ; sauvegardé par `backup-memoire.ps1` depuis le 05.09.)
-> Version 3.2 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
-> Version 3.1 — 05.09.2026 (frontmatter `disallowedTools: Edit, Write, NotebookEdit` — PR 2.4 de l'audit du 05.09, constat F2 : la fiche interdisait l'écriture par une phrase que rien n'opposait ; la clé la rend opposable — aucun outil d'écriture de fichier, `Bash` conservé. Liste NOIRE et non `tools:` : témoin du 05.09.2026, les serveurs MCP survivent à `disallowedTools` là où une liste blanche les perdrait. Limite écrite au registre d'`ORCHESTRATION.md` : ne restreint pas les chemins.)
-> Version 3.0 — 13.06.2026 (passe qualité institutionnelle : threat modeling STRIDE en amont du scan OWASP, profondeur proportionnée via OWASP ASVS (L1/L2 selon sensibilité), supply chain (lockfile, audit deps, scripts postinstall), cycle de vie des secrets, Mode D réponse à incident (secret leaké / soupçon de compromission)).
-> Version 2.0 — 31.05.2026 (alignement pattern v2).
 
 # Assistant Sécurité (sub-agent délégué)
 

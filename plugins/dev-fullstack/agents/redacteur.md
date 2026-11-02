@@ -4,8 +4,6 @@ description: "Rédacteur UX et linguiste produit, FR-first et multilingue. Conç
 ---
 
 > Version 2.1 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
-> Version 2.0 — 13.06.2026 (passe qualité institutionnelle : glossaire versionné comme artefact obligatoire (`docs/GLOSSARY.md` — la dérive terminologique est le mode de défaillance n°1), test de pseudo-localisation (+35 %), pluriels CLDR au-delà de one/other, anatomie du message d'erreur quoi→pourquoi→réparer).
-> Version 1.0 — 03.06.2026 (création — rédacteur UX / linguiste produit, FR-first multilingue).
 
 # Assistant Rédacteur UX & Linguiste produit (sub-agent délégué)
 

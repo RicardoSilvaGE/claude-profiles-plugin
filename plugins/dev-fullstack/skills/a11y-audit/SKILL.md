@@ -7,31 +7,10 @@ background: false
 ---
 
 > Version 1.4 — 05.09.2026 (audit du 05.09, § Skills : les recettes citaient Tailwind, `<Image>` et shadcn sans dire que les critères, eux, ne dépendent pas de la stack ; sur un dépôt vanilla — sept sur huit — un auditeur pouvait conclure « non applicable » à tort. Paragraphe en tête de la Phase 2.)
-> Version 1.3 — 19.08.2026 (**`context: fork` appliqué, après que le témoin a levé la réserve
-> posée quelques heures plus tôt en v1.2.** La v1.2 refusait ce champ par analogie avec
-> l'exclusion `paths` ↔ préchargement : ce skill étant préchargé dans `frontend`, un fork y
-> aurait fait un sous-agent lancé depuis un sous-agent, et rien n'établissait que ce soit permis.
-> **Le protocole que la v1.2 décrivait a été exécuté le jour même, et il a dit l'inverse.** Deux
-> mesures, chacune avec son témoin de contrôle :
-> 1. **Le préchargement n'est pas affecté.** Deux skills témoins identiques au seul `context:
->    fork` près, marqueurs non devinables, préchargés dans un même agent : **les deux marqueurs
->    arrivent**. Contrairement à `paths`, `context` n'empêche pas le préchargement.
-> 2. **Un fork imbriqué fonctionne.** Un second témoin, dont la doctrine *est* la tâche, a
->    invoqué depuis un sous-agent un skill portant `context: fork` : `RESULTAT=REUSSI`, un appel
->    d'outil, aucune erreur.
-> **Trois pièges de banc rencontrés, et gardés parce qu'ils se reproduiront** : (a) un témoin dont
-> le contrôle échoue aussi accuse le banc, pas la fonctionnalité — les deux premiers essais
-> rendaient `ABSENT` sur le skill témoin *sans* `context`, ce qui invalidait la mesure ;
-> (b) `--agent X -p` lance l'agent en **session principale**, pas en sous-agent, et le
-> préchargement ne s'y observe pas — il faut le faire **invoquer** depuis une session ;
-> (c) le premier agent témoin a répondu selon **sa propre description** au lieu de la consigne
-> transmise, ce qui a nécessité un second témoin dédié. Un agent doctriné ne se teste pas
-> lui-même.
-> **Conséquence pratique** : le préchargement dans `frontend` continue d'opérer — la v1.1 reste
-> entièrement valable — et une invocation directe depuis la conversation principale s'exécute
-> désormais en fork, comme `perf-audit`.)
-> Version 1.1 — 17.08.2026 (**pas de champ `paths` sur ce skill, et c'est une décision, pas un oubli.** Il en a porté un pendant une heure, borné aux fichiers de balisage et de style, avant d'être retiré : ce skill est **préchargé** dans le sub-agent `frontend` (frontmatter `skills:`), et les deux mécanismes sont **exclusifs**. Un skill portant `paths` n'est pas préchargeable — vérifié par témoin isolé le 17.08.2026, deux skills identiques au seul `paths` près, le préchargement ne passe que sans lui. Ce n'est écrit dans aucune documentation officielle : la seule contrainte de préchargement qui y figure est `disable-model-invocation`. Arbitrage retenu : le préchargement l'emporte, parce qu'il traite le problème documenté par incident — un sub-agent démarre sur un contexte vierge et n'ira pas chercher le skill de lui-même — là où `paths` n'économisait que ~280 tokens. **Ne pas rajouter `paths` ici sans retirer le préchargement dans `agents/frontend.md`.**)
-> Version 1.0 — 21.05.2026 (création ; entré au repo le 26.05.2026 ; ligne de version ajoutée le 12.06.2026, audit dev-fullstack).
+> **Pas de champ `paths` sur ce skill, et c'est une décision** : il est préchargé dans `frontend`, et les
+> deux mécanismes sont exclusifs (témoin du 17.08.2026). **Ne pas rajouter `paths` ici sans retirer le
+> préchargement dans `agents/frontend.md`.** `context: fork` coexiste avec le préchargement (témoin du
+> 19.08.2026). Motifs et mesures : `CHANGELOG.md` du profil, historique de ce skill.
 
 # a11y-audit — Audit d'accessibilité ex-post
 

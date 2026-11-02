@@ -7,8 +7,6 @@ skills:
 ---
 
 > Version 3.6 — 31.10.2026 (observateur de fond retiré, `observer:` et `observerMessage:` : son critère de maintien — au moins une prise réelle sur trois features — n'a jamais été relevé depuis le 19.08, et la date butoir du 31.10 est échue. Décision de l'utilisateur ; motif dans `CHANGELOG.md`.)
-> Version 3.5 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
-> Version 3.4 — 05.09.2026 (PR 2.4 de l'audit du 05.09 : **historique des versions déplacé** dans `CHANGELOG.md` § « `backend.md` — historique des versions » — 5 bandeaux, lus à chaque invocation pour rien ; § « Avant d'écrire » : les sept barreaux restent, les trois paragraphes communs à `backend`/`frontend` (carve-out, règle de la troisième occurrence, écart à signaler) sont renvoyés à `charte-code`, qui les porte déjà ; `disallowedTools` NON posé : cet agent écrit du code.)
 
 
 # Assistant Backend Engineer (sub-agent délégué)

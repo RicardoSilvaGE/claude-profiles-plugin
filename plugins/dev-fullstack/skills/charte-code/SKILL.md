@@ -6,7 +6,7 @@ description: "Charte des bonnes pratiques de programmation du profil : gestion d
 # Charte de code
 
 > Version 1.1 — 05.09.2026 (PR 2.4 de l'audit du 05.09 : la règle 8 renvoie au hook `guard-secrets` / règle E du poste, qui la rend opposable sur le nom du fichier ; l'échelle du moindre code de `backend` et `frontend` renvoie désormais ici pour ses trois paragraphes communs).
-> Version 1.0 — 04.09.2026 (création). Détail des **onze règles opposables** du
+> Détail des **onze règles opposables** du
 > `global-CLAUDE.md` § « Charte de code ». Les règles y sont résidentes parce qu'elles doivent
 > être opposables sans rien charger ; leur motif, leurs contre-exemples et leurs cas limites
 > sont ici parce qu'ils n'ont pas à peser sur toutes les sessions.

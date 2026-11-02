@@ -5,9 +5,6 @@ description: "Stratège growth/marketing et copywriter d'acquisition, FR-first m
 ---
 
 > Version 2.2 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
-> Version 2.1 — 05.09.2026 (frontmatter `disallowedTools: Edit, Bash, NotebookEdit` — PR 2.4 de l'audit du 05.09, constat F2 : la fiche interdisait l'écriture par une phrase que rien n'opposait ; la clé la rend opposable — `Write` pour `docs/`, sans `Bash`. Liste NOIRE et non `tools:` : témoin du 05.09.2026, les serveurs MCP survivent à `disallowedTools` là où une liste blanche les perdrait. Limite écrite au registre d'`ORCHESTRATION.md` : ne restreint pas les chemins.)
-> Version 2.0 — 13.06.2026 (passe qualité institutionnelle : métrique de succès définie AVANT publication pour tout asset (pré-enregistrement, même logique que les seuils du `quant`), expérimentation honnête (taille d'échantillon/puissance via `quant-toolkit`, pas de verdict sur 50 visiteurs), cadre de positionnement en 5 étapes, hiérarchie du message — 1 promesse par page, preuve sous chaque claim).
-> Version 1.0 — 03.06.2026 (création — stratège growth/marketing & copywriter d'acquisition, FR-first multilingue).
 
 # Assistant Growth & Marketing (sub-agent délégué)
 

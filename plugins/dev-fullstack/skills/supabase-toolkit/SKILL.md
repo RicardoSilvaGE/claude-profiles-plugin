@@ -5,7 +5,6 @@ description: "Couche Supabase d'un projet (Postgres + Auth + RLS + RPC + migrati
 
 > Version 1.1 — 17.08.2026 (**pas de champ `paths` sur ce skill, et c'est une décision, pas un oubli.** Il en a porté un pendant une heure, borné à `supabase/`, `migrations/`, `*.sql` et `db/`, avant d'être retiré : ce skill est **préchargé** dans le sub-agent `backend` (frontmatter `skills:`), et les deux mécanismes sont **exclusifs** — un skill portant `paths` n'est pas préchargeable. Vérifié par témoin isolé le 17.08.2026 ; absent de la documentation officielle, qui ne mentionne que `disable-model-invocation` comme obstacle au préchargement.
 > Arbitrage retenu : le préchargement l'emporte, parce que le reality check sur données legacy du Mode C de `backend` ne doit dépendre d'aucune décision de l'agent — et parce que `paths` s'est révélé plus strict qu'annoncé, ne déclenchant que sur un fichier **effectivement manipulé**, pas sur le contenu du dossier. Une conversation RLS menée depuis un `.tsx` n'aurait donc rien déclenché. **Ne pas rajouter `paths` ici sans retirer le préchargement dans `agents/backend.md`.**)
-> Version 1.0 — 21.05.2026 (création ; entré au repo le 26.05.2026 ; ligne de version ajoutée le 12.06.2026, audit dev-fullstack).
 
 # supabase-toolkit — Conception et audit de la couche Supabase
 

@@ -7,17 +7,10 @@ background: false
 ---
 
 > Version 1.2 — 05.09.2026 (audit du 05.09, § Skills : le skill supposait Next.js + shadcn sans le dire ; sur un dépôt sans bundler — sept sur huit — les axes bundle, Server Components et ISR sont sans objet et rien ne le disait. Un paragraphe en tête de la Phase 2 le dit, et nomme ce que le bundler faisait à la place.)
-> Version 1.1 — 19.08.2026 (**le skill s'exécute désormais dans un fork**, action A3.2 du plan
-> « Cap sur l'exécutable ». Motif : un audit de perf lit des bundles, des traces et des plans de
-> requête — des **dumps**, qui saturaient le contexte principal alors que seul le *rapport* a de
-> la valeur pour la suite de la conversation. `context: fork` fait exécuter le skill par un
-> sous-agent ; seul son rendu revient. `background: false` est délibéré : on veut le rapport
-> **dans le tour**, pas en notification différée — un audit qu'on lance, on l'attend.
 > **Critère de la mesure**, à vérifier au premier audit complet : contexte principal réduit de
 > moitié. S'il ne l'est pas, le fork ne sert à rien ici et se retire.
 > **Ce skill ne porte pas de champ `paths`, et c'est nécessaire** : un skill borné par `paths`
-> n'atteint jamais un sous-agent, les deux mécanismes s'excluent.)
-> Version 1.0 — 21.05.2026 (création ; entré au repo le 26.05.2026 ; ligne de version ajoutée le 12.06.2026, audit dev-fullstack).
+> n'atteint jamais un sous-agent, les deux mécanismes s'excluent.
 
 # perf-audit — Audit de performance ciblé
 

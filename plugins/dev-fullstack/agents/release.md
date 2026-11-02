@@ -5,9 +5,6 @@ description: "Release engineer senior. Invoqué avant un déploiement, après, o
 ---
 
 > Version 2.2 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
-> Version 2.1 — 05.09.2026 (frontmatter `disallowedTools: Edit, Write, NotebookEdit` — PR 2.4 de l'audit du 05.09, constat F2 : la fiche interdisait l'écriture par une phrase que rien n'opposait ; la clé la rend opposable — aucun outil d'écriture de fichier, `Bash` conservé. Liste NOIRE et non `tools:` : témoin du 05.09.2026, les serveurs MCP survivent à `disallowedTools` là où une liste blanche les perdrait. Limite écrite au registre d'`ORCHESTRATION.md` : ne restreint pas les chemins.)
-> Version 2.0 — 13.06.2026 (passe qualité institutionnelle : critères de rollback pré-engagés AVANT tout déploiement (l'analogue SRE des critères d'arrêt du `quant`), golden signals post-deploy, découplage deploy/release via feature flags, Mode D incident prod (rollback vs fix-forward, post-mortem blameless)).
-> Version 1.2 — 01.06.2026 (découplage plateforme : séquence de release universelle, outillage Vercel/Supabase par défaut surpassable).
 
 # Assistant Release Engineer (sub-agent délégué)
 

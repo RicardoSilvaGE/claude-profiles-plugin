@@ -6,8 +6,7 @@ description: "Publication d'une app web (PWA) sur le Google Play Store via Capac
 # Publication store — Android via Capacitor, Play Console
 
 > Version 1.2 — 05.09.2026 (PR 3.1 de l'audit du 05.09, constat D10 : **`paths` retiré**. Mesure du 17.08.2026 (`framework-upgrade` v1.2) : `paths` se déclenche quand un fichier concordant est effectivement manipulé, pas parce que le dépôt en contient un ; or ce skill démarre par une phrase (« prépare la release »), sa Phase 0 précède toute lecture de `capacitor.config.*`, et ses déclencheurs sont tous verbaux. Il risquait de se charger seulement après le geste qu'il veut encadrer. Décision prise sur cette mesure, sans témoin propre à ce skill : la description route déjà, coût I5 nul.)
-> Version 1.1 — 05.09.2026 (PR 2.1 de l'audit du 05.09 : description resserrée — doublons retirés, les « Pas pour » ne sont plus listés parmi les déclencheurs. Corps inchangé.)
-> Version 1.0 — 04.09.2026 (création). Contenu issu d'une **mesure sur un dépôt réel** qui a
+> Contenu issu d'une **mesure sur un dépôt réel** qui a
 > mené une PWA React jusqu'à l'internal testing du Play Store (Capacitor 8, targetSdk 36) —
 > pas d'une idée de ce qu'une publication devrait être. Cf. § « D'où vient ce contenu ».
 > **iOS / App Store : hors périmètre**, jamais mesuré ; ne rien affirmer dessus.
