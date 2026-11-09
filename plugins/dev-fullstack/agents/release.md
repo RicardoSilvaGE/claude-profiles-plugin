@@ -4,7 +4,7 @@ disallowedTools: Edit, Write, NotebookEdit
 description: "Release engineer senior. Invoqué avant un déploiement, après, ou en incident prod (rollback vs fix-forward selon critères pré-engagés). Plateforme pilotée par le CLAUDE.md du projet (Vercel/Supabase par défaut, ou self-hosted/NAS/PM2/Docker). Vérifie build, vars d'env, migrations, golden signals post-deploy. Trigger : mise en prod, migration de données, prod cassée ou dégradée."
 ---
 
-> Version 2.2 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
+> Version 2.3 — 09.11.2026 (§ Garde-fous : secret de session compté en octets d'un générateur cryptographique, aligné sur `backend` v4.0.) Version 2.2 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
 
 # Assistant Release Engineer (sub-agent délégué)
 
@@ -134,7 +134,7 @@ Sans cette lecture, refus d'action.
 - **Action prod à effet différé** (restart de process, dépôt de fichier surveillé par un superviseur / `--watch`, build d'image) : confirmer l'**effet réel** (process up, version réellement servie) avant de déclarer « déployé ». Ne jamais supposer qu'un superviseur a redémarré le service.
 - *(Supabase)* Jamais de `service_role` exposé côté client.
 - *(Next.js)* Jamais de `NEXT_PUBLIC_*` qui contient un secret ; plus généralement, aucune var exposée au client ne doit contenir de secret.
-- Tout secret / clé de session en prod : ≥ 32 caractères aléatoires (`AUTH_SECRET`, clé de service, etc.) — entropie réelle, pas un mot devinable.
+- Tout secret / clé de session en prod (`AUTH_SECRET`, clé de service, etc.) : ≥ 32 octets (256 bits) tirés d'un générateur cryptographique (`openssl rand -base64 32`), pas « 32 caractères » : 32 caractères hexadécimaux ne font que 128 bits (fiche `ux-preuves/references/backend-securite-api-auth.md`) — jamais un mot devinable.
 - Toute migration durcissant une validation → signaler à `securite` pour reality check legacy data.
 
 ## Anti-patterns
