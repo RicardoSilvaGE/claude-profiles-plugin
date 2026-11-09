@@ -55,6 +55,18 @@ extrait verbatim ; un chiffre dont la source primaire n'a pas été trouvée est
   le billet Better Auth du 22.09.2025 promet pour Auth.js les correctifs de sécurité **et les
   problèmes urgents**, pas la seule sécurité. Versions et statuts navigateurs vieillissent en mois :
   ce volet est le plus périssable de tous.
+- **Volet backend**, même jour, même règle, cinq volets (sécurité des API et authentification ;
+  données, PostgreSQL et migrations ; fiabilité et contrats d'API ; observabilité, tests et données
+  personnelles ; pile serveur et code écrit par un LLM) : **173 entrées**, **228 URL distinctes**,
+  6 mentions « résumé seul lu ». Les lois suisses ont été lues dans leur texte consolidé officiel
+  (LPD au 07.07.2025, OPDo au 01.12.2025). Sondage à la source : OWASP Password Storage (Argon2id
+  19 MiB, t = 2, p = 1 ; scrypt 2^17 ; PBKDF2 600 000 ; bcrypt « for legacy systems », 72 octets),
+  Yuan et al. 2014 (PDF : 92 % des pannes catastrophiques, 58 %, 48 sur 198), LPD art. 7, 24 al. 1
+  (« dans les meilleurs délais ») et 25 al. 7 (30 jours), Richardson sur l'outbox, registre npm
+  (`prisma` : `latest` = 8.0.0-rc.33, `prev` = 7.10.1 ; `drizzle-orm` : 0.45.4), calendrier Node
+  (22 jusqu'au 30.04.2027, 24 en maintenance, 26 LTS active) — conformes. **Le piège de `scrypt`
+  a été exécuté** (Node 22.23.4) : N = 2^17, r = 8 avec `maxmem` par défaut lève « memory limit
+  exceeded ». Aucune erreur trouvée dans ce volet.
 - **Contrôle par sondage** du volet UX, fait hors des volets de recherche en rouvrant la source : heuristiques
   de Nielsen, échelle de sévérité de Nielsen, validation GOV.UK, zone du pouce (Hoober 2017),
   barres de progression (Harrison et al. 2010, texte intégral), Mathur et al. 2019, Bansal et al.
@@ -66,7 +78,7 @@ extrait verbatim ; un chiffre dont la source primaire n'a pas été trouvée est
   iso.org, EUR-Lex, dl.acm.org pour plusieurs articles, Apple HIG, Material 3. Chaque fiche dit
   par quoi elles ont été remplacées.
 
-**Ce qui fait vieillir ce contenu, par ordre de vitesse** : les fiches frontend (versions de frameworks, statuts Baseline), les fiches IA et front de recherche
+**Ce qui fait vieillir ce contenu, par ordre de vitesse** : les fiches frontend et backend (versions de frameworks, d'ORM et de runtimes, statuts Baseline, brouillons IETF), les fiches IA et front de recherche
 (préprints, études de 2025-2026), les statuts réglementaires (EAA, DSA, consentement, WCAG 3),
 les guidelines de plateformes ; puis les chiffres d'études de marché (Baymard, WebAIM). Les
 fondements cognitifs (Fitts, Norman, Simons & Chabris) vieillissent le moins.

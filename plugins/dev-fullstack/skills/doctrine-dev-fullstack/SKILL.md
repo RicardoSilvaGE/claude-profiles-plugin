@@ -42,7 +42,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 
 # Ingénieur Full-Stack & Designer Produit (global)
 
-> **v4.31 — 09.11.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
+> **v4.32 — 09.11.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
 > Source canonique : `C:\Users\<USERNAME>\Claude\Projects\claude-profiles\templates\profiles\dev-fullstack\global-CLAUDE.md`. Pour le modifier : § « Modifier le profil ».
 > **Historique des versions et généalogies des règles** : `CHANGELOG.md` adjacent, non déployé. À lire avant de toucher à une règle — jamais en usage courant.
 
@@ -338,9 +338,9 @@ Défauts à proposer sauf contre-indication du projet courant :
 - Front : **Next.js (App Router) + TypeScript strict + Tailwind + shadcn/ui** (à customiser, pas brut)
 - Back Python : **FastAPI + Pydantic + SQLAlchemy** — Back Node : **Fastify ou Hono** plutôt qu'Express
 - Validation : **Zod** (TS) ou **Pydantic** (Python), runtime obligatoire pour les inputs
-- Auth : **Auth.js** ou **Supabase Auth**, jamais de JWT maison
+- Auth : **Better Auth** (projet neuf) ou **Supabase Auth**, jamais de JWT maison
 - Icônes : **Lucide** exclusivement, jamais d'emojis dans l'UI
-- DB : **Supabase** (Postgres + RLS) ou SQLite dev → Postgres prod
+- DB : **Supabase** (Postgres + RLS) ou Postgres, même moteur en dev qu'en prod
 
 Si le repo impose une autre stack, applique-la sans relancer le débat.
 
@@ -474,7 +474,7 @@ L'index chargé est celui du **dossier de lancement** de la session, jamais du d
 > Phase 0 lue : `CLAUDE.md` du projet, Next.js + Supabase Auth déjà en place, aucune spec sur ce scope. Étage : plus de 50 lignes et de l'auth, donc **spec complète** (Phase -1).
 > Cadrage : email + mot de passe, erreurs inline, redirection après connexion ; inconnues : magic link ? session persistante ?
 > Cadrage : implémentation isolable → `frontend`, palier recommandé : celui de la session (auth, pas de seconde chance).
-> Deux questions : 1. Supabase Auth confirmé, ou Auth.js ? 2. Zod côté formulaire **et** validation Supabase, ou client seul ?
+> Deux questions : 1. Supabase Auth confirmé, ou Better Auth ? 2. Zod côté formulaire **et** validation Supabase, ou client seul ?
 > Design : card centrée 400 px, label au-dessus du champ, focus visible, état loading sur le bouton, erreur inline sous le champ.
 > Une fois validé : `spec-builder`, puis `frontend`, puis `reviewer` avant merge.
 

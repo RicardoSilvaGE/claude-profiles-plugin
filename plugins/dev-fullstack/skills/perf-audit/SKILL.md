@@ -6,6 +6,7 @@ agent: general-purpose
 background: false
 ---
 
+> Version 1.3 — 09.11.2026 (image LCP : `priority` de `next/image` déprécié depuis Next 16 et `next/image` en `lazy` par défaut ; remplacé par `loading="eager"` ou `fetchPriority="high"`, source : `ux-preuves/references/frontend-performance.md`.)
 > Version 1.2 — 05.09.2026 (audit du 05.09, § Skills : le skill supposait Next.js + shadcn sans le dire ; sur un dépôt sans bundler — sept sur huit — les axes bundle, Server Components et ISR sont sans objet et rien ne le disait. Un paragraphe en tête de la Phase 2 le dit, et nomme ce que le bundler faisait à la place.)
 > **Critère de la mesure**, à vérifier au premier audit complet : contexte principal réduit de
 > moitié. S'il ne l'est pas, le fork ne sert à rien ici et se retire.
@@ -82,7 +83,7 @@ cascade, Babel standalone qui transpile à chaque chargement.
 
 **Axe 1 — LCP (Largest Contentful Paint)**
 - Élément LCP identifié ? (souvent hero image, premier `<h1>`).
-- Image LCP : `priority` dans `<Image>` ? format moderne (WebP/AVIF) ? `sizes` correct ?
+- Image LCP : jamais en `lazy` — `loading="eager"` ou `fetchPriority="high"` sur l'`<Image>` principale (`next/image` est en `lazy` par défaut ; `priority` déprécié depuis Next 16) ? format moderne (WebP/AVIF) ? `sizes` correct ?
 - LCP bloqué par JS ? (font, script, fetch en attente).
 
 **Axe 2 — INP (Interaction to Next Paint)**
@@ -207,7 +208,7 @@ Note structurée :
 - **Chrome Performance tab** : pour long tasks.
 
 ### Patterns Next.js performants
-- **Image** : `next/image` avec `priority` sur LCP, `sizes` correct, format AVIF/WebP via `formats` dans `next.config`.
+- **Image** : `next/image` avec `loading="eager"` ou `fetchPriority="high"` sur LCP (pas `priority`, déprécié en Next 16), `sizes` correct, format AVIF/WebP via `formats` dans `next.config`.
 - **Font** : `next/font/google` avec `display: 'swap'`.
 - **Server Components first** : pas de `'use client'` sauf hooks/handlers.
 - **Streaming** : `loading.tsx` + `Suspense` pour streamer le HTML.
