@@ -1,6 +1,6 @@
 ---
 name: ux-preuves
-description: "Référentiel UX, design visuel et rédaction fondé sur des preuves vérifiées et datées, avec niveau de preuve et limites. Fiches : cognition et chemin d'usage, formulaires, navigation, mobile, temps de réponse, contenus et documents, accessibilité, interfaces IA, dark patterns, onboarding, méthodes de test et de mesure, lois UX et mythes, recherche récente ; design visuel : perception, couleur et contraste, typographie, motion et design systems ; rédaction : microcopy, voix et ton, langage inclusif, i18n et pluriels CLDR, orthotypographie par locale, traduction par LLM. Déclencheurs : justifier une recommandation UX, un choix visuel ou une formulation, quelle étude, est-ce prouvé, état de l'art, contraste, OKLCH, durée d'animation, tu ou vous, écriture inclusive, pluriels, format suisse, UX d'un document ou d'un assistant IA, test utilisateur, SUS, A/B test, sévérité. Pas pour : l'audit WCAG ex-post (`a11y-audit`)."
+description: "Référentiel de preuves vérifiées et datées (niveau de preuve, limites, mythes) pour l'UX, le design visuel, la rédaction et l'i18n, et le growth (marketing, stores, emails, SEO, droit suisse et européen de la publicité). Déclencheurs : justifier une recommandation UX, un choix visuel, une formulation ou une décision marketing, quelle étude, est-ce prouvé, état de l'art, contraste, tu ou vous, pluriels, format suisse, limite de store, prix barré, newsletter et consentement, taille d'échantillon d'un test A/B, test utilisateur, sévérité. Pas pour : l'audit WCAG ex-post (`a11y-audit`)."
 ---
 
 # UX fondée sur des preuves — référentiel vérifié
@@ -8,6 +8,7 @@ description: "Référentiel UX, design visuel et rédaction fondé sur des preuv
 > Version 1.0 — 09.11.2026 (création, demande de l'utilisateur : faire monter l'agent `ux` en compétence sur la recherche et les sources spécialisées, applications, sites, logiciels et documents). Préchargé par `ux` (clé `skills:`) : ne pas lui poser de `paths:`.
 > Version 1.1 — 09.11.2026 (volet design visuel : cinq fiches `design-*.md`, 173 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `designer` v4.0 ; mythes visuels ; § « Pour un choix visuel ».)
 > Version 1.2 — 09.11.2026 (volet rédaction : cinq fiches `redaction-*.md`, 177 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `redacteur` v3.0 ; mythes de rédaction ; § « Pour un choix visuel ou de rédaction ».)
+> Version 1.3 — 09.11.2026 (volet growth : cinq fiches `growth-*.md`, 171 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `growth` v3.0 ; mythes du marketing ; § « Pour un choix visuel, de rédaction ou de growth ».)
 > Contenu issu d'une **recherche documentaire du 09.11.2026** : chaque entrée des fiches cite une
 > page effectivement ouverte ce jour-là, avec un extrait lu. Cf. § « D'où vient ce contenu ».
 > **C'est un instantané** : § « Quand vérifier en ligne » dit quand il ne suffit plus.
@@ -148,11 +149,16 @@ lu, portée.
 | `references/redaction-i18n-locales.md` | **Rédaction.** Expansion des traductions (table dégressive), pluriels CLDR 49, ICU MessageFormat 2, anti-patterns d'i18n, formats par locale et divergence suisse, pseudo-localisation, bidi, glossaire (ISO 704, TBX), repli de langue |
 | `references/redaction-orthotypographie.md` | **Rédaction.** fr-FR, fr-CH, de-CH, en, es, it : espaces, guillemets, nombres, montants, heures, casse ; textes officiels suisses contre CLDR ; U+202F et sous-ensembles de polices ; table des règles minimales par locale |
 | `references/redaction-traduction-ia.md` | **Rédaction.** Traduction par LLM (WMT 2024-2025), translationese et passe de polissage, genre et registre par défaut, contexte des chaînes, relecture native (ISO 17100, 18587), microcopy générée, uniformisation du style, AI Act art. 50 |
+| `references/growth-science-marketing.md` | **Growth.** Lois empiriques Ehrenberg-Bass (double jeopardy, disponibilité mentale, pénétration), base IPA de Binet & Field (marque et activation, B2B), positionnement (praticiens), bénéfice ou attribut selon l'expertise, parrainage et NPS, croissance par le produit, lancements |
+| `references/growth-conversion-persuasion.md` | **Growth.** Taux de succès réels des tests A/B et calcul de puissance, preuve sociale et avis, prix (chiffres en 9, essai gratuit, renouvellement automatique), titres, urgence et rareté, pages d'atterrissage, formules de copywriting |
+| `references/growth-aso-stores.md` | **Growth.** Limites et politiques de métadonnées Play et App Store (titre Play à 30), expériences sur les fiches, notes et demandes d'avis, localisation, Data safety et App Privacy, applications pour enfants, mots-clés |
+| `references/growth-emails-droit.md` | **Growth.** Exigences Gmail, Yahoo, Outlook, DMARC (RFC 9989), désabonnement en un clic, taux d'ouverture et ses limites (Apple MPP, CNIL 2026), LCD let. o et nLPD, ePrivacy et RGPD, CAN-SPAM, CASL, séquences mesurées |
+| `references/growth-seo-ia-droit-publicite.md` | **Growth.** Google Search Essentials, contenu utile, E-E-A-T, résumés IA et clics, GEO et ses limites, faux avis (UE, Suisse, FTC), prix barrés (UE 30 jours, OIP art. 16), allégations environnementales, publicité comparative, influence |
 | `references/front-de-recherche.md` | Résultats récents (2022-2026) ou solides et méconnus : lisibilité individualisée, effets mesurés de l'IA sur le travail (productivité, déqualification, sur-confiance), état réel de l'accessibilité, nudges et réplications ratées, passkeys, lecture des graphiques |
 
-## Pour un choix visuel ou de rédaction
+## Pour un choix visuel, de rédaction ou de growth
 
-Un choix visuel ou de rédaction se range à l'un de trois niveaux, et le livrable dit lequel :
+Un choix visuel, de rédaction ou de growth se range à l'un de trois niveaux, et le livrable dit lequel :
 
 1. **Exigence** (N1) — contraste, focus, cibles, texte qui grandit, mouvement : ne se négocie pas.
 2. **Défaut fondé sur des preuves** (N2-N3) — corps de lecture, signifiants, groupement, OKLCH,
@@ -167,7 +173,13 @@ règles d'écriture des textes officiels ; les défauts fondés sur des preuves 
 message d'erreur, le registre d'adresse fixé par marché, la hiérarchie du langage inclusif, la
 passe de polissage dans la langue cible et la relecture native de toute locale publiée.
 
-Chaque fiche `design-*.md` et `redaction-*.md` finit par un **verdict sourcé sur les règles du profil** (soutenue,
+En growth, les exigences sont les politiques des stores, le droit du marketing direct, des prix et
+des allégations (Suisse, UE) et les exigences des messageries ; les défauts fondés sur des preuves
+sont le calcul de puissance avant tout test, l'abandon du taux d'ouverture comme métrique de succès,
+la croissance par de nouveaux utilisateurs, la disponibilité mentale ; les cadres de praticiens
+(positionnement, AARRR, AIDA) sont utiles mais N4.
+
+Chaque fiche `design-*.md`, `redaction-*.md` et `growth-*.md` finit par un **verdict sourcé sur les règles du profil** (soutenue,
 convention sans preuve, contredite) : c'est lui qui range une règle à son niveau. Les bandeaux de
 tendance (« bento », « glass », typographie géante) n'ont pas d'étude d'effet trouvée : N4 au
 mieux (`design-front-recent.md`).
@@ -357,6 +369,34 @@ fiche indiquée.
   les textes publiés pour informer le public sur des sujets d'intérêt public, avec exception en cas
   de relecture sous responsabilité éditoriale.
 
+**Growth et marketing** — `references/growth-*.md`
+
+- « Le titre Play fait 50 ou 60 caractères. » 30, depuis 2021.
+- « 7 amis en 10 jours » (Facebook), « 40 % de très déçus = product-market fit ». Aucune source
+  primaire trouvée pour le premier ; seuil « a bit arbitrary » pour le second.
+- « Le 60/40 marque/activation est la règle. » Moyenne de marques établies (62/38 en 2017), qui
+  « varies by category » ; « 46/54 en B2B » repose sur moins de 50 cas.
+- « Le NPS est le seul chiffre qui compte pour croître. » Non répliqué (2007), contredit (2022).
+- « Les avis multiplient les ventes par 3,7. » Exact pour 5 avis contre 0 chez un seul détaillant ;
+  la note « idéale » est entre 4,0 et 4,7 dans la source, pas 4,2-4,5.
+- « La plupart des tests réussissent si on a de bonnes idées », « un test sérieux = une seule
+  variable ». Contredits (Kohavi et al.).
+- « Les titres négatifs convertissent mieux. » Mesuré en clics sur des titres d'actualité, pas en
+  conversions.
+- « Les prix en 9 marchent toujours », « l'urgence augmente toujours les ventes », « l'ancrage est
+  une loi », « AIDA est un modèle validé ». Conditionnels, fragiles ou non testés.
+- « L'essai avec renouvellement automatique convertit à 50 % contre 15 %. » Chiffres de fournisseurs ;
+  l'expérience randomisée disponible mesure moins d'abonnés à 20 mois.
+- « Le taux d'ouverture mesure l'intérêt », « il existe une meilleure heure d'envoi », « plus
+  d'e-mails = plus de revenus ». Contredits ou sans étude.
+- « Un inscrit gratuit est un client : soft opt-in », « en B2B, pas de règles ». Contredits (PFPDT,
+  CNIL ; CAN-SPAM, LCD let. o).
+- « L'E-E-A-T est un facteur de classement », « Google pénalise le contenu écrit par IA », « il faut
+  un balisage spécial pour les IA », « le GEO augmente la visibilité de 40 % ». Contredits par Google
+  ou par la recherche.
+- « La publicité comparative est interdite », « un prix barré, c'est le prix d'avant ». Faux : elle
+  est encadrée ; dans l'UE, le prix de référence est le plus bas des 30 jours.
+
 **Méthodes** — `references/normes-lois-methodes.md`
 
 - « Cinq utilisateurs trouvent 85 % des problèmes. » Valable pour un test qualitatif, un seul
@@ -395,6 +435,13 @@ extrait verbatim ; un chiffre dont la source primaire n'a pas été trouvée est
   l'abstract d'un article le disent à l'endroit même. Elles sont surtout dans
   les fiches les plus récentes (front de recherche, IA) et les méthodes, où le texte intégral
   était derrière un accès payant.
+- **Volet growth**, même jour, même règle, cinq volets (science du marketing ; conversion et
+  persuasion ; ASO ; e-mails, délivrabilité et droit ; SEO, recherche par IA et droit de la
+  publicité) : **171 entrées**, **187 URL distinctes**, 34 mentions « résumé seul lu ». Sondage à la
+  source : Play Console « Metadata » (titre à 30 caractères — le profil écrivait 60), Pew 2025
+  (8 % contre 15 %), OIP art. 16 (texte complet sur fedlex), Binet & Field 2017 (PDF : 74:26 en
+  ligne, innovation mineure), RFC 9989, délibération CNIL 2026-042, Kohavi, Deng, Vermeer 2022 (PDF :
+  41 642 visiteurs par variante, taux de succès) — tous conformes.
 - **Volet rédaction**, même jour, même règle, cinq volets (microcopy et UX writing ; voix, ton et
   langage inclusif ; i18n et locales ; orthotypographie ; traduction automatique et IA) : **177
   entrées**, **214 URL distinctes**, 13 mentions « résumé seul lu ». Sondage à la source : données

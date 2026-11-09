@@ -5,6 +5,7 @@ description: "Publication d'une app web (PWA) sur le Google Play Store via Capac
 
 # Publication store — Android via Capacitor, Play Console
 
+> Version 1.3 — 09.11.2026 (limite du titre Play corrigée : 30 caractères, pas 60 — page officielle « Metadata » de la Play Console, lue le 09.11.2026 ; règles complètes des métadonnées dans `ux-preuves/references/growth-aso-stores.md`.)
 > Version 1.2 — 05.09.2026 (PR 3.1 de l'audit du 05.09, constat D10 : **`paths` retiré**. Mesure du 17.08.2026 (`framework-upgrade` v1.2) : `paths` se déclenche quand un fichier concordant est effectivement manipulé, pas parce que le dépôt en contient un ; or ce skill démarre par une phrase (« prépare la release »), sa Phase 0 précède toute lecture de `capacitor.config.*`, et ses déclencheurs sont tous verbaux. Il risquait de se charger seulement après le geste qu'il veut encadrer. Décision prise sur cette mesure, sans témoin propre à ce skill : la description route déjà, coût I5 nul.)
 > Contenu issu d'une **mesure sur un dépôt réel** qui a
 > mené une PWA React jusqu'à l'internal testing du Play Store (Capacitor 8, targetSdk 36) —
@@ -127,7 +128,7 @@ Checklist mesurée sur le dépôt de référence, à passer **avant** de bumper 
 
 **Classification IARC** (*Content rating*) : questionnaire par e-mail, catégorie *Utility/Productivity* pour un agenda, toutes réponses « non » → PEGI 3 / Everyone. Le documenter dans le dépôt pour la prochaine fois.
 
-**Limites de la fiche**, à donner à `growth` : titre ≤ 60, description courte ≤ 80, description longue ≤ 4 000 caractères, par locale. Pas de superlatif non prouvé, pas de feature absente.
+**Limites de la fiche**, à donner à `growth` : titre ≤ 30 (« Your app title must be 30 characters or less », Play Console Help « Metadata », lu le 09.11.2026 ; le « 60 » écrit ici jusqu'à cette date était faux), description courte ≤ 80, description longue ≤ 4 000 caractères, par locale. Pas de superlatif non prouvé, pas de feature absente.
 
 **Assets**, à donner à `designer` : **captures 1080 × 2400** (portrait Pixel 7, 4 claires + 2 sombres dans le dépôt mesuré, sur des **données de démonstration seedées**, jamais des données réelles), **feature graphic 1024 × 500** lisible aussi à 320 × 156 (taille de vignette dans les résultats). Captures depuis un émulateur ou un device (`adb shell screencap`), pas depuis DevTools — la barre système manque.
 
