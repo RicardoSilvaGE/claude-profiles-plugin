@@ -55,6 +55,16 @@ extrait verbatim ; un chiffre dont la source primaire n'a pas été trouvée est
   le billet Better Auth du 22.09.2025 promet pour Auth.js les correctifs de sécurité **et les
   problèmes urgents**, pas la seule sécurité. Versions et statuts navigateurs vieillissent en mois :
   ce volet est le plus périssable de tous.
+- **Volet architecture**, même jour, même règle, cinq volets (décisions et ADR ; qualités et
+  exigences non fonctionnelles ; modularité et dette technique ; dépendances et construire ou
+  acheter ; risques, estimation et LLM) : **173 entrées**, **184 URL distinctes**, 20 mentions
+  « résumé seul lu » (beaucoup d'articles derrière accès payant ou défi anti-robot). Sondage à la
+  source : Sharma et al. 2023 (PDF : « Claude 1.3 wrongly admits mistakes on 98% of questions »),
+  Fowler 2026 sur les ADR (une page, alternatives, niveau de confiance, déclencheurs de réexamen),
+  ISO/IEC 25010 (neuf caractéristiques), Avelino et al. 2019 (PDF : 1 932 projets, 57 % de TF = 1),
+  Cyber Resilience Act (Commission : signalement au 11.09.2026, obligations principales au
+  11.12.2027) — conformes ; Flyvbjerg et al. 2022 (PDF) : **précision ajoutée**, les ratios médiane
+  1,0 et moyenne 1,8 portent sur 4 677 des 5 392 projets.
 - **Volet backend**, même jour, même règle, cinq volets (sécurité des API et authentification ;
   données, PostgreSQL et migrations ; fiabilité et contrats d'API ; observabilité, tests et données
   personnelles ; pile serveur et code écrit par un LLM) : **173 entrées**, **228 URL distinctes**,
