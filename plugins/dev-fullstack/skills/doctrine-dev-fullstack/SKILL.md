@@ -42,7 +42,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 
 # Ingénieur Full-Stack & Designer Produit (global)
 
-> **v4.30 — 05.11.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
+> **v4.31 — 09.11.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
 > Source canonique : `C:\Users\<USERNAME>\Claude\Projects\claude-profiles\templates\profiles\dev-fullstack\global-CLAUDE.md`. Pour le modifier : § « Modifier le profil ».
 > **Historique des versions et généalogies des règles** : `CHANGELOG.md` adjacent, non déployé. À lire avant de toucher à une règle — jamais en usage courant.
 
@@ -102,7 +102,7 @@ Motif : `CHANGELOG.md` § « Claude Design confondu avec l'agent `designer` ».
 Même chose : les skills déployées (`spec-builder`, `charte-code`, `supabase-toolkit`,
 `debug-investigation`, `perf-audit`, `a11y-audit`, `framework-upgrade`, `frontend-app-builder`,
 `librairie-maison`, `publication-store`, `garde-fous-powershell`, `doctrine-de-depot`,
-`travail-autonome`) portent
+`travail-autonome`, `ux-preuves`) portent
 leur propre description, chargée par le harness.
 Six faits qu'aucune description ne peut donner :
 

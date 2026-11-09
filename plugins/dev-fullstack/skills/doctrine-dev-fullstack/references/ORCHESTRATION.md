@@ -1,7 +1,7 @@
 # Orchestration des sub-agents
 
 > Source canonique : `templates/profiles/dev-fullstack/agents/ORCHESTRATION.md` (dépôt `claude-profiles`) ; la copie déployée vit dans `agents/` du home actif.
-> Dernière mise à jour : 31.10.2026 (v2.13 — clé `observer:` retirée du registre : l'observateur de fond de `backend` et `frontend` est retiré, son critère de maintien n'ayant jamais été relevé (date butoir du 31.10 échue, décision de l'utilisateur). Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
+> Dernière mise à jour : 09.11.2026 (v2.14 — skill `ux-preuves` : référentiel UX sourcé, préchargé par `ux` ; `ux` v4.0 gagne les Modes D (contenus et documents) et E (plan d'évaluation) ; séquence 13. v2.13 du 31.10.2026 : clé `observer:` retirée du registre. Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
 
 Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les séquences typiques. Il complète le `CLAUDE.md` global et les frontmatters de chaque agent.
 
@@ -12,7 +12,7 @@ Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les
 | `muse`      | Idées improbables qui ont du sens, étincelle spontanée | Non   | `docs/MUSE/` sur demande, sinon inline |
 | `brainstormer`| Idéation divergente amont (3-5 directions) | Non | `docs/BRAINSTORM/` uniquement |
 | `architecte`| Cadrage feature/projet, ADR, SPEC                 | Non             | `docs/` uniquement                  |
-| `ux`        | Flows utilisateur, états système, audit heuristique, a11y | Non     | `docs/UX/` uniquement               |
+| `ux`        | Flows utilisateur, états système, audit heuristique sourcé, contenus et documents, plan d'évaluation, a11y | Non     | `docs/UX/` uniquement               |
 | `redacteur` | Microcopy, voix de marque, i18n idiomatique       | Oui (locales)   | Fichiers de locales + table de chaînes |
 | `growth`    | GTM, positionnement, ASO, copy externe d'acquisition | Non          | `docs/GTM.md` + copy par asset et par locale |
 | `designer`  | Direction visuelle, DS, polish UI, critique structurée | Non        | `docs/DESIGN-*`, inline (Mode C)    |
@@ -110,7 +110,7 @@ la règle miroir est dans chaque § Hand-off : coller la sortie, jamais la résu
 
 | Agent | Preuve à constater soi-même — commande dont on lit la sortie, ou chemin qu'on ouvre |
 |---|---|
-| `architecte`, `ux`, `designer`, `qa`, `growth`, `brainstormer` | `test -f docs/<fichier annoncé>` (ou `Read`) ; les sections que le brief exigeait s'y trouvent, par leur titre |
+| `architecte`, `ux`, `designer`, `qa`, `growth`, `brainstormer` | `test -f docs/<fichier annoncé>` (ou `Read`) ; les sections que le brief exigeait s'y trouvent, par leur titre. **`ux` en plus** : une recommandation tirée au hasard porte son `[Nx — source]`, et la source se retrouve dans la bibliographie du livrable puis dans `ux-preuves/references/` ou à son URL |
 | `backend`, `frontend` | `git status --short` et `git diff --stat` : les fichiers touchés sont ceux du brief, aucun de « DEHORS » ; `npx tsc --noEmit` ou le script `build`/`check` de `package.json`, sortie collée et code 0 ; `npm test -- <fichier de test cité>` quand un test est annoncé |
 | `redacteur` | `grep -c "<clé>" <chaque fichier de locale>` : même compte partout — aucune clé présente dans une seule locale |
 | `reviewer` | pour chaque finding, `sed -n '<ligne>p' <fichier>` : la ligne existe et dit ce que le finding dit |
@@ -335,6 +335,23 @@ selon nature des findings :
 [release Mode A] → pre-deploy avant push
 ```
 
+### Séquence 13 — Contenu ou document que personne ne lit (09.11.2026)
+
+```
+orchestrateur
+   ↓
+[ux Mode D] → docs/UX/<document>-contenu.md : questions du lecteur, constats cotés 0-4, plan cible, consignes
+   ↓
+[redacteur] → réécriture selon les consignes (langage clair, titres, microcopy)
+   ↓
+[designer] (si mise en page, tableaux ou graphiques en cause) → hiérarchie visuelle, lisibilité
+   ↓
+[ux Mode E] (optionnel) → vérifier que le lecteur trouve et comprend : test de repérage ou de compréhension
+```
+
+Vaut pour une page d'aide, une documentation, un rapport, un PDF, une présentation, un e-mail
+récurrent. La séquence porte le numéro 13 parce que 0 à 12 sont pris.
+
 ### Séquence 7 — Audit accessibilité
 
 ```
@@ -432,7 +449,7 @@ Tous les sub-agents (v2 — depuis 21.05.2026) suivent le même squelette :
 
    | Clé | Où | Ce qu'elle fait, et ce qui la casse |
    |---|---|---|
-   | `skills:` | `backend` (`supabase-toolkit`, `charte-code`), `frontend` (`a11y-audit`, `charte-code`), `reviewer` (`charte-code`), `auditeur` (`charte-code`) | Précharge le skill en entier au démarrage. **Exclusif avec `paths:`** sur le skill visé : poser un `paths` vide la ligne de son effet **en silence** (vérifié par témoin le 17.08.2026, absent de la documentation officielle). **En revanche, PAS exclusif avec `context: fork`** : mesuré par témoin le 19.08.2026, les deux cohabitent — le skill reste préchargé, et une invocation depuis un sous-agent s'exécute bien en fork imbriqué. Ne pas généraliser la première exclusion à la seconde par analogie : c'est l'erreur qui a été commise, puis corrigée par la mesure. |
+   | `skills:` | `backend` (`supabase-toolkit`, `charte-code`), `frontend` (`a11y-audit`, `charte-code`), `reviewer` (`charte-code`), `auditeur` (`charte-code`), `ux` (`ux-preuves`, 09.11.2026) | Précharge le skill en entier au démarrage. **Exclusif avec `paths:`** sur le skill visé : poser un `paths` vide la ligne de son effet **en silence** (vérifié par témoin le 17.08.2026, absent de la documentation officielle). **En revanche, PAS exclusif avec `context: fork`** : mesuré par témoin le 19.08.2026, les deux cohabitent — le skill reste préchargé, et une invocation depuis un sous-agent s'exécute bien en fork imbriqué. Ne pas généraliser la première exclusion à la seconde par analogie : c'est l'erreur qui a été commise, puis corrigée par la mesure. |
    | `disallowedTools:` | `reviewer`, `securite`, `release` (`Edit, Write, NotebookEdit`) ; `architecte`, `ux`, `designer`, `growth` (`Edit, Bash, NotebookEdit`, `Write` gardé pour `docs/`) ; `qa`, `auditeur`, `muse` (`Edit, NotebookEdit`, `Write` gardé pour `docs/`) | Liste noire d'outils, posée le 05.09.2026 (audit F2) sur les fiches qui interdisaient l'écriture par une phrase que rien n'opposait. **Témoin du 05.09.2026** (`claude -p`, dépôt jetable, serveur MCP stdio maison, agent `disallowedTools: Edit, Write, NotebookEdit`) : l'outil MCP reste appelable — appel journalisé côté serveur avec son `toolUseId` —, `Write` disparaît (fichier non créé, outil absent de la liste rendue), `Bash` reste. C'est ce que `tools:` ne donne pas : une liste blanche perd les serveurs MCP qu'elle n'énumère pas. **Ne restreint pas les chemins** : un agent qui garde `Write` pour `docs/` peut écrire ailleurs ; le champ DEHORS du brief reste la seule barrière sur le *où*. |
    | `memory: user` | `reviewer` ; `securite`, `qa` (05.09.2026, audit F7 — même motif, un audit ou une couverture recommencent à zéro sans elle) ; `auditeur` (16.10.2026, même motif) ; `muse` (30.10.2026 : son carnet, pour ne jamais resservir une graine et apprendre ce que l'utilisateur garde ; `Bash` gardé pour le tirage au sort) | Mémoire persistante propre à l'agent (`agent-memory/<agent>/` du home), pour que le même défaut vu sur trois dépôts devienne une règle. **Éphémère en session cloud** (plugin) : le home du conteneur ne survit pas. Couverte par `backup-memoire.ps1` / `restore-memoire.ps1` depuis le 05.09.2026 (sous-dossier `_agent-memory/` de la sauvegarde) — exécutés sous PowerShell 7 dans le conteneur, puis à faire tourner sous 5.1 au poste (`EN-ATTENTE-POSTE.md`, entrée 20 : marquée faite et retirée le 18.10.2026, texte dans l'historique git). **Inactive tant que la mémoire automatique est coupée** (documentation `sub-agents.md`, § « Enable persistent memory ») : mesuré le 02.11.2026 en session cloud, `reviewer`, `muse` et deux agents témoins (avec et sans `Write`) ne reçoivent aucun dossier de mémoire, et la conversation principale n'a pas de mémoire automatique non plus. Effet de `disallowedTools: Write, Edit` sur la mémoire quand elle est active : non mesuré, la documentation n'en dit rien (épreuve au poste, `EN-ATTENTE-POSTE.md`, entrée 23). |
 
@@ -488,6 +505,7 @@ Tous les sub-agents (v2 — depuis 21.05.2026) suivent le même squelette :
 - `supabase-toolkit` (créé 21.05.2026) : conception et audit de RLS, RPC, migrations Supabase + reality check data legacy. Hand-off vers `securite` ou `release` Mode C.
 - `perf-audit` (créé 21.05.2026) : Web Vitals + bundle + N+1 + re-renders. Hand-off vers `backend` ou `frontend`.
 - `a11y-audit` (créé 21.05.2026) : audit WCAG 2.2 AA ex-post sur composant ou page. Complète le sub-agent `ux`.
+- `ux-preuves` (créé 09.11.2026) : référentiel UX sourcé — échelle de preuve N0-N4, citation, veille, sévérité 0-4, choix de méthode d'évaluation, et des fiches par domaine (formulaires, navigation, mobile, temps de réponse, contenus et documents, accessibilité, IA, dark patterns, onboarding, méthodes, lois UX, front de recherche) dont chaque entrée cite une page lue et datée. **Préchargé** par `ux` ; consulté par `designer` et `redacteur` quand un choix se mesure. **Frontière avec `a11y-audit`** : `ux-preuves` dit ce que la recherche et les normes établissent, `a11y-audit` vérifie un écran implémenté critère par critère.
 - `debug-investigation` (créé 21.05.2026) : investigation structurée bug → root cause → fix + test de non-régression.
 - ~~`quant-toolkit`~~ : **parti le 18.08.2026** dans `<depot-prive>` avec l'agent `quant`. Le skill portait les calculs (PSR, DSR, MinTRL, MDE/puissance, bootstrap stationnaire, Monte-Carlo, PBO/CSCV) et 20 tests d'auto-cohérence, tous verts au moment du transfert.
 
