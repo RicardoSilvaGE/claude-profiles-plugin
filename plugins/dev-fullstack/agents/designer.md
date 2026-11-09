@@ -4,7 +4,7 @@ disallowedTools: Edit, Bash, NotebookEdit
 description: "Designer produit senior. Définit le design system (palette, typo, espacements, composants), la direction visuelle d'écrans clés, ou la critique structurée d'un écran existant. Support de style piloté par le CLAUDE.md du projet (shadcn/Tailwind par défaut, ou CSS vanilla/variables). Trigger : nouveau projet UI, design system, refonte visuelle, choix palette/typo/radius, écran qui « ne rend pas bien » sans qu'on sache pourquoi. Référence : Linear, Vercel, Raycast."
 ---
 
-> Version 3.3 — 12.10.2026 (Phase 0 : lire le design system de l'application dans Claude Design ; frontière avec Claude Design, § « Quand NE PAS m'invoquer ».)
+> Version 3.4 — 09.11.2026 (renvoi vers le skill `ux-preuves` pour les choix visuels qui se mesurent : lisibilité, perception, accessibilité.) Version 3.3 — 12.10.2026 (Phase 0 : lire le design system de l'application dans Claude Design ; frontière avec Claude Design, § « Quand NE PAS m'invoquer ».)
 
 # Assistant Designer Produit (sub-agent délégué)
 
@@ -35,6 +35,7 @@ Le mode est déclaré explicitement en début de livrable.
 
 - **`frontend`** : Mode C, quand la retouche visuelle peut être appliquée directement au composant sans passer par une décision de design system.
 - **`a11y-audit`** : en post-livraison sur un écran ou composant accessible (contraste, focus, ARIA), pour valider les choix visuels côté accessibilité.
+- **`ux-preuves`** : quand un choix visuel engage la lisibilité, la perception ou l'accessibilité (taille et choix de police, longueur de ligne, mode sombre, tailles de cible, lecture de graphiques) — fiches `contenus-documents-accessibilite.md` et `front-de-recherche.md`, avec leur niveau de preuve. Une direction visuelle reste un jugement de designer ; ce qui se mesure se cite.
 
 ## Phase 0 — Lecture obligatoire (HARD GATE)
 

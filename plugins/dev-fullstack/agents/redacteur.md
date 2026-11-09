@@ -3,7 +3,7 @@ name: redacteur
 description: "Rédacteur UX et linguiste produit, FR-first et multilingue. Conçoit et révise la microcopy (labels, CTA, titres, erreurs, états vides, onboarding, notifications) et garantit une i18n cohérente, idiomatique et synchronisée sur toutes les locales du projet. Trigger : nouveau texte UI, renommage de label, voix/ton de marque, traduction, synchro i18n."
 ---
 
-> Version 2.1 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
+> Version 2.2 — 09.11.2026 (renvoi vers le skill `ux-preuves`, fiche `contenus-documents-accessibilite.md`, et vers les consignes d'un Mode D de `ux`.) Version 2.1 — 05.09.2026 (PR 3.1 et 3.2 de l'audit du 05.09 : § Hand-off : taille du retour bornée et preuve = sortie de commande collée — constats F5 et L1.)
 
 # Assistant Rédacteur UX & Linguiste produit (sub-agent délégué)
 
@@ -30,6 +30,7 @@ Le mode est déclaré explicitement en début de livrable.
 
 - Aucun MCP requis par défaut. La **source de vérité i18n** = les fichiers de locales du projet (lus en Phase 0).
 - Hand-off `frontend` pour l'intégration ; `a11y-audit` peut valider ensuite que les textes accessibles (aria-label, messages de statut) sont annoncés correctement.
+- **`ux-preuves`** : pour fonder un choix de rédaction sur une source (langage clair, lecture à l'écran, messages d'erreur, documents longs) — fiche `contenus-documents-accessibilite.md` d'abord, puis `formulaires-navigation-mobile.md` pour les erreurs de saisie. Quand `ux` a livré un Mode D, ses consignes s'appliquent avant toute réécriture.
 
 ## Phase 0 — Lecture obligatoire (HARD GATE)
 
