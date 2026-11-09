@@ -1,11 +1,12 @@
 ---
 name: ux-preuves
-description: "Référentiel UX fondé sur des preuves vérifiées et datées, avec niveau de preuve et limites. Fiches : cognition et chemin d'usage, formulaires, navigation, mobile, temps de réponse, contenus et documents, accessibilité, interfaces IA, dark patterns, onboarding, méthodes de test et de mesure, lois UX et mythes, recherche récente. Déclencheurs : justifier une recommandation UX, quelle étude, est-ce prouvé, chiffre UX, état de l'art UX, UX d'un document, d'un PDF ou d'un rapport, UX d'un assistant IA, test utilisateur, SUS, A/B test, sévérité. Pas pour : l'audit WCAG ex-post (`a11y-audit`), la direction visuelle (`designer`)."
+description: "Référentiel UX et design visuel fondé sur des preuves vérifiées et datées, avec niveau de preuve et limites. Fiches : cognition et chemin d'usage, formulaires, navigation, mobile, temps de réponse, contenus et documents, accessibilité, interfaces IA, dark patterns, onboarding, méthodes de test et de mesure, lois UX et mythes, recherche récente ; design visuel : perception et esthétique, couleur et contraste, typographie et mise en page, motion et design systems. Déclencheurs : justifier une recommandation UX ou un choix visuel, quelle étude, est-ce prouvé, chiffre UX, état de l'art, contraste, OKLCH, taille de police, durée d'animation, UX d'un document ou d'un PDF, UX d'un assistant IA, test utilisateur, SUS, A/B test, sévérité. Pas pour : l'audit WCAG ex-post (`a11y-audit`)."
 ---
 
 # UX fondée sur des preuves — référentiel vérifié
 
 > Version 1.0 — 09.11.2026 (création, demande de l'utilisateur : faire monter l'agent `ux` en compétence sur la recherche et les sources spécialisées, applications, sites, logiciels et documents). Préchargé par `ux` (clé `skills:`) : ne pas lui poser de `paths:`.
+> Version 1.1 — 09.11.2026 (volet design visuel : cinq fiches `design-*.md`, 173 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `designer` v4.0 ; mythes visuels ; § « Pour un choix visuel ».)
 > Contenu issu d'une **recherche documentaire du 09.11.2026** : chaque entrée des fiches cite une
 > page effectivement ouverte ce jour-là, avec un extrait lu. Cf. § « D'où vient ce contenu ».
 > **C'est un instantané** : § « Quand vérifier en ligne » dit quand il ne suffit plus.
@@ -136,7 +137,27 @@ lu, portée.
 | `references/contenus-documents-accessibilite.md` | Lecture à l'écran, langage clair (ISO 24495-1), documents longs, PDF et Office, tableaux ; WCAG 2.2, WCAG 3, EAA, RGAA, accessibilité cognitive |
 | `references/ia-ethique-onboarding.md` | Interfaces avec IA et agents (confiance, sur-confiance, incertitude, citations) ; dark patterns et réglementation (DSA, CNIL, FTC) ; onboarding, états vides, notifications, undo contre confirmation |
 | `references/normes-lois-methodes.md` | ISO 9241-11, -110, -210 ; « lois UX » (Hick, Fitts, mémoire de travail, peak-end, esthétique-utilisabilité, Jakob, Tesler, position sérielle, Zeigarnik) avec leur source primaire et où l'usage courant la dépasse ; sévérité, tests, SUS, SEQ, taille d'échantillon, first-click, A/B, HEART, JTBD, Kano |
+| `references/design-perception-esthetique.md` | **Design visuel.** Premières impressions, complexité visuelle et prototypicalité, crédibilité, signifiants (flat design), icônes, hiérarchie et saillance, Gestalt mesurée, images |
+| `references/design-couleur-contraste.md` | **Design visuel.** Contraste WCAG 2.2 complet (texte, non textuel, focus, placeholder), APCA et son statut réel, contraste du web réel, vision des couleurs, psychologie des couleurs, OKLCH, mode sombre |
+| `references/design-typographie-mise-en-page.md` | **Design visuel.** Taille critique de lecture, hauteur d'x, serif ou sans-serif, texte qui grandit (WCAG 1.4.4, 1.4.10, 1.4.12), tailles des plateformes, grilles et échelles (conventions), densité, polices web |
+| `references/design-motion-etats-systemes.md` | **Design visuel.** Durées et courbes d'animation, mouvement et accessibilité, états des composants (focus natif ou personnalisé, hover au tactile, désactivé), tokens DTCG, preuves d'effet des design systems |
+| `references/design-front-recent.md` | **Design visuel.** Liquid Glass, Material 3 Expressive et ce que Google publie vraiment, homogénéisation et fixation par l'IA générative, accessibilité des interfaces générées, Web Almanac 2025, capacités CSS Baseline, tendances sans mesure |
 | `references/front-de-recherche.md` | Résultats récents (2022-2026) ou solides et méconnus : lisibilité individualisée, effets mesurés de l'IA sur le travail (productivité, déqualification, sur-confiance), état réel de l'accessibilité, nudges et réplications ratées, passkeys, lecture des graphiques |
+
+## Pour un choix visuel
+
+Un choix visuel se range à l'un de trois niveaux, et le livrable dit lequel :
+
+1. **Exigence** (N1) — contraste, focus, cibles, texte qui grandit, mouvement : ne se négocie pas.
+2. **Défaut fondé sur des preuves** (N2-N3) — corps de lecture, signifiants, groupement, OKLCH,
+   palettes de graphiques, durée d'animation : s'en écarter se justifie par écrit.
+3. **Style** (N0 assumé) — grille, rayon, accent unique, courbes d'animation : légitime, signé,
+   jamais présenté comme une preuve. Il cède devant le design system d'un projet.
+
+Chaque fiche `design-*.md` finit par un **verdict sourcé sur les règles du profil** (soutenue,
+convention sans preuve, contredite) : c'est lui qui range une règle à son niveau. Les bandeaux de
+tendance (« bento », « glass », typographie géante) n'ont pas d'étude d'effet trouvée : N4 au
+mieux (`design-front-recent.md`).
 
 ## Mythes à ne pas reproduire
 
@@ -248,6 +269,44 @@ fiche indiquée.
 - « 11 % des sites marchands ont des dark patterns. » Borne basse (Mathur et al. 2019), pas une
   estimation : ne jamais lire « 89 % n'en ont pas ».
 
+**Design visuel** — `references/design-*.md`
+
+- « On juge un site en 50 ms. » Lindgaard et al. 2006 portent sur l'**attrait visuel** ;
+  l'extension à la crédibilité et à l'utilisabilité vient de reprises secondaires.
+- « 46 % des utilisateurs jugent la crédibilité sur le design. » C'est 46,1 % **des commentaires**
+  (Fogg et al. 2002), et l'effet est trouvé plus faible une décennie plus tard.
+- « Il faut une complexité moyenne (U inversé). » Sur les sites au premier regard, la complexité
+  élevée pénalise, faible et moyenne font jeu égal (Tuch et al. 2012 ; Reinecke et al. 2013).
+- « L'espace blanc augmente la compréhension de 20 %. » Aucune source primaire trouvée.
+- « La proximité groupe mieux qu'une bordure. » Une région commune groupe plus fort ; la proximité
+  coûte seulement moins de complexité visuelle.
+- « APCA est l'algorithme de WCAG 3. » Le brouillon du 10.09.2026 dit l'algorithme « yet to be
+  determined ». Une palette « garantie APCA » se revérifie en ratio WCAG 2.
+- « Le bouton rouge convertit mieux », « le rouge stresse », « le rouge rend plus attirant ». Page
+  d'origine introuvable pour le premier ; pas de valeur probante après correction du biais de
+  publication pour le deuxième (méta-analyse Gnambs 2020) ; effet « very small, potentially
+  nonexistent » pour le troisième (méta-analyse Lehmann et al. 2018).
+- « Le texte clair sur noir provoque une halation chez les astigmates. » Aucune source primaire.
+- « HSL suffit pour un thème clair/sombre. » Contredit par CSS Color 4 § 7.3 : passer en OKLCH.
+- « Serif pour le papier, sans-serif pour l'écran. » Aucune différence robuste à conditions égales.
+- « La grille de 8 points est prouvée », « les échelles modulaires produisent l'harmonie ».
+  Conventions de production.
+- « Il faut toujours remplacer l'outline du navigateur. » Le focus natif est conforme (G165) ; c'est
+  en le modifiant qu'on s'expose à l'échec.
+- « Un bouton désactivé doit atteindre 4,5:1. » Les composants inactifs sont exemptés.
+- « Les animations ne doivent jamais dépasser 300 ou 400 ms. » Seuil de praticien ; la gêne est
+  située à 500 ms (NN/g), et environ 1 s est mesuré utile pour une transition de données.
+- « `prefers-reduced-motion`, c'est aucune animation. » La spécification dit « removes or
+  replaces » : un fondu remplace une translation.
+- « 35 % des adultes souffrent de troubles vestibulaires. » Le chiffre porte sur les Américains de
+  40 ans et plus, mesurés par un test d'équilibre, pas sur la gêne face au mouvement.
+- « La spécification DTCG est une norme W3C. » C'est un rapport de groupe communautaire.
+- « Un design system rend 47 % plus rapide. » Un formulaire, huit développeurs.
+- « Material 3 Expressive fait repérer quatre fois plus vite. » « Up to », recherche d'éditeur
+  sans protocole publié, gain porté par la saillance d'un bouton agrandi.
+- « Les outils d'IA produisent des interfaces accessibles. » Résultats contradictoires ; une étude
+  de 2026 mesure 29 % de conformité.
+
 **Méthodes** — `references/normes-lois-methodes.md`
 
 - « Cinq utilisateurs trouvent 85 % des problèmes. » Valable pour un test qualitatif, un seul
@@ -286,7 +345,15 @@ extrait verbatim ; un chiffre dont la source primaire n'a pas été trouvée est
   l'abstract d'un article le disent à l'endroit même. Elles sont surtout dans
   les fiches les plus récentes (front de recherche, IA) et les méthodes, où le texte intégral
   était derrière un accès payant.
-- **Contrôle par sondage**, fait hors des volets de recherche en rouvrant la source : heuristiques
+- **Volet design visuel**, même jour, même règle, cinq volets (perception et esthétique ; couleur et
+  contraste ; typographie et mise en page ; motion, états et design systems ; front récent
+  2024-2026) : **173 entrées**, **182 URL distinctes**, 29 mentions « résumé seul lu ». Chaque volet
+  a jugé les règles de `designer` une à une. Sondage à la source : Doshi & Hauser 2024, Web Almanac
+  2025 (incohérence interne 30 / 31 % notée), WebAIM Million 2026, WCAG 1.4.3 (texte large,
+  arrondi, placeholder, désactivés), GOV.UK (corps 19 px), Legge & Bigelow 2011, NN/g 2017 sur le
+  flat design, WCAG 2.4.13 (exemption du focus natif), NN/g sur la durée des animations — tous
+  conformes, avec une nuance (NN/g resserre à 100-400 ms pour la plupart des cas).
+- **Contrôle par sondage** du volet UX, fait hors des volets de recherche en rouvrant la source : heuristiques
   de Nielsen, échelle de sévérité de Nielsen, validation GOV.UK, zone du pouce (Hoober 2017),
   barres de progression (Harrison et al. 2010, texte intégral), Mathur et al. 2019, Bansal et al.
   2021, statut de WCAG 3 et approbation ISO de WCAG 2.2, METR 2025, déqualification en coloscopie
