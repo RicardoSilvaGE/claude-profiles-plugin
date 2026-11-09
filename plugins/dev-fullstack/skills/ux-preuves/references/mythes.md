@@ -1,7 +1,7 @@
 # Fiche `ux-preuves` — Mythes à ne pas reproduire
 
 > Liste opposable, sortie du `SKILL.md` le 09.11.2026 pour alléger ce qu'il précharge chez `ux`,
-> `designer`, `redacteur`, `growth` et `frontend`. Ces affirmations circulent dans la littérature de
+> `designer`, `redacteur`, `growth`, `frontend` et `backend`. Ces affirmations circulent dans la littérature de
 > praticiens et **ne s'écrivent pas** dans un livrable, sauf pour les réfuter. Chaque réfutation est
 > sourcée dans la fiche indiquée en tête de groupe, à sa section « Mythes et affirmations contestées ».
 
@@ -246,6 +246,53 @@
   l'IA d'améliorer le code le rend plus sûr », « le modèle vérifie seul qu'un paquet existe ».
   Contredits.
 - « Anchor positioning est Baseline. » Le noyau oui, le groupe complet non : nommer la propriété.
+
+**Backend** — `references/backend-*.md`
+
+- « bcrypt est le choix par défaut », « `crypto.scrypt` natif suffit tel quel ». OWASP réserve bcrypt
+  à l'existant et met Argon2id en premier ; le `scrypt` de Node par défaut est sous le plancher OWASP,
+  et l'atteindre exige de relever `maxmem`.
+- « Un secret de 32 caractères = 256 bits. » 32 caractères hexadécimaux font 128 bits ; il faut
+  32 octets d'un générateur cryptographique.
+- « 8 caractères minimum et des caractères spéciaux. » NIST SP 800-63B-4 : 15 en facteur unique,
+  aucune règle de composition, aucune rotation forcée.
+- « SameSite=Lax est le défaut, le CSRF est réglé », « des UUID rendent l'IDOR impossible ».
+  Faux : Firefox et Safari ne traitent pas l'absence de `SameSite` comme Lax ; un UUID n'est pas un
+  contrôle d'accès. « Les en-têtes RateLimit et `Idempotency-Key` sont standardisés » : brouillons
+  IETF.
+- « Le MFA stoppe 99,9 % des compromissions. » Affirmation d'éditeur, source primaire non lue.
+- « 92 % des pannes viennent d'une mauvaise gestion d'erreur. » 92 % des pannes **catastrophiques**
+  (48 sur 198), dans cinq systèmes distribués (Yuan et al. 2014).
+- « Commiter puis envoyer l'e-mail, c'est sûr », « les retries rendent le système plus fiable »,
+  « le backoff exponentiel suffit ». Contredits : crash entre commit et envoi, pannes métastables,
+  rafales sans jitter.
+- « Le timeout par défaut du client HTTP me protège. » undici : 300 s entre deux morceaux, aucune
+  borne totale.
+- « 422 est le code normalisé de la validation », « le versionnement par URL est la norme ». Les
+  guides se contredisent.
+- « `ADD COLUMN … DEFAULT` réécrit la table » (faux depuis PostgreSQL 11 pour un DEFAULT constant),
+  « renommer une colonne est lourd » (métadonnées seulement ; le code déployé casse), « Serializable
+  règle la concurrence sans rien changer » (rejouer les 40001), « l'upsert de l'ORM protège des
+  doublons » (seulement sur un index unique).
+- « La RLS protège la table quoi qu'il arrive. » Propriétaire, `BYPASSRLS`, clé secrète et vues la
+  contournent.
+- « SQLite n'est pas fait pour la production. » Contesté par sqlite.org ; c'est « SQLite en dev,
+  Postgres en prod » qui pose problème.
+- « `npm install prisma` installe la version stable », « Drizzle est en 1.0 ». Faux au 09.11.2026.
+- « Node exécute TypeScript, plus besoin de `tsc` », « le modèle de permissions de Node isole une
+  dépendance malveillante ». Contredits par la doc Node.
+- « L'injection SQL est la faille typique du code backend généré », « un rappel de sécurité dans le
+  prompt suffit », « un analyseur statique vert prouve la sûreté ». Contredits (BaxBench, SusVibes,
+  CWEval).
+- « En Suisse, une fuite s'annonce en 72 heures. » La LPD dit « dans les meilleurs délais », pour un
+  risque élevé ; 72 heures est le RGPD.
+- « La nLPD impose de journaliser tous les accès et de garder les logs un an. » Seulement dans les
+  cas de l'OPDo art. 4 (données sensibles à grande échelle, profilage à risque élevé).
+- « Hacher l'identifiant anonymise les journaux », « une colonne `deleted_at` répond au droit à
+  l'effacement ». Pseudonymisation n'est pas anonymisation ; la suppression logique est une
+  restriction temporaire.
+- « Le RGPD ne concerne pas un développeur établi en Suisse. » Pas nécessairement (art. 3 par. 2) :
+  question de juriste.
 
 **Méthodes** — `references/normes-lois-methodes.md`
 
