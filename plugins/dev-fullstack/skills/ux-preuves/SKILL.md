@@ -1,6 +1,6 @@
 ---
 name: ux-preuves
-description: "Référentiel de preuves vérifiées et datées (niveau de preuve, limites, mythes) pour l'UX, le design visuel, la rédaction et l'i18n, le growth (marketing, stores, emails, SEO, droit suisse et européen de la publicité) et le code frontend et backend (performance, React et Next.js, accessibilité, sécurité, API, PostgreSQL, fiabilité, données personnelles, code écrit par un LLM). Déclencheurs : justifier une recommandation UX, un choix visuel, une formulation, une décision marketing ou un choix d'implémentation, quelle étude, est-ce prouvé, état de l'art, contraste, tu ou vous, pluriels, format suisse, limite de store, prix barré, newsletter et consentement, taille d'échantillon d'un test A/B, test utilisateur, sévérité. Pas pour : l'audit WCAG ex-post (`a11y-audit`)."
+description: "Référentiel de preuves vérifiées et datées (niveau de preuve, limites, mythes) pour l'UX, le design visuel, la rédaction et l'i18n, le growth (marketing, stores, emails, SEO, droit suisse et européen de la publicité) l'architecture et le code (ADR, qualités, dépendances, performance, sécurité, API, PostgreSQL, données personnelles, code écrit par un LLM). Déclencheurs : justifier une recommandation UX, un choix visuel, une formulation, une décision marketing, d'architecture ou d'implémentation, quelle étude, est-ce prouvé, état de l'art, contraste, tu ou vous, pluriels, format suisse, limite de store, prix barré, newsletter et consentement, taille d'échantillon d'un test A/B, test utilisateur, sévérité. Pas pour : l'audit WCAG ex-post (`a11y-audit`)."
 ---
 
 # UX fondée sur des preuves — référentiel vérifié
@@ -12,6 +12,7 @@ description: "Référentiel de preuves vérifiées et datées (niveau de preuve,
 > Version 1.4 — 09.11.2026 (mythes et provenance sortis dans `references/mythes.md` et `references/provenance.md` : le préchargement passe de 40 à 20 Ko pour chaque agent qui le porte ; volet frontend à suivre.)
 > Version 1.5 — 09.11.2026 (volet frontend : cinq fiches `frontend-*.md`, 174 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `frontend` v3.0 ; mythes du frontend ; § « Pour un choix visuel, de rédaction, de growth ou d'implémentation ».)
 > Version 1.6 — 09.11.2026 (volet backend : cinq fiches `backend-*.md`, 173 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `backend` v4.0 ; mythes du backend.)
+> Version 1.7 — 09.11.2026 (volet architecture : cinq fiches `architecture-*.md`, 173 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `architecte` v4.0 ; mythes de l'architecture.)
 > Contenu issu d'une **recherche documentaire du 09.11.2026** : chaque entrée des fiches cite une
 > page effectivement ouverte ce jour-là, avec un extrait lu. Cf. § « D'où vient ce contenu ».
 > **C'est un instantané** : § « Quand vérifier en ligne » dit quand il ne suffit plus.
@@ -162,6 +163,11 @@ lu, portée.
 | `references/frontend-accessibilite-code.md` | **Frontend.** ARIA et ses risques mesurés, éléments natifs (`<dialog>`, popover), changements de route en SPA, régions live, formulaires accessibles, limites des tests automatiques, mouvement et couleurs forcées |
 | `references/frontend-qualite-securite.md` | **Frontend.** Effet mesuré du typage, tests et couverture, tests instables, error boundaries, XSS, CSP stricte, secrets et jetons, chaîne d'approvisionnement npm, risque des dépendances |
 | `references/frontend-code-ia-plateforme.md` | **Frontend.** Sécurité du code généré par LLM, paquets hallucinés, API dépréciées, maintenabilité, pratiques mesurées ; ce que la plateforme web fait nativement en 2025-2026, avec statut Baseline daté |
+| `references/architecture-decisions-adr.md` | **Architecture.** Formats d'ADR (Nygard, MADR), ISO/IEC/IEEE 42010, arc42, C4, recherche sur la décision d'architecture et ses biais (alternatives, ancrage), réversibilité, érosion, seuil d'un ADR |
+| `references/architecture-qualites-nfr.md` | **Architecture.** ISO/IEC 25010:2023, scénarios de qualité et ATAM, risques d'omission, NFR en pratique, mythe du surcoût ×100, fitness functions, modélisation des menaces, Well-Architected, DORA, local-first |
+| `references/architecture-modularite-dette.md` | **Architecture.** Parnas, loi de Conway et mirroring, monolithe modulaire et microservices, couplage et livraison, dette technique, churn et défauts, YAGNI et abstraction prématurée |
+| `references/architecture-dependances-build-buy.md` | **Architecture.** Truck factor et abandon, OpenSSF Scorecard et Concise Guide, dépréciations, licences et SBOM, Cyber Resilience Act, Data Act et coût de sortie, make-or-buy |
+| `references/architecture-risques-estimation-llm.md` | **Architecture.** Pre-mortem, estimation et ancrage, dépassements des projets informatiques, ISO 31000 et matrices de risque, spikes, biais cognitifs, LLM et décisions d'architecture, flagornerie |
 | `references/backend-securite-api-auth.md` | **Backend.** OWASP API Top 10 et ASVS 5.0, autorisation sur l'objet, stockage des mots de passe (Argon2id, scrypt, PBKDF2), NIST SP 800-63B-4, sessions et JWT, anti-force brute, CSRF, CORS, SSRF, injection SQL et API brutes des ORM, OAuth, ordre des contrôles dans un handler |
 | `references/backend-donnees-postgres.md` | **Backend.** Migrations PostgreSQL sans interruption (verrous, `lock_timeout`, `CONCURRENTLY`, `NOT VALID`), expand/contract, index, pagination par curseur, transactions et isolation, contraintes contre validations applicatives, ORM et N+1, pools et serverless, RLS Supabase, PostgreSQL 18, SQLite |
 | `references/backend-fiabilite-contrats-api.md` | **Backend.** Timeouts, retries, jitter et budgets, pannes métastables, gestion d'erreur et pannes réelles, idempotence, outbox et webhooks, codes HTTP et Problem Details, pagination, temps réel, files |
@@ -202,10 +208,15 @@ LCP prioritaire, la CSP stricte, le typage strict, l'élément natif avant l'ARI
 la validation serveur, les requêtes paramétrées, la dérivation des mots de passe, les méthodes sûres
 (RFC 9110) et la protection des données (nLPD, RGPD) ; les défauts fondés sur des preuves sont les
 contraintes en base, l'outbox, l'idempotence, les retries bornés avec jitter, la mécanique PostgreSQL
-des migrations ; l'emplacement de la logique métier et le choix 400 ou 422 sont des conventions. **Versions et statuts navigateurs vieillissent en mois** : la
+des migrations ; l'emplacement de la logique métier et le choix 400 ou 422 sont des conventions. En architecture, les
+exigences sont la couverture des qualités d'ISO/IEC 25010:2023, la protection des données dès la
+conception et la qualification réglementaire du produit (posée comme question) ; les défauts fondés
+sur des preuves sont la chasse aux décisions non prises, les NFR mesurables, les alternatives générées
+avant de choisir, les risques à signal de détection et impact chiffré ; les seuils (un jour, trois
+risques, une page) sont des conventions. **Versions et statuts navigateurs vieillissent en mois** : la
 fiche dit où regarder, la documentation de la version installée tranche.
 
-Chaque fiche `design-*.md`, `redaction-*.md`, `growth-*.md`, `frontend-*.md` et `backend-*.md` finit par un **verdict sourcé sur les règles du profil** (soutenue,
+Chaque fiche `design-*.md`, `redaction-*.md`, `growth-*.md`, `frontend-*.md`, `backend-*.md` et `architecture-*.md` finit par un **verdict sourcé sur les règles du profil** (soutenue,
 convention sans preuve, contredite) : c'est lui qui range une règle à son niveau. Les bandeaux de
 tendance (« bento », « glass », typographie géante) n'ont pas d'étude d'effet trouvée : N4 au
 mieux (`design-front-recent.md`).

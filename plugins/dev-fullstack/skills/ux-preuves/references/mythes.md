@@ -1,7 +1,7 @@
 # Fiche `ux-preuves` — Mythes à ne pas reproduire
 
 > Liste opposable, sortie du `SKILL.md` le 09.11.2026 pour alléger ce qu'il précharge chez `ux`,
-> `designer`, `redacteur`, `growth`, `frontend` et `backend`. Ces affirmations circulent dans la littérature de
+> `designer`, `redacteur`, `growth`, `frontend`, `backend` et `architecte`. Ces affirmations circulent dans la littérature de
 > praticiens et **ne s'écrivent pas** dans un livrable, sauf pour les réfuter. Chaque réfutation est
 > sourcée dans la fiche indiquée en tête de groupe, à sa section « Mythes et affirmations contestées ».
 
@@ -246,6 +246,44 @@
   l'IA d'améliorer le code le rend plus sûr », « le modèle vérifie seul qu'un paquet existe ».
   Contredits.
 - « Anchor positioning est Baseline. » Le noyau oui, le groupe complet non : nommer la propriété.
+
+**Architecture** — `references/architecture-*.md`
+
+- « Les portes à sens unique viennent de la lettre de Bezos de 2016 » (lettre sur l'exercice 2015) ;
+  « l'architecture, ce sont les décisions difficiles à changer, dit Ralph Johnson » (reformulation de
+  Fowler) ; « la règle de trois vient de Fowler » (il l'attribue à Don Roberts).
+- « Un ADR doit toujours lister les alternatives » (Nygard, AWS et GOV.UK ne l'exigent pas ; la
+  recherche sur les biais le justifie), « un ADR accepté est immuable » (les guides divergent),
+  « ISO/IEC/IEEE 42010 impose les ADR » (non), « les ADR sont un standard de l'industrie » (adoption
+  faible mesurée dans l'open source).
+- « Il suffit d'expliquer les biais pour s'en protéger. » Inefficace mesuré ; seuls des gestes
+  obligatoires (options multiples, inconvénient explicite) ont un effet.
+- « Dernier moment responsable = décider le plus tard possible. » Contesté : c'est le moment où une
+  alternative importante disparaît.
+- « Un défaut d'exigence coûte 100 fois plus cher en production. » Aucun effet général sur 171 projets
+  (Menzies et al.).
+- « ISO 25010 = utilisabilité et portabilité » (édition 2011), « DORA = quatre métriques » (cinq),
+  « les CRDT font disparaître les conflits » (ils les conservent), « l'ATAM a prouvé son
+  efficacité », « STRIDE trouve les menaces » (beaucoup restent non détectées).
+- « Amazon Prime Video a abandonné les microservices » (un seul service), « MonolithFirst est
+  démontré » (« the evidence is sparse », Fowler), « toutes les plateformes recommandent le monolithe »
+  (AWS dit l'inverse), « DORA montre que les microservices améliorent la livraison » (DORA mesure le
+  couplage faible), « la loi de Conway est universelle » (thèse sans données, soutien partiel).
+- « La dette technique, c'est du code sale écrit vite » (Cunningham dit le contraire), « les
+  développeurs perdent 23 % de leur temps à cause de la dette » (estimation déclarée), « plus un
+  fichier change, plus il est bogué » (seul le churn relatif prédit), « le bon design paie toujours »
+  (« no objective proof », Fowler).
+- « Un bon score OpenSSF Scorecard veut dire une dépendance sûre » (R² de 9 à 12 %), « 85 % des
+  paquets npm ne sont pas maintenus » (au sens d'un seul check), « 81,5 % des systèmes gardent des
+  dépendances obsolètes » (indicateur moyen, Java), « Supabase est open source, donc pas de
+  verrouillage » (l'auto-hébergé n'a pas tout), « les changements de licence sont définitifs ».
+- « Le CRA s'applique à toute application web vendue dans l'UE » (considérant 12), « le CRA n'oblige
+  à rien avant décembre 2027 » (signalement depuis le 11.09.2026).
+- « Le pre-mortem augmente de 30 % les risques identifiés » (chiffre non retrouvé dans l'étude),
+  « 16 % des projets réussissent » (Standish, contesté), « 64 % des fonctionnalités ne servent
+  jamais », « une matrice probabilité × impact objective le risque » (Cox 2008), « les projets
+  informatiques dépassent toujours » (médiane 1,0, mais queue épaisse), « l'optimisation prématurée
+  est la racine de tous les maux », cité sans la suite de Knuth.
 
 **Backend** — `references/backend-*.md`
 
