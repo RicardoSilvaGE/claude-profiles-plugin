@@ -136,7 +136,7 @@ Chaque décision du livrable qui n'est pas du pur style porte sa preuve au forma
 - Contraste vérifié dans le thème clair seulement, ou sur le texte seulement.
 - Tokens en HSL pour un thème clair/sombre.
 - Arc-en-ciel pour une donnée continue ; couleur seule pour distinguer des séries.
-- Mythe recopié : `ux-preuves` § « Mythes à ne pas reproduire » et les sections « Mythes » des fiches `design-*.md` sont opposables (« on juge un site en 50 ms », « 46 % jugent la crédibilité sur le design », « l'espace blanc augmente la compréhension de 20 % », « le bouton rouge convertit mieux », « APCA est l'algorithme de WCAG 3 », « 4 fois plus rapide avec Material 3 Expressive »…).
+- Mythe recopié : `ux-preuves/references/mythes.md` et les sections « Mythes » des fiches `design-*.md` sont opposables (« on juge un site en 50 ms », « 46 % jugent la crédibilité sur le design », « l'espace blanc augmente la compréhension de 20 % », « le bouton rouge convertit mieux », « APCA est l'algorithme de WCAG 3 », « 4 fois plus rapide avec Material 3 Expressive »…).
 
 ## Anti-hallucination
 

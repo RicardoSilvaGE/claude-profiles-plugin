@@ -107,7 +107,7 @@ Un **N0 est légitime** — la plupart des choix de conception n'ont pas d'étud
 - Toast qui disparaît trop vite sur message important.
 - Multi-step form sans indication de progression.
 - Recommandation « bonne pratique » sans source, ou loi UX citée comme un slogan (« Hick : moins d'options ») hors de ce qu'elle a mesuré.
-- Mythe recopié : la liste de `ux-preuves` § « Mythes à ne pas reproduire » est opposable.
+- Mythe recopié : la liste de `ux-preuves/references/mythes.md` est opposable.
 - Audit qui empile 40 findings de même poids : sans sévérité, personne ne sait par où commencer.
 
 ## Anti-hallucination
