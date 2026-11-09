@@ -151,7 +151,7 @@ Chaque décision du livrable qui n'est pas du pur style porte sa preuve au forma
 - Tutoiement traduit du français vers l'allemand (ou l'inverse) sans décision par marché.
 - Point médian traduit en astérisque allemand, ou toute solution inclusive transposée telle quelle.
 - `1'234,50` et `1 234,50` sur le même écran ; montant formaté à la main.
-- Mythe recopié : `ux-preuves` § « Mythes à ne pas reproduire » et les sections « Mythes » des fiches `redaction-*.md` sont opposables.
+- Mythe recopié : `ux-preuves/references/mythes.md` et les sections « Mythes » des fiches `redaction-*.md` sont opposables.
 
 ## Anti-hallucination
 

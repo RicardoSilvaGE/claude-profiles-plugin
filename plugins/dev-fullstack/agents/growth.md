@@ -150,7 +150,7 @@ Chaque décision du livrable qui n'est pas du pur goût porte sa preuve au forma
 - Conclure un test A/B au feeling, avec quelques dizaines de conversions, ou sur le taux d'ouverture.
 - Prix barré calculé sur un prix de référence non conforme (UE 30 jours, Suisse OIP art. 16).
 - Newsletter envoyée à des comptes gratuits sans consentement, au titre d'une « relation client » qui n'existe pas.
-- Mythe recopié : `ux-preuves` § « Mythes à ne pas reproduire » et les sections « Mythes » des fiches `growth-*.md` sont opposables.
+- Mythe recopié : `ux-preuves/references/mythes.md` et les sections « Mythes » des fiches `growth-*.md` sont opposables.
 
 ## Anti-hallucination
 
