@@ -1,12 +1,13 @@
 ---
 name: ux-preuves
-description: "Référentiel UX et design visuel fondé sur des preuves vérifiées et datées, avec niveau de preuve et limites. Fiches : cognition et chemin d'usage, formulaires, navigation, mobile, temps de réponse, contenus et documents, accessibilité, interfaces IA, dark patterns, onboarding, méthodes de test et de mesure, lois UX et mythes, recherche récente ; design visuel : perception et esthétique, couleur et contraste, typographie et mise en page, motion et design systems. Déclencheurs : justifier une recommandation UX ou un choix visuel, quelle étude, est-ce prouvé, chiffre UX, état de l'art, contraste, OKLCH, taille de police, durée d'animation, UX d'un document ou d'un PDF, UX d'un assistant IA, test utilisateur, SUS, A/B test, sévérité. Pas pour : l'audit WCAG ex-post (`a11y-audit`)."
+description: "Référentiel UX, design visuel et rédaction fondé sur des preuves vérifiées et datées, avec niveau de preuve et limites. Fiches : cognition et chemin d'usage, formulaires, navigation, mobile, temps de réponse, contenus et documents, accessibilité, interfaces IA, dark patterns, onboarding, méthodes de test et de mesure, lois UX et mythes, recherche récente ; design visuel : perception, couleur et contraste, typographie, motion et design systems ; rédaction : microcopy, voix et ton, langage inclusif, i18n et pluriels CLDR, orthotypographie par locale, traduction par LLM. Déclencheurs : justifier une recommandation UX, un choix visuel ou une formulation, quelle étude, est-ce prouvé, état de l'art, contraste, OKLCH, durée d'animation, tu ou vous, écriture inclusive, pluriels, format suisse, UX d'un document ou d'un assistant IA, test utilisateur, SUS, A/B test, sévérité. Pas pour : l'audit WCAG ex-post (`a11y-audit`)."
 ---
 
 # UX fondée sur des preuves — référentiel vérifié
 
 > Version 1.0 — 09.11.2026 (création, demande de l'utilisateur : faire monter l'agent `ux` en compétence sur la recherche et les sources spécialisées, applications, sites, logiciels et documents). Préchargé par `ux` (clé `skills:`) : ne pas lui poser de `paths:`.
 > Version 1.1 — 09.11.2026 (volet design visuel : cinq fiches `design-*.md`, 173 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `designer` v4.0 ; mythes visuels ; § « Pour un choix visuel ».)
+> Version 1.2 — 09.11.2026 (volet rédaction : cinq fiches `redaction-*.md`, 177 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `redacteur` v3.0 ; mythes de rédaction ; § « Pour un choix visuel ou de rédaction ».)
 > Contenu issu d'une **recherche documentaire du 09.11.2026** : chaque entrée des fiches cite une
 > page effectivement ouverte ce jour-là, avec un extrait lu. Cf. § « D'où vient ce contenu ».
 > **C'est un instantané** : § « Quand vérifier en ligne » dit quand il ne suffit plus.
@@ -142,19 +143,31 @@ lu, portée.
 | `references/design-typographie-mise-en-page.md` | **Design visuel.** Taille critique de lecture, hauteur d'x, serif ou sans-serif, texte qui grandit (WCAG 1.4.4, 1.4.10, 1.4.12), tailles des plateformes, grilles et échelles (conventions), densité, polices web |
 | `references/design-motion-etats-systemes.md` | **Design visuel.** Durées et courbes d'animation, mouvement et accessibilité, états des composants (focus natif ou personnalisé, hover au tactile, désactivé), tokens DTCG, preuves d'effet des design systems |
 | `references/design-front-recent.md` | **Design visuel.** Liquid Glass, Material 3 Expressive et ce que Google publie vraiment, homogénéisation et fixation par l'IA générative, accessibilité des interfaces générées, Web Almanac 2025, capacités CSS Baseline, tendances sans mesure |
+| `references/redaction-microcopy.md` | **Rédaction.** Libellés d'action et dialogues, messages d'erreur (problème, cause, solution), états vides et notifications, liens et noms accessibles (WCAG 2.4.4, 2.4.6, 2.5.3, 4.1.3), textes alternatifs, casse et chiffres, concision, guides de style, emoji |
+| `references/redaction-voix-ton-inclusif.md` | **Rédaction.** Ton mesuré, humour et excuses, tu/vous, du/Sie, tú/usted, « je » de la machine, langage inclusif par langue et par pays avec positions officielles datées (France, Confédération suisse, Québec, anglais), confirmshaming |
+| `references/redaction-i18n-locales.md` | **Rédaction.** Expansion des traductions (table dégressive), pluriels CLDR 49, ICU MessageFormat 2, anti-patterns d'i18n, formats par locale et divergence suisse, pseudo-localisation, bidi, glossaire (ISO 704, TBX), repli de langue |
+| `references/redaction-orthotypographie.md` | **Rédaction.** fr-FR, fr-CH, de-CH, en, es, it : espaces, guillemets, nombres, montants, heures, casse ; textes officiels suisses contre CLDR ; U+202F et sous-ensembles de polices ; table des règles minimales par locale |
+| `references/redaction-traduction-ia.md` | **Rédaction.** Traduction par LLM (WMT 2024-2025), translationese et passe de polissage, genre et registre par défaut, contexte des chaînes, relecture native (ISO 17100, 18587), microcopy générée, uniformisation du style, AI Act art. 50 |
 | `references/front-de-recherche.md` | Résultats récents (2022-2026) ou solides et méconnus : lisibilité individualisée, effets mesurés de l'IA sur le travail (productivité, déqualification, sur-confiance), état réel de l'accessibilité, nudges et réplications ratées, passkeys, lecture des graphiques |
 
-## Pour un choix visuel
+## Pour un choix visuel ou de rédaction
 
-Un choix visuel se range à l'un de trois niveaux, et le livrable dit lequel :
+Un choix visuel ou de rédaction se range à l'un de trois niveaux, et le livrable dit lequel :
 
 1. **Exigence** (N1) — contraste, focus, cibles, texte qui grandit, mouvement : ne se négocie pas.
 2. **Défaut fondé sur des preuves** (N2-N3) — corps de lecture, signifiants, groupement, OKLCH,
    palettes de graphiques, durée d'animation : s'en écarter se justifie par écrit.
-3. **Style** (N0 assumé) — grille, rayon, accent unique, courbes d'animation : légitime, signé,
-   jamais présenté comme une preuve. Il cède devant le design system d'un projet.
+3. **Style** (N0 assumé) — grille, rayon, accent unique, courbes d'animation ; en rédaction,
+   locales par défaut, pas d'emoji, phrases courtes : légitime, signé, jamais présenté comme une
+   preuve. Il cède devant le design system ou la charte éditoriale d'un projet.
 
-Chaque fiche `design-*.md` finit par un **verdict sourcé sur les règles du profil** (soutenue,
+En rédaction, les exigences sont les noms accessibles (WCAG 2.5.3), les liens, les erreurs en
+texte, les catégories de pluriel CLDR de chaque locale et, dans leur périmètre seulement, les
+règles d'écriture des textes officiels ; les défauts fondés sur des preuves sont l'anatomie d'un
+message d'erreur, le registre d'adresse fixé par marché, la hiérarchie du langage inclusif, la
+passe de polissage dans la langue cible et la relecture native de toute locale publiée.
+
+Chaque fiche `design-*.md` et `redaction-*.md` finit par un **verdict sourcé sur les règles du profil** (soutenue,
 convention sans preuve, contredite) : c'est lui qui range une règle à son niveau. Les bandeaux de
 tendance (« bento », « glass », typographie géante) n'ont pas d'étude d'effet trouvée : N4 au
 mieux (`design-front-recent.md`).
@@ -307,6 +320,43 @@ fiche indiquée.
 - « Les outils d'IA produisent des interfaces accessibles. » Résultats contradictoires ; une étude
   de 2026 mesure 29 % de conformité.
 
+**Rédaction et traduction** — `references/redaction-*.md`
+
+- « Phrases de 14 mots = 90 % de compréhension. » Source primaire introuvable.
+- « Les capitales sont illisibles », « on lit par la forme des mots ». Argument du bouma non
+  soutenu ; au seuil de lisibilité, les lettres isolées sont plus lisibles que les mots.
+- « Le bouton à 300 millions de dollars. » C'est le parcours qui a changé, pas seulement le libellé.
+- « Réécrire les messages d'erreur réduit toujours les erreurs. » Effet trouvé (Becker et al. 2016),
+  non répliqué (Pettit et al. 2017).
+- « Ne jamais s'excuser », « ne jamais dire nous ». Les guides divergent : GOV.UK proscrit « sorry »
+  dans les erreurs de saisie mais l'emploie pour une panne ; Apple déconseille « we », Microsoft
+  l'emploie.
+- « L'humour rend les erreurs sympathiques. » Résultats contradictoires ; les guides le déconseillent.
+- « Le tutoiement crée de la proximité, donc de la confiance. » Non soutenu en allemand, non testé
+  en français.
+- « NN/g a tranché "Mon compte" contre "Votre compte". » Aucun article trouvé.
+- « L'écriture inclusive est interdite en France », « la Suisse a interdit le langage inclusif ».
+  Inexacts : les circulaires françaises lient l'État et l'enseignement ; la loi suisse sur les
+  langues **impose** la formulation non sexiste aux autorités fédérales, seuls certains signes sont
+  écartés. « L'Académie refuse la féminisation » est inexact depuis le 28.02.2019 pour les métiers.
+- « Le point médian est illisible par les lecteurs d'écran. » Porté par des associations, sans test
+  reproductible trouvé : à tester sur la plateforme cible plutôt qu'à affirmer.
+- « +30 % / +35 % en allemand et en espagnol. » Bornes hautes de prestataires, sans méthode ; les
+  chaînes courtes s'allongent bien davantage.
+- « Les langues romanes n'ont que singulier et pluriel », « le russe a six pluriels », « `one`
+  signifie 1 ». Faux selon CLDR 49 : `many` en fr, es, it, pt ; quatre catégories en ru ; en
+  français, 0 et 1,5 relèvent de `one`.
+- « En Suisse, le séparateur de milliers est l'apostrophe. » CLDR oui, la Chancellerie fédérale non
+  en français : décider et documenter.
+- « MessageFormat 2.0 n'est pas stable. » Stable depuis CLDR 47 (13.03.2025) ; `Intl.MessageFormat`
+  reste au stade 1.
+- « Les LLM ont atteint la parité humaine en traduction », « un bon score COMET veut dire une bonne
+  traduction », « il suffit de demander d'être naturel ». Contestés ou contredits (WMT 2024-2025 ;
+  Li et al. 2025).
+- « L'AI Act impose d'étiqueter tout texte rédigé avec l'IA. » Faux en l'état lu : l'art. 50(4) vise
+  les textes publiés pour informer le public sur des sujets d'intérêt public, avec exception en cas
+  de relecture sous responsabilité éditoriale.
+
 **Méthodes** — `references/normes-lois-methodes.md`
 
 - « Cinq utilisateurs trouvent 85 % des problèmes. » Valable pour un test qualitatif, un seul
@@ -345,6 +395,14 @@ extrait verbatim ; un chiffre dont la source primaire n'a pas été trouvée est
   l'abstract d'un article le disent à l'endroit même. Elles sont surtout dans
   les fiches les plus récentes (front de recherche, IA) et les méthodes, où le texte intégral
   était derrière un accès payant.
+- **Volet rédaction**, même jour, même règle, cinq volets (microcopy et UX writing ; voix, ton et
+  langage inclusif ; i18n et locales ; orthotypographie ; traduction automatique et IA) : **177
+  entrées**, **214 URL distinctes**, 13 mentions « résumé seul lu ». Sondage à la source : données
+  CLDR 49 (pluriels de fr, es, it, en, de, ru, pl, ar), tableau d'expansion IBM sur la page du W3C,
+  Li et al. 2025 (texte intégral : 43 % → 25 %), WCAG 2.5.3, Miller et al. 2016 (texte intégral),
+  Instructions de la Chancellerie fédérale de 2016 (PDF : apostrophe interdite dans les nombres),
+  sortie d'`Intl` en fr-CH, de-CH et it-CH mesurée sous Node 22, art. 113 de l'AI Act — tous
+  conformes ; l'effet de l'Omnibus numérique sur l'art. 50 reste non vérifié au Journal officiel.
 - **Volet design visuel**, même jour, même règle, cinq volets (perception et esthétique ; couleur et
   contraste ; typographie et mise en page ; motion, états et design systems ; front récent
   2024-2026) : **173 entrées**, **182 URL distinctes**, 29 mentions « résumé seul lu ». Chaque volet
