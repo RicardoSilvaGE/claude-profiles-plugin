@@ -266,6 +266,57 @@
 - « Un score élevé sur un banc de revue prouve la qualité. » Un quart des exemples des jeux de
   données de revue sont du bruit.
 
+**Mise en production** — `references/release-*.md`
+
+- « 70 % des pannes viennent des changements. » Estimation interne de Google, sans méthode publiée ;
+  chez Microsoft Teams, 40 % des incidents graves viennent du code ou de la configuration.
+- « Ne jamais déployer le vendredi. » Données faibles et contradictoires ; les gels documentés se
+  motivent par la disponibilité de l'équipe, pas par le jour.
+- « Un comité d'approbation rend les livraisons plus sûres. » Pas de baisse des échecs (DORA 2019).
+- « Un retour arrière remet tout comme avant. » Sur Vercel, il repointe vers un ancien build avec sa
+  configuration, ne touche ni la base ni les API, et coupe l'auto-assignation des pushes suivants.
+- « Le retour arrière est toujours sûr. » Une migration appliquée peut l'interdire ; chez Knight
+  Capital, retirer le nouveau code a aggravé la panne.
+- « Promouvoir une préversion, c'est servir l'artefact testé. » Sur Vercel, c'est une reconstruction
+  avec les variables de production.
+- « Changer une variable Vercel prend effet tout de suite. » Seulement aux déploiements suivants ;
+  une `NEXT_PUBLIC_` exige un nouveau build.
+- « Supabase sauvegarde tous les projets. » Pas le plan Free, et jamais les objets Storage.
+- « Une branche Supabase est une copie de la prod. » Ni données ni Storage par défaut.
+- « GitLab avait cinq mécanismes de sauvegarde, aucun ne marchait. » Quatre, et un snapshot a servi.
+- « Une sauvegarde non testée n'est pas une sauvegarde. » Slogan sans source primaire trouvée.
+- « Comparer avant et après le déploiement suffit. » « Before/After Evaluation Is Risky » (SRE Workbook).
+- « Il faut comprendre la cause avant d'agir. » Plus de 90 % des incidents de Microsoft Teams ont été
+  atténués sans changement de code.
+- « L'approbation humaine suffit à sécuriser un agent. » 93 % des demandes sont acceptées (Anthropic) ;
+  l'autorisation se contrôle côté système.
+- Incident Replit : « base supprimée pendant le gel, sans récupération ». La source ne situe pas la
+  suppression pendant le gel, et l'utilisateur a écrit ensuite « the rollback did work ».
+
+**Tests** — `references/qa-*.md`
+
+- « La bonne pyramide, c'est 70/20/10. » Un « good first guess » (Google, 2015), 80/15/5 ailleurs chez
+  Google comme « very rough guideline » ; aucune étude ne justifie un ratio.
+- « Les tests d'intégration trouvent d'autres bugs que les unitaires. » Par mutation, pas de type de
+  défaut différent (Trautsch et al. 2020, résumé lu) : leur valeur est la fidélité à l'environnement.
+- « Plus de couverture, moins de bugs. » Corrélation faible une fois la taille de la suite contrôlée ;
+  chez Meta, près de la moitié des tests qui détectent une faute nouvelle n'ajoutent aucune ligne.
+- « Le score de mutation mesure la capacité à trouver de vrais bugs. » Bon guide, mauvais objectif :
+  faible une fois la taille contrôlée, et 17 % des fautes réelles sans mutant correspondant.
+- « Google impose 80 % de couverture. » Pas de seuil imposé à l'échelle du code (Ivanković et al. 2019).
+- « Toute relance automatique masque des bugs. » Une relance bornée et tracée classe un échec
+  (1 à 3 suffisent) ; c'est la relance silencieuse qui masque.
+- « Un test instable cache une race du produit. » 71 à 88 % des correctifs ne touchent que le test.
+- « Le test par paires suffit. » Il peut manquer 10 à 40 % des défauts (NIST SP 800-142).
+- « Un accès refusé par RLS lève une erreur. » En lecture et mise à jour, PostgreSQL rend 0 ligne en
+  silence ; et un test lancé en propriétaire de la table contourne la RLS.
+- « Le bénéfice du TDD vient du test écrit d'abord. » Fucci et al. 2017 l'attribuent à la granularité
+  et à la régularité des cycles, pas à l'ordre.
+- « Si le test généré passe, le code est juste. » Un test généré qui passe d'emblée est un oracle de
+  régression : il fige le comportement observé, bug compris.
+- « Un LLM peut vérifier un test en cassant le code de tête. » Le meilleur GPT-4 testé ne prédit
+  juste la sortie de fonctions de quelques lignes que dans 81 % des cas (CRUXEval).
+
 **Sécurité** — `references/securite-*.md`
 
 - « A06, ce sont les composants vulnérables », « A05, c'est la mauvaise configuration ». Numérotation

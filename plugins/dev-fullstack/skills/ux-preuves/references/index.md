@@ -50,6 +50,16 @@
 | `references/backend-pile-serveur-code-ia.md` | **Backend.** Node.js (LTS, crypto par défaut), Hono et Standard Schema, Prisma 7 et 8, Drizzle, Python, FastAPI, Pydantic, SQLAlchemy, uv, Zod 4 côté serveur, nouvelles clés Supabase, code backend généré (BaxBench, SusVibes), OWASP Top 10:2025 |
 | `references/revue-efficacite.md` | **Revue de code.** Ce que la revue trouve vraiment (défauts contre évolutivité), taille et vitesse, commentaires utiles, norme d'approbation de Google, checklists, ordre des fichiers, biais du relecteur, changements mêlés, revue des tests |
 | `references/revue-llm.md` | **Revue de code.** Revue automatisée en conditions réelles, biais d'un LLM relecteur (cadrage, indulgence envers le code de LLM, sur-correction), vérifier par exécution, défauts typiques du code généré, tests qui valident le bug |
+| `references/release-risque-cadence.md` | **Mise en production.** Mesures DORA et effet de l'IA sur la stabilité, petits lots, part des incidents dus aux changements, approbation des changements, gels, liste de contrôle avant mise en production |
+| `references/release-progressif-retour-arriere.md` | **Mise en production.** Canary et comparaison avant/après, retour arrière contre correctif en avant, Instant Rollback et Rolling Releases de Vercel, PM2, Docker, flags et leur dette, critères pré-engagés |
+| `references/release-migrations-sauvegardes.md` | **Mise en production.** Sauvegarde vérifiée par la restauration, DDL et verrous PostgreSQL, Prisma, Supabase CLI, Drizzle, dérive de schéma, essai à blanc et branches vides, SQLite et fichiers, copies de production |
+| `references/release-verification-incidents.md` | **Mise en production.** Conduite d'un incident hors sécurité, causes et atténuations mesurées, sondes, liveness contre readiness, fenêtre d'observation, comparaison à une référence, communication |
+| `references/release-config-build-agents.md` | **Mise en production.** Erreurs de configuration, variables inlinées au build, promotion et reconstruction sur Vercel, build reproductible et version de Node, agents LLM sur la production, version servie |
+| `references/qa-strategie-allocation.md` | **Tests.** Forme de la suite (pyramide, trophée, tailles de Google, ratios publiés contre mesurés), défauts selon le niveau, allocation par le risque et par l'historique (concentration des fautes, churn), principes ISTQB, smoke après déploiement, non-régression |
+| `references/qa-efficacite-suite.md` | **Tests.** Couverture contre efficacité, mutants et vrais défauts, Stryker et mutmut, oracles et assertions, méthodes pseudo-testées, snapshots, mocks, test smells, pièges de configuration de la couverture |
+| `references/qa-instabilite-ci.md` | **Tests.** Tests instables, relancer pour classer contre pour prouver, ordre d'exécution, quarantaine et délais publiés, coût de la CI, sélection de tests, temps et aléa contrôlés |
+| `references/qa-conception-cas.md` | **Tests.** Partitions, valeurs limites à trois points, tables de décision, transitions, combinatoire (NIST), exploratoire, TDD, BDD, test métamorphique, entrées hostiles, RLS qui refuse sans erreur |
+| `references/qa-tests-llm.md` | **Tests.** Tests générés par LLM en industrie, oracles et assertions faibles, agents qui exploitent les tests, tests de reproduction, TDD avec un LLM, séparation de l'auteur du code et des attendus |
 | `references/mythes.md` | **Transverse.** Les affirmations à ne jamais reproduire, par domaine, chacune renvoyant à la fiche qui la réfute |
 | `references/provenance.md` | **Transverse.** Volumes, sources, lectures sur résumé seul et contrôles par sondage de chaque volet |
 | `references/front-de-recherche.md` | Résultats récents (2022-2026) ou solides et méconnus : lisibilité individualisée, effets mesurés de l'IA sur le travail (productivité, déqualification, sur-confiance), état réel de l'accessibilité, nudges et réplications ratées, passkeys, lecture des graphiques |
@@ -97,7 +107,7 @@ par l'exploitation (KEV, exposition), les limites mesurées des scanners, deux o
 constat confirmé par une preuve ; la grille de sévérité est une convention. **Versions et statuts navigateurs vieillissent en mois** : la
 fiche dit où regarder, la documentation de la version installée tranche.
 
-Chaque fiche `design-*.md`, `redaction-*.md`, `growth-*.md`, `frontend-*.md`, `backend-*.md`, `architecture-*.md` et `securite-*.md` finit par un **verdict sourcé sur les règles du profil** (soutenue,
+Chaque fiche `design-*.md`, `redaction-*.md`, `growth-*.md`, `frontend-*.md`, `backend-*.md`, `architecture-*.md`, `securite-*.md`, `qa-*.md` et `release-*.md` finit par un **verdict sourcé sur les règles du profil** (soutenue,
 convention sans preuve, contredite) : c'est lui qui range une règle à son niveau. Les bandeaux de
 tendance (« bento », « glass », typographie géante) n'ont pas d'étude d'effet trouvée : N4 au
 mieux (`design-front-recent.md`).
@@ -106,3 +116,20 @@ En revue de code, les exigences sont celles que les fiches de domaine rangent au
 le relecteur oppose ; les défauts fondés sur des preuves sont la lecture par ordre de risque, le diff
 des tests lu contre la SPEC, la sortie d'exécution exigée, le diff lu avant la description ; l'échelle
 de sévérité, le repère de taille et la checklist sont des conventions.
+
+En tests, les exigences sont les comportements documentés des outils et de PostgreSQL (refus RLS
+silencieux, propriétaire qui contourne la RLS, périmètre par défaut de la couverture, classement des
+tests instables) ; les défauts fondés sur des preuves sont la forme pyramidale en ordre de grandeur,
+le risque lu dans l'historique, les valeurs limites à trois points, les combinaisons au-delà des
+paires sur le critique, la force mesurée par mutants, la relance bornée et tracée, l'ordre aléatoire,
+les attendus gelés avant le code ; le ratio 70/20/10, l'échéance de quarantaine et la page unique de
+`TESTING.md` sont des conventions.
+
+En mise en production, les exigences sont les comportements documentés des plateformes (variable
+`NEXT_PUBLIC_` figée au build, ce que fait et ne fait pas un retour arrière Vercel, sauvegardes
+Supabase selon le plan, branches sans données, dérive invisible dans l'historique des migrations),
+le droit des données (copie minimisée) et l'autorisation côté système d'un agent (OWASP LLM06) ; les
+défauts fondés sur des preuves sont le lot petit et homogène, le contrôle automatisé plutôt que
+l'approbation lourde, le build dans les conditions de la plateforme, les critères fixés d'avance avec
+un volume minimal, le retour arrière d'abord, la version servie lue sur le domaine, la sauvegarde
+restaurée ; le verdict GO / NO-GO, le lint et la fenêtre d'une heure par défaut sont des conventions.
