@@ -5,7 +5,7 @@ description: "Référentiel de preuves vérifiées et datées (niveau de preuve,
 
 # UX fondée sur des preuves — référentiel vérifié
 
-> Version 1.12 — 10.11.2026 (volet mise en production : cinq fiches `release-*.md`, 173 entrées, préchargé aussi par `release` v3.0.) Versions 1.0 à 1.11 : `references/provenance.md` § « Versions du skill ».
+> Version 1.13 — 10.11.2026 (volet ingénierie IA : cinq fiches `ia-profils-*.md`, 175 entrées, préchargé par le nouvel agent `ingenieur-ia`.) Versions 1.0 à 1.12 : `references/provenance.md` § « Versions du skill ».
 > Contenu issu d'une **recherche documentaire des 09 et 10.11.2026** : chaque entrée des fiches cite une
 > page effectivement ouverte pendant cette recherche, avec un extrait lu. Cf. § « D'où vient ce contenu ».
 > **C'est un instantané** : § « Quand vérifier en ligne » dit quand il ne suffit plus.
@@ -141,6 +141,7 @@ domaine) : `references/index.md`.
 | Architecture | `architecture-decisions-adr.md`, `architecture-qualites-nfr.md`, `architecture-modularite-dette.md`, `architecture-dependances-build-buy.md`, `architecture-risques-estimation-llm.md` |
 | Sécurité | `securite-menaces-priorisation.md`, `securite-outils-detection.md`, `securite-incidents-secrets.md`, `securite-plateforme-deploiement.md`, `securite-llm-agents.md` |
 | Revue de code | `revue-efficacite.md`, `revue-llm.md` |
+| Ingénierie IA | `ia-profils-consignes.md`, `ia-profils-architecture-agents.md`, `ia-profils-routage-chargement.md`, `ia-profils-mesure.md`, `ia-profils-comportements.md` |
 | Mise en production | `release-risque-cadence.md`, `release-progressif-retour-arriere.md`, `release-migrations-sauvegardes.md`, `release-verification-incidents.md`, `release-config-build-agents.md` |
 | Tests | `qa-strategie-allocation.md`, `qa-efficacite-suite.md`, `qa-instabilite-ci.md`, `qa-conception-cas.md`, `qa-tests-llm.md` |
 | Transverse | `index.md` (détail des fiches), `mythes.md` (affirmations à ne jamais reproduire), `provenance.md` (volumes, sources, contrôles, versions) |

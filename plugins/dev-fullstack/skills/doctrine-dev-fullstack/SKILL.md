@@ -214,6 +214,7 @@ Déléguer obligatoirement si :
 | Microcopy, renommage de label, ton de marque, traduction, synchro i18n | `redacteur` |
 | Lancement, fiche store/ASO, landing/sales copy, emails marketing, positionnement | `growth` |
 | Idée improbable, « sors des sentiers battus », on tourne en rond | `muse` |
+| Règle écrite mais pas appliquée, agent qui dérape, description qui ne route pas, nouvel agent ou skill, banc à concevoir | `ingenieur-ia` |
 
 **Étincelle** (30.10.2026). Appelle `muse` **sans qu'on te le demande** à trois moments : démarrage d'un projet ou d'une fonctionnalité neuve ; une **conception** qui bute deux fois (un comportement cassé relève du débogage, un choix entre options déjà posées de `brainstormer`) ; une demande ouverte de nom, d'angle ou d'idée. Une fois par sujet, jamais en débogage, revue, audit, mise en production, étape de mission autonome. Montre son **idée** telle quelle, dans un bloc « Étincelle (Muse) », sans la lisser ; les faits qu'il dit vérifiés se contrôlent (Phase 4), un fait faux se signale sous le bloc. « pas de Muse » la coupe pour la session. Motif : `CHANGELOG.md` § « Muse ».
 

@@ -50,6 +50,11 @@
 | `references/backend-pile-serveur-code-ia.md` | **Backend.** Node.js (LTS, crypto par défaut), Hono et Standard Schema, Prisma 7 et 8, Drizzle, Python, FastAPI, Pydantic, SQLAlchemy, uv, Zod 4 côté serveur, nouvelles clés Supabase, code backend généré (BaxBench, SusVibes), OWASP Top 10:2025 |
 | `references/revue-efficacite.md` | **Revue de code.** Ce que la revue trouve vraiment (défauts contre évolutivité), taille et vitesse, commentaires utiles, norme d'approbation de Google, checklists, ordre des fichiers, biais du relecteur, changements mêlés, revue des tests |
 | `references/revue-llm.md` | **Revue de code.** Revue automatisée en conditions réelles, biais d'un LLM relecteur (cadrage, indulgence envers le code de LLM, sur-correction), vérifier par exécution, défauts typiques du code généré, tests qui valident le bug |
+| `references/ia-profils-consignes.md` | **Ingénierie IA.** Comment un modèle suit des consignes : guides d'Anthropic, emphase, longueur, nombre de consignes, formulation, exemples, motif, conflits, dérive et compaction |
+| `references/ia-profils-architecture-agents.md` | **Ingénierie IA.** Quand déléguer, brief, retour, vérification d'un compte rendu, échecs multi-agents, modèle et effort |
+| `references/ia-profils-routage-chargement.md` | **Ingénierie IA.** Ce que reçoit un sous-agent, descriptions et plafonds, skills, CLAUDE.md, hooks, compaction, sélection d'outils mesurée |
+| `references/ia-profils-mesure.md` | **Ingénierie IA.** Evals, statistiques, LLM-juge, validité des bancs, routage, non-régression quand le modèle change |
+| `references/ia-profils-comportements.md` | **Ingénierie IA.** Preuves fabriquées, sur-affirmation, citations inventées, aveu d'ignorance, flagornerie, changements entre versions |
 | `references/release-risque-cadence.md` | **Mise en production.** Mesures DORA et effet de l'IA sur la stabilité, petits lots, part des incidents dus aux changements, approbation des changements, gels, liste de contrôle avant mise en production |
 | `references/release-progressif-retour-arriere.md` | **Mise en production.** Canary et comparaison avant/après, retour arrière contre correctif en avant, Instant Rollback et Rolling Releases de Vercel, PM2, Docker, flags et leur dette, critères pré-engagés |
 | `references/release-migrations-sauvegardes.md` | **Mise en production.** Sauvegarde vérifiée par la restauration, DDL et verrous PostgreSQL, Prisma, Supabase CLI, Drizzle, dérive de schéma, essai à blanc et branches vides, SQLite et fichiers, copies de production |
@@ -107,7 +112,7 @@ par l'exploitation (KEV, exposition), les limites mesurées des scanners, deux o
 constat confirmé par une preuve ; la grille de sévérité est une convention. **Versions et statuts navigateurs vieillissent en mois** : la
 fiche dit où regarder, la documentation de la version installée tranche.
 
-Chaque fiche `design-*.md`, `redaction-*.md`, `growth-*.md`, `frontend-*.md`, `backend-*.md`, `architecture-*.md`, `securite-*.md`, `qa-*.md` et `release-*.md` finit par un **verdict sourcé sur les règles du profil** (soutenue,
+Chaque fiche `design-*.md`, `redaction-*.md`, `growth-*.md`, `frontend-*.md`, `backend-*.md`, `architecture-*.md`, `securite-*.md`, `qa-*.md`, `release-*.md` et `ia-profils-*.md` finit par un **verdict sourcé sur les règles du profil** (soutenue,
 convention sans preuve, contredite) : c'est lui qui range une règle à son niveau. Les bandeaux de
 tendance (« bento », « glass », typographie géante) n'ont pas d'étude d'effet trouvée : N4 au
 mieux (`design-front-recent.md`).
@@ -133,3 +138,10 @@ défauts fondés sur des preuves sont le lot petit et homogène, le contrôle au
 l'approbation lourde, le build dans les conditions de la plateforme, les critères fixés d'avance avec
 un volume minimal, le retour arrière d'abord, la version servie lue sur le domaine, la sauvegarde
 restaurée ; le verdict GO / NO-GO, le lint et la fenêtre d'une heure par défaut sont des conventions.
+
+En ingénierie IA, les exigences sont les mécanismes documentés de Claude Code, valables pour la
+version citée (ce que reçoit un sous-agent, plafonds des descriptions et des hooks, ce qui survit à
+la compaction, `--bare`) ; les défauts fondés sur des preuves sont l'écriture sans emphase, le socle
+court, l'exemple au pluriel, la délégation réservée au travail indépendant, le compte rendu vérifié
+par l'outil, la mesure appariée avec témoin et assez d'essais ; la bande de 5 %, le brief en six
+points et la date de l'incident à côté de la règle sont des conventions.
