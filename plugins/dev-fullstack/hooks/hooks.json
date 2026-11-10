@@ -1,18 +1,25 @@
 {
-  "_comment": "Source canonique des HUIT hooks des profils empaquetes en plugin. Copies dans plugins/<profil>/hooks/ par scripts/build-plugin.sh — NE JAMAIS EDITER LA COPIE, elle est ecrasee a chaque generation et comparee par --check.",
+  "_comment": "Source canonique des hooks des profils empaquetes en plugin. Copies dans plugins/<profil>/hooks/ par scripts/build-plugin.sh — NE JAMAIS EDITER LA COPIE, elle est ecrasee a chaque generation et comparee par --check.",
 
   "hooks": {
     "SessionStart": [
       {
         "hooks": [
           {
-            "_comment": "Rend a la doctrine du profil la RESIDENCE qu'un skill n'a pas. Timeout 10 s : le script ne fait que lire un fichier local et le passer a jq.",
+            "_comment": "Rend a la doctrine du profil la RESIDENCE qu'un skill n'a pas, EN PARTIES : Claude Code plafonne chaque chaine additionalContext a 10 000 caracteres et ne transmet au-dela qu'un apercu de 2 000 (doc des hooks, lue le 10.11.2026). Une entree par partie, numero en argument ; une partie au-dela de la doctrine se tait. Huit entrees = PARTIES_MAX du script ; le banc test-hook-plugin-doctrine.sh (cas 8c) echoue si la doctrine en demande davantage. Les hooks d'un meme evenement tournent en parallele : l'ordre d'arrivee des parties n'est pas garanti, chacune porte son numero. Timeout 10 s : lecture d'un fichier local, awk, jq.",
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/injecter-doctrine.sh",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/injecter-doctrine.sh 1",
             "timeout": 10
           },
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/injecter-doctrine.sh 2", "timeout": 10 },
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/injecter-doctrine.sh 3", "timeout": 10 },
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/injecter-doctrine.sh 4", "timeout": 10 },
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/injecter-doctrine.sh 5", "timeout": 10 },
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/injecter-doctrine.sh 6", "timeout": 10 },
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/injecter-doctrine.sh 7", "timeout": 10 },
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/injecter-doctrine.sh 8", "timeout": 10 },
           {
-            "_comment": "APRES la doctrine, comme au poste. Preferences personnelles de la personne (profil-utilisateur.md), lues dans une cascade de sources privees au compte : CLAUDE_PROFIL_UTILISATEUR_FICHIER, CLAUDE_PROFIL_UTILISATEUR, ~/.claude/profil-utilisateur.md. Jamais CLAUDE_CONFIG_DIR, jamais le depot de travail. Invitation courte si aucune source.",
+            "_comment": "Declare APRES la doctrine, comme au poste (l ordre d arrivee n est pas garanti : les hooks d un evenement tournent en parallele). Preferences personnelles de la personne (profil-utilisateur.md), lues dans une cascade de sources privees au compte : CLAUDE_PROFIL_UTILISATEUR_FICHIER, CLAUDE_PROFIL_UTILISATEUR, ~/.claude/profil-utilisateur.md. Jamais CLAUDE_CONFIG_DIR, jamais le depot de travail. Invitation courte si aucune source.",
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/injecter-profil-utilisateur.sh SessionStart",
             "timeout": 10

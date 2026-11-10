@@ -35,6 +35,10 @@
 # ==============================================================================================
 set -uo pipefail
 
+# Numero de la partie a injecter (1 par defaut) : hooks.json appelle ce script une fois par partie.
+PARTIE="${1:-1}"
+case "$PARTIE" in (""|*[!0-9]*) exit 0;; esac
+
 [ "${CLAUDE_DOCTRINE_RESIDENTE:-1}" = "0" ] && exit 0
 
 RACINE="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
@@ -88,29 +92,88 @@ if [ -n "$MARQUEUR" ]; then
     done
 fi
 
-# --- injection --------------------------------------------------------------------------------
-# Le corps seul : le frontmatter est de la metadonnee de skill, il n'a rien a faire dans un
-# contexte de session.
+# --- injection, en parties sous le plafond des hooks ------------------------------------------
+# Claude Code plafonne CHAQUE chaine additionalContext a 10 000 caracteres ; au-dela, le modele
+# ne recoit qu'un chemin de fichier et un apercu de 2 000 caracteres, et rien ne lui demande de
+# lire le reste (doc des hooks, lue le 10.11.2026 ; entree du changelog « Changed hook output
+# over 10,000 characters to be saved to disk with a file path + a 2,000-character preview »).
+# Le plafond se mesure chaine par chaine, et quand plusieurs hooks repondent au meme evenement,
+# Claude recoit toutes les valeurs (meme doc). D'ou : un hook par partie dans hooks.json, chacun
+# appele avec son numero, chacun sous le plafond.
+#
+# CONSTATE LE 10.11.2026 : la version a un seul hook produisait 44 848 caracteres ; le modele
+# n'en recevait que l'apercu de 2 000, ou ne figure aucune regle dure du profil.
+#
+# Le decoupage est DETERMINISTE : chaque processus le recalcule a l'identique (« its matching
+# hooks run in parallel », doc des hooks : aucun ne peut passer la main a un autre) et n'imprime
+# que sa partie. Coupe aux titres #, ## et ### hors bloc de code ; un bloc trop gros a lui seul
+# est coupe entre deux lignes. Mesure en OCTETS (LC_ALL=C) : un octet compte au moins autant
+# qu'un caractere, la borne tient quel que soit l'awk du conteneur.
+#
+# Les commentaires HTML de bloc sont retires, comme Claude Code le fait pour un CLAUDE.md
+# (doc memory) : parite avec le poste, et autant d'octets rendus au budget.
+BUDGET_OCTETS="${CLAUDE_DOCTRINE_BUDGET_PARTIE:-9000}"
+PARTIES_MAX=8   # nombre d'entrees `injecter-doctrine.sh <k>` dans hooks.json ; le banc le verifie
+
 NOM="$(basename "$(dirname "$SKILL")")"
+
+CORPS="$(LC_ALL=C awk '
+    NR==1 && $0=="---" { fm=1; next }
+    fm==1 && $0=="---" { fm=0; next }
+    fm==1 { next }
+    /^```/ { code = !code }
+    !code && /^<!--/ { com=1 }
+    com==1 { if ($0 ~ /-->/) com=0; next }
+    { print }
+' "$SKILL")"
+
+# decouper <budget> : ecrit sur stdout les lignes du corps, chacune prefixee du numero de partie
+decouper() {
+    LC_ALL=C awk -v budget="$1" '
+        function vider_bloc(   i) {
+            if (nb == 0) return
+            if (taille_part > 0 && taille_part + taille_bloc > budget) { part++; taille_part = 0 }
+            if (taille_bloc > budget) {
+                # bloc trop gros a lui seul : coupe entre deux lignes, au plus pres du budget
+                for (i = 1; i <= nb; i++) {
+                    if (taille_part > 0 && taille_part + length(L[i]) + 1 > budget) { part++; taille_part = 0 }
+                    print part "\t" L[i]; taille_part += length(L[i]) + 1
+                }
+            } else {
+                for (i = 1; i <= nb; i++) print part "\t" L[i]
+                taille_part += taille_bloc
+            }
+            nb = 0; taille_bloc = 0
+        }
+        BEGIN { part = 1; taille_part = 0; nb = 0; taille_bloc = 0 }
+        /^```/ { code = !code }
+        !code && /^##?#? / { vider_bloc() }
+        { L[++nb] = $0; taille_bloc += length($0) + 1 }
+        END { vider_bloc() }
+    '
+}
+
+DECOUPE="$(printf '%s\n' "$CORPS" | decouper "$BUDGET_OCTETS")"
+TOTAL="$(printf '%s\n' "$DECOUPE" | awk -F'\t' 'END { print $1 }')"
+[ "$PARTIE" -le "$TOTAL" ] 2>/dev/null || exit 0
+
 {
-    cat <<EOF
-=== DOCTRINE DE PROFIL CHARGEE PAR LE PLUGIN (skill '$NOM') ===
-
-Injectee au demarrage par le hook SessionStart du plugin, pour lui rendre la RESIDENCE qu'elle
-a sur le poste Windows via ~/.claude/CLAUDE.md. Le skill '$NOM' porte le meme texte : inutile
-de le charger, il est deja ci-dessous.
-
-Un CLAUDE.md de PROJET, s'il existe, reste prioritaire sur ce qui suit.
-Pour desactiver cette injection sans desinstaller le plugin : CLAUDE_DOCTRINE_RESIDENTE=0.
-
-EOF
-    awk '
-        NR==1 && $0=="---" { fm=1; next }
-        fm==1 && $0=="---" { fm=0; corps=1; next }
-        fm==1 { next }
-        corps==1 { print }
-    ' "$SKILL"
-    printf '\n=== fin de la doctrine du plugin ===\n'
+    printf '=== Doctrine du profil (skill %s) : partie %s sur %s ===\n\n' "$NOM" "$PARTIE" "$TOTAL"
+    printf 'Injectee au demarrage par le hook SessionStart du plugin, en %s parties : Claude Code\n' "$TOTAL"
+    printf 'plafonne chaque chaine de contexte a 10 000 caracteres. Les parties peuvent arriver dans le\n'
+    printf 'desordre ; elles se lisent dans l ordre de leur numero. Ensemble, elles forment le texte\n'
+    printf 'complet du skill %s. S il en manque une dans ce contexte, ce skill porte le texte entier.\n\n' "$NOM"
+    if [ "$PARTIE" -eq 1 ]; then
+        printf 'Un CLAUDE.md de PROJET, s il existe, reste prioritaire sur ce qui suit.\n'
+        printf 'Pour desactiver cette injection sans desinstaller le plugin : CLAUDE_DOCTRINE_RESIDENTE=0.\n\n'
+    fi
+    printf '%s\n' "$DECOUPE" | awk -F'\t' -v k="$PARTIE" '$1 == k { sub(/^[0-9]+\t/, ""); print }'
+    if [ "$PARTIE" -eq "$TOTAL" ]; then
+        printf '\n=== fin de la doctrine du plugin (partie %s sur %s) ===\n' "$PARTIE" "$TOTAL"
+    elif [ "$PARTIE" -eq "$PARTIES_MAX" ] && [ "$TOTAL" -gt "$PARTIES_MAX" ]; then
+        printf '\nATTENTION : la doctrine demande %s parties, hooks.json n en declare que %s. Les parties\n' "$TOTAL" "$PARTIES_MAX"
+        printf 'au-dela de %s ne sont PAS dans ce contexte : charger le skill %s.\n' "$PARTIES_MAX" "$NOM"
+    fi
 } | jq -Rs '{hookSpecificOutput:{hookEventName:"SessionStart",additionalContext:.}}'
 
 exit 0
