@@ -23,9 +23,13 @@ les hooks du profil sur le poste, portés en bash :
   coupe.
 - `Stop` : si des `.ts/.tsx` ont bougé et que le dépôt porte un `tsconfig.json`, `tsc --noEmit`
   tourne en fin de tour et **bloque** la fin de tour avec les erreurs. Une fois par session et
-  par dépôt. `CLAUDE_CHECK_BUILD_TS=0` le coupe.
+  par dépôt. `CLAUDE_CHECK_BUILD_TS=0` le coupe. **Il exécute l'outillage du dépôt** : le
+  `node_modules/.bin/tsc` local, ou, sans `tsconfig.json`, le script `build`/`check`/`lint` de
+  `package.json`. Il ne le fait que si `node_modules/` a été installé (non suivi par git) : un
+  `node_modules/` commité est traité comme du code du dépôt, et le hook ne le lance pas.
 - `PreToolUse` sur `Bash` : tout `git push` direct vers `main`/`master` est **refusé** (référence
-  explicite, refspec, `--all`/`--mirror`, push nu depuis `main`), avec le flux branche + PR en
+  explicite, entre guillemets ou non, refspec, `--all`/`--mirror`, push nu ou `HEAD` depuis
+  `main`), avec le flux branche + PR en
   réponse. Dans tous les modes. Pour un dépôt où c'est légitime : `~/.claude/.push-main-allowed`,
   une ligne `owner/repo`, joker `*` admis. `CLAUDE_GUARD_PUSH_MAIN=0` le coupe.
 
