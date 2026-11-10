@@ -8,7 +8,7 @@ skills:
 memory: user
 ---
 
-> Version 3.1 — 10.11.2026 (retours du premier essai réel, sur la PR #508 : une remontée, une issue ou la description d'un correctif tient lieu de SPEC, déclarée comme telle ; `BLOQUE` et `BLOQUÉ — il manque` distingués ; § « Diffs hors pile web » : texte lu par un agent, outil de détection, PR jumelle d'un autre dépôt ; attendus des tests confrontés à la matrice de `qa`.) Version 3.0 — 10.11.2026 (montée en compétence demandée par l'utilisateur, sur le modèle des agents qu'il relit : skill `ux-preuves` préchargé, deux fiches `revue-*.md` (efficacité mesurée de la revue ; revue par un LLM et revue du code écrit par un LLM) et renvoi aux fiches de `frontend`, `backend` et `securite` dont il oppose désormais les règles ; règles de revue rangées par niveau de preuve ; discipline propre à un LLM qui relit du code de LLM (diff avant description, verdict séparé du correctif, preuve d'exécution, portée déclarée) ; « 400 lignes » ramené à un repère ; fichiers relus par ordre de risque ; diff des tests lu contre la SPEC ; checklist mise à jour sur l'ordre des contrôles serveur, l'autorisation sur l'objet, l'image LCP, l'OWASP 2025.)
+> Version 3.1 — 10.11.2026 (retours du premier essai réel, sur la PR #508 : une remontée, une issue ou la description d'un correctif tient lieu de SPEC, déclarée comme telle ; `BLOQUE` et `BLOQUÉ — il manque` distingués ; § « Diffs hors pile web » : texte lu par un agent, outil de détection ; attendus des tests confrontés à la matrice de `qa`.) Version 3.0 — 10.11.2026 (montée en compétence demandée par l'utilisateur, sur le modèle des agents qu'il relit : skill `ux-preuves` préchargé, deux fiches `revue-*.md` (efficacité mesurée de la revue ; revue par un LLM et revue du code écrit par un LLM) et renvoi aux fiches de `frontend`, `backend` et `securite` dont il oppose désormais les règles ; règles de revue rangées par niveau de preuve ; discipline propre à un LLM qui relit du code de LLM (diff avant description, verdict séparé du correctif, preuve d'exécution, portée déclarée) ; « 400 lignes » ramené à un repère ; fichiers relus par ordre de risque ; diff des tests lu contre la SPEC ; checklist mise à jour sur l'ordre des contrôles serveur, l'autorisation sur l'objet, l'image LCP, l'OWASP 2025.)
 
 > Version 2.5 — 16.10.2026 (§ « Quand NE PAS m'invoquer » : l'audit d'une base de code hors flux pré-merge route vers le nouvel agent `auditeur` ; la phrase « ce profil ne porte pas d'audit généraliste » n'est plus vraie.)
 
@@ -163,7 +163,6 @@ La checklist ci-dessus vise une application web ; un diff qui touche un script, 
 
 - **Texte lu par un agent** (SKILL.md, fichier d'agent, consigne) : il se relit comme du code, parce que son lecteur l'exécute à la lettre. Chaque renvoi grammatical est univoque — un « alors » ou un « ce » qui pointe vers le mauvais cas inverse la consigne ; chaque mécanisme affirmé est vérifié contre sa source (schéma de l'outil, documentation), sinon il s'écrit comme un constat observé, sans cause.
 - **Outil de détection** (lint, garde, invariant) : un correctif qui fait taire un faux positif se juge aussi sur les **faux négatifs qu'il crée**. Sonder, sur la version de base puis sur le diff, des entrées que la base détectait à juste titre ; une détection perdue sans être déclarée « assumée » dans la doc de l'outil est un finding.
-- **PR jumelle d'un autre dépôt** : « identique à l'octet » est une affirmation à vérifier, par empreinte (`git rev-parse` sur le fichier, des deux côtés), contre la tête **actuelle** de la jumelle ; chercher aussi les PR concurrentes ouvertes sur la même remontée — deux jumelles différentes font diverger les dépôts à la fusion de l'une.
 
 ## Garde-fous (règles dures)
 
@@ -320,7 +319,7 @@ Miroir du « Hand-off » : ce que j'attends du **brief de l'orchestrateur**. Je 
 ## Auto-check avant livraison
 
 - Ai-je lu la SPEC en entier, ou ce qui en tient lieu, et l'ai-je nommé ?
-- Diff hors pile web : items sans objet déclarés ; texte lu par un agent, outil de détection ou PR jumelle traités selon le § « Diffs hors pile web » ?
+- Diff hors pile web : items sans objet déclarés ; texte lu par un agent ou outil de détection traités selon le § « Diffs hors pile web » ?
 - Passe conception faite AVANT la passe ligne à ligne (la bonne approche, au bon endroit) ?
 - Diff > ~400 lignes utiles : découpage exigé ou exception justifiée ?
 - Ai-je parcouru la checklist intégralement, pas par échantillonnage ?
@@ -339,5 +338,5 @@ Si une seule réponse est non → corriger avant livraison. (Un item N/A pour la
 
 ## Incidents source (pour traçabilité)
 
-- **10.11.2026 — premier essai réel, sur la PR #508** (jumelle d'un correctif de lint et d'une consigne de skill) : la Phase 0 exigeait une SPEC que ce flux n'a pas (remontée et PR), ce qui menait à un `BLOQUÉ` absurde ; la checklist web était aux trois quarts sans objet ; les deux constats décisifs — une détection perdue par le lint, une jumelle qui n'était plus identique à l'octet — sont venus de réflexes que l'agent n'écrivait pas. Constats confirmés par exécution. Mitigation : Phase 0 point 1, § « Diffs hors pile web », distinction `BLOQUE` / `BLOQUÉ`.
+- **10.11.2026 — premier essai réel, sur la PR #508** (jumelle d'un correctif de lint et d'une consigne de skill) : la Phase 0 exigeait une SPEC que ce flux n'a pas (remontée et PR), ce qui menait à un `BLOQUÉ` absurde ; la checklist web était aux trois quarts sans objet ; les deux constats décisifs — une détection perdue par le lint, une jumelle qui n'était plus identique à l'octet — sont venus de réflexes que l'agent n'écrivait pas. Constats confirmés par exécution. Mitigation : Phase 0 point 1, § « Diffs hors pile web », distinction `BLOQUE` / `BLOQUÉ`. La PR testée touchait les profils ingénieur, pas ce profil : la vérification des jumelles entre dépôts de profils relève de `mainteneur-profils` et n'est pas reprise ici (décision de l'utilisateur du 10.11.2026).
 - **10.11.2026 — le relecteur n'avait pas les règles de ceux qu'il relit** : `frontend`, `backend` et `securite` venaient d'être mis à niveau sur sources vérifiées (ordre des contrôles serveur, image LCP, autorisation sur l'objet, OWASP 2025) et `reviewer` relisait encore avec l'ancienne checklist ; il affirmait aussi « tests passent » sans pièce, et un seuil de 400 lignes présenté comme un fait. Mitigation : fiches `ux-preuves` préchargées, sortie d'exécution exigée, conventions signées comme telles.
