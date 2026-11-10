@@ -266,6 +266,30 @@
 - « Un score élevé sur un banc de revue prouve la qualité. » Un quart des exemples des jeux de
   données de revue sont du bruit.
 
+**Tests** — `references/qa-*.md`
+
+- « La bonne pyramide, c'est 70/20/10. » Un « good first guess » (Google, 2015), 80/15/5 ailleurs chez
+  Google comme « very rough guideline » ; aucune étude ne justifie un ratio.
+- « Les tests d'intégration trouvent d'autres bugs que les unitaires. » Par mutation, pas de type de
+  défaut différent (Trautsch et al. 2020, résumé lu) : leur valeur est la fidélité à l'environnement.
+- « Plus de couverture, moins de bugs. » Corrélation faible une fois la taille de la suite contrôlée ;
+  chez Meta, près de la moitié des tests qui détectent une faute nouvelle n'ajoutent aucune ligne.
+- « Le score de mutation mesure la capacité à trouver de vrais bugs. » Bon guide, mauvais objectif :
+  faible une fois la taille contrôlée, et 17 % des fautes réelles sans mutant correspondant.
+- « Google impose 80 % de couverture. » Pas de seuil imposé à l'échelle du code (Ivanković et al. 2019).
+- « Toute relance automatique masque des bugs. » Une relance bornée et tracée classe un échec
+  (1 à 3 suffisent) ; c'est la relance silencieuse qui masque.
+- « Un test instable cache une race du produit. » 71 à 88 % des correctifs ne touchent que le test.
+- « Le test par paires suffit. » Il peut manquer 10 à 40 % des défauts (NIST SP 800-142).
+- « Un accès refusé par RLS lève une erreur. » En lecture et mise à jour, PostgreSQL rend 0 ligne en
+  silence ; et un test lancé en propriétaire de la table contourne la RLS.
+- « Le bénéfice du TDD vient du test écrit d'abord. » Fucci et al. 2017 l'attribuent à la granularité
+  et à la régularité des cycles, pas à l'ordre.
+- « Si le test généré passe, le code est juste. » Un test généré qui passe d'emblée est un oracle de
+  régression : il fige le comportement observé, bug compris.
+- « Un LLM peut vérifier un test en cassant le code de tête. » Le meilleur GPT-4 testé ne prédit
+  juste la sortie de fonctions de quelques lignes que dans 81 % des cas (CRUXEval).
+
 **Sécurité** — `references/securite-*.md`
 
 - « A06, ce sont les composants vulnérables », « A05, c'est la mauvaise configuration ». Numérotation

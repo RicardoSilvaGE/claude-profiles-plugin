@@ -64,6 +64,18 @@ extrait verbatim ; un chiffre dont la source primaire n'a pas été trouvée est
   Google « The Standard of Code Review » (deux citations), Jin & Chen 2025 (52,4 % → 11,0 %) et 2026
   (54,8 % → 16,3 %), Alexopoulos et al. 2026 (240/247 → 9/247), Crupi et al. 2025 (50 %, pour le
   meilleur juge testé), Bacchelli & Bird 2013 (78 commentaires, 14 %) — conformes.
+- **Volet tests**, même règle, recherche du 10.11.2026, cinq volets (stratégie et allocation ;
+  efficacité d'une suite ; tests instables et CI ; conception des cas ; tests et LLM) : **170 entrées**,
+  **160 URL distinctes**, 31 mentions « résumé seul lu » (articles derrière accès payant, normes ISO
+  payantes : seuls des extraits publics de 29119-3 et 29119-4 ont été lus). Le volet LLM repose surtout
+  sur des prépublications arXiv lues en PDF. Sondage à la source, fait hors des volets de recherche en
+  rouvrant la source : doc Vitest (« By default only files covered by tests are included »), doc
+  Playwright (classement passed / flaky / failed ; `failOnFlakyTests`, v1.52, « Useful on CI »), doc
+  PostgreSQL sur la RLS (`UPDATE 0` en silence, `WITH CHECK` en erreur, propriétaire non soumis),
+  NIST SP 800-142 (PDF : « pairwise testing may miss 10% to 40% », 67 / 93 / 98 %), AgentCoder (PDF,
+  RQ6 : 61,0 % et 51,8 % contre 87,8 % et 89,9 %), *Software Engineering at Google* chap. 11
+  (80 / 15 / 5, « very rough guideline », « ice cream cone ») — conformes. Le billet Google de 2015
+  (70/20/10, « good first guess ») a répondu 503 au contrôle : il n'est sourcé que par la fiche.
 - **Volet sécurité**, même règle, recherche menée du 09 au 10.11.2026 autour de minuit UTC, cinq
   volets (menaces et priorisation ; efficacité des outils de détection ; incidents et secrets ;
   plateforme, déploiement et CI ; applications avec LLM et agents) : **175 entrées**, **203 URL
@@ -126,3 +138,6 @@ Historique sorti de l'en-tête du `SKILL.md` le 10.11.2026 (v1.9).
 - Version 1.6 — 09.11.2026 (volet backend : cinq fiches `backend-*.md`, 173 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `backend` v4.0 ; mythes du backend.)
 - Version 1.7 — 09.11.2026 (volet architecture : cinq fiches `architecture-*.md`, 173 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `architecte` v4.0 ; mythes de l'architecture.)
 - Version 1.8 — 10.11.2026 (volet sécurité : cinq fiches `securite-*.md`, 175 entrées, recherche menée du 09 au 10.11.2026, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `securite` v4.0 ; mythes de la sécurité.)
+- Version 1.9 — 10.11.2026 (allègement du préchargement : index détaillé des fiches et niveaux par domaine sortis dans `references/index.md`, historique des versions dans `references/provenance.md` ; de 28 à 14 Ko pour chacun des huit agents qui précharge ce skill.)
+- Version 1.10 — 10.11.2026 (volet revue de code : deux fiches `revue-*.md`, 70 entrées, préchargé aussi par `reviewer` v3.0.)
+- Version 1.11 — 10.11.2026 (volet tests : cinq fiches `qa-*.md`, 170 entrées, chacune finie par un verdict sourcé sur les règles de l'agent ; préchargé aussi par `qa` v3.0 ; mythes des tests.)
