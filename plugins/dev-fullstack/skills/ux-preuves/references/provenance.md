@@ -103,3 +103,17 @@ extrait verbatim ; un chiffre dont la source primaire n'a pas été trouvée est
 (préprints, études de 2025-2026), les statuts réglementaires (EAA, DSA, consentement, WCAG 3),
 les guidelines de plateformes ; puis les chiffres d'études de marché (Baymard, WebAIM). Les
 fondements cognitifs (Fitts, Norman, Simons & Chabris) vieillissent le moins.
+
+## Versions du skill
+
+Historique sorti de l'en-tête du `SKILL.md` le 10.11.2026 (v1.9).
+
+- Version 1.0 — 09.11.2026 (création, demande de l'utilisateur : faire monter l'agent `ux` en compétence sur la recherche et les sources spécialisées, applications, sites, logiciels et documents). Préchargé par `ux` (clé `skills:`) : ne pas lui poser de `paths:`.
+- Version 1.1 — 09.11.2026 (volet design visuel : cinq fiches `design-*.md`, 173 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `designer` v4.0 ; mythes visuels ; § « Pour un choix visuel ».)
+- Version 1.2 — 09.11.2026 (volet rédaction : cinq fiches `redaction-*.md`, 177 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `redacteur` v3.0 ; mythes de rédaction ; § « Pour un choix visuel ou de rédaction ».)
+- Version 1.3 — 09.11.2026 (volet growth : cinq fiches `growth-*.md`, 171 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `growth` v3.0 ; mythes du marketing ; § « Pour un choix visuel, de rédaction ou de growth ».)
+- Version 1.4 — 09.11.2026 (mythes et provenance sortis dans `references/mythes.md` et `references/provenance.md` : le préchargement passe de 40 à 20 Ko pour chaque agent qui le porte ; volet frontend à suivre.)
+- Version 1.5 — 09.11.2026 (volet frontend : cinq fiches `frontend-*.md`, 174 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `frontend` v3.0 ; mythes du frontend ; § « Pour un choix visuel, de rédaction, de growth ou d'implémentation ».)
+- Version 1.6 — 09.11.2026 (volet backend : cinq fiches `backend-*.md`, 173 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `backend` v4.0 ; mythes du backend.)
+- Version 1.7 — 09.11.2026 (volet architecture : cinq fiches `architecture-*.md`, 173 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `architecte` v4.0 ; mythes de l'architecture.)
+- Version 1.8 — 10.11.2026 (volet sécurité : cinq fiches `securite-*.md`, 175 entrées, recherche menée du 09 au 10.11.2026, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `securite` v4.0 ; mythes de la sécurité.)
