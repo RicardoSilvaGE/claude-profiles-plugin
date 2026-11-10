@@ -266,6 +266,27 @@
 - « Un score élevé sur un banc de revue prouve la qualité. » Un quart des exemples des jeux de
   données de revue sont du bruit.
 
+**Ingénierie IA** — `references/ia-profils-*.md`
+
+- « Les majuscules et IMPORTANT font respecter une règle. » Les modèles actuels sur-appliquent ; une
+  règle sans exception devient un hook ou une règle `deny`.
+- « Avec une fenêtre d'un million de tokens, la longueur ne compte plus. » La place manque rarement,
+  mais la longueur réduit l'adhérence.
+- « Découper le CLAUDE.md en `@import` allège le contexte. » « don't reduce its context cost ».
+- « Un sous-agent ne voit pas le CLAUDE.md. » Faux par défaut, sauf `omitClaudeMd`.
+- « Un hook SessionStart peut injecter autant qu'on veut. » 10 000 caractères par chaîne ; au-delà,
+  un aperçu de 2 000.
+- « Le CLAUDE.md est perdu à la compaction. » Pas le CLAUDE.md racine, relu depuis le disque ; les
+  consignes données en conversation, si.
+- « Plus d'agents, meilleur résultat. » À budget égal, l'agent seul égale ou dépasse souvent ;
+  le gain d'un système multi-agents tient d'abord aux tokens dépensés.
+- « Ajouter un vérificateur règle la fiabilité. » « the presence of a verifier is not a silver bullet ».
+- « Un compte rendu avec une sortie collée est une preuve. » Un agent peut fabriquer la sortie.
+- « Température 0 donne un résultat reproductible. » Des écarts subsistent entre exécutions.
+- « Trois essais suffisent à valider une règle. » 3 sur 3 contre 0 sur 3 : p = 0,05 au mieux.
+- « Un persona expert rend le modèle plus juste. » Non soutenu pour l'exactitude factuelle.
+- « Le raisonnement visible montre pourquoi l'agent a agi. » Il omet souvent ce qui a pesé.
+
 **Mise en production** — `references/release-*.md`
 
 - « 70 % des pannes viennent des changements. » Estimation interne de Google, sans méthode publiée ;

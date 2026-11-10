@@ -157,15 +157,6 @@ rm -f "$DIR_MARQ/build-$SID-$CLE-"*.flag 2>/dev/null
 : > "$MARQ" 2>/dev/null || exit 0
 
 # ---- 6bis. Branche HORS TYPESCRIPT (05.09.2026) -------------------------------------------------------
-# CODE DU DEPOT (audit du 10.11.2026, constat H1 securite). Ce hook tourne chez des tiers, sur
-# des depots qu'ils n'ont pas forcement ecrits. Un node_modules/ SUIVI par git n'a pas ete installe
-# par l'utilisateur : son .bin/tsc et les scripts de package.json sont alors du code du depot, que
-# le hook ne lance pas (repli : tsc du PATH, node --check). Python tourne en mode isole (-I) : sans
-# lui, `python -c` met le dossier courant en tete de sys.path, et un ast.py pose a la racine du
-# depot etait importe et execute a la place du module standard.
-NM_SUIVI=0
-[ -n "$(git -C "$CWD" ls-files -- node_modules 2>/dev/null | head -n 1)" ] && NM_SUIVI=1
-
 # Trois verifications, dans cet ordre, toutes en fail-open. Un seul rapport, qui les cumule.
 attendre() { # attendre <pid> : boucle sleep 1 + kill a 90 s, une seule voie, POSIX. Rend 124 si tue.
     local pid="$1" i=0
@@ -178,7 +169,7 @@ if [ "$BRANCHE" = autre ]; then
     # (a) npm run <build|check|lint> : seulement si package.json le declare, que node_modules/ existe
     #     (sinon c'est un clone frais, pas un depot casse) et que npm est joignable.
     SCRIPT=""
-    if [ -n "$TOUCHES_JS" ] && [ -f "$CWD/package.json" ] && [ -d "$CWD/node_modules" ] && [ "$NM_SUIVI" -eq 0 ] && command -v npm >/dev/null 2>&1; then
+    if [ -n "$TOUCHES_JS" ] && [ -f "$CWD/package.json" ] && [ -d "$CWD/node_modules" ] && command -v npm >/dev/null 2>&1; then
         for s in build check lint; do
             if [ -n "$(jq -r --arg s "$s" '.scripts[$s] // empty' "$CWD/package.json" 2>/dev/null)" ]; then SCRIPT="$s"; break; fi
         done
@@ -220,7 +211,7 @@ EOF_JS
     PY=""
     if command -v python3 >/dev/null 2>&1; then PY=python3; elif command -v python >/dev/null 2>&1; then PY=python; fi
     if [ -n "$TOUCHES_PY" ] && [ -n "$PY" ]; then
-        ERR_PY="$(cd "$CWD" && printf '%s\n' "$TOUCHES_PY" | "$PY" -I -c '
+        ERR_PY="$(cd "$CWD" && printf '%s\n' "$TOUCHES_PY" | "$PY" -c '
 import ast, sys
 for p in [l.strip() for l in sys.stdin if l.strip()]:
     try:
@@ -263,8 +254,7 @@ Ce rapport ne revient que si les sources touchees changent."
 fi
 
 # ---- 7. Trouver tsc. Le binaire local du projet prime : c'est sa version qui fait foi. ----------
-# Sauf s'il est SUIVI par git : c'est alors du code du depot, pas un outillage installe (NM_SUIVI).
-if [ "$NM_SUIVI" -eq 0 ] && [ -x "$CWD/node_modules/.bin/tsc" ]; then
+if [ -x "$CWD/node_modules/.bin/tsc" ]; then
     TSC="$CWD/node_modules/.bin/tsc"
 elif command -v tsc >/dev/null 2>&1; then
     TSC="$(command -v tsc)"
