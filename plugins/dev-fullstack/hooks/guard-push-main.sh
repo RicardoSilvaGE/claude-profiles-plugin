@@ -25,12 +25,20 @@
 #     eventuellement quotee avec des espaces ; les options longues portent parfois `=valeur`.
 #   - Faux positif CONSERVE a dessein, comme au poste : `echo "git push origin main"` reste
 #     refuse. Le hook PowerShell le documente comme une asymetrie voulue avec sa regle A.
+#   - 10.11.2026, douze FAUX NEGATIFS (audit, constat AC-B2) : `"main"` entre guillemets,
+#     `main&`, `(git push origin main)`, `main>/dev/null`, et depuis main `git push -u origin
+#     HEAD` — la forme idiomatique qu'un agent ecrit —, `@`, `-o ci.skip`, `git push fork`,
+#     `git push 2>&1`. Corrige en NORMALISANT les arguments (guillemets retires, redirections
+#     effacees, coupure au premier `|`, `&`, `)`) et en lisant la grammaire de git : le premier
+#     argument positionnel est le DEPOT, les suivants sont les refspecs ; `HEAD` et `@` designent
+#     la branche courante.
 #
 # EXEMPTIONS (fichier ~/.claude/.push-main-allowed, optionnel, ABSENT PAR DEFAUT = garde-fou
 # partout) : une ligne = un motif "owner/repo", joker `*` admis, `#` commentaire. Le depot
 # courant est identifie par le remote `origin` (HTTPS ou SSH), compare en minuscules.
 #
 # LIMITES ASSUMEES (garde-fou cote outil, PAS une barriere de securite) :
+#   - Une refspec portee par une variable (`B=main; git push origin $B`) n'est pas resolue.
 #   - N'agit que dans Claude Code, sur l'outil Bash. `bash -c "..."`, `eval`, un script appele
 #     par chemin, ou les outils GitHub MCP (`push_files`, `merge_pull_request`) contournent le
 #     parsing — le hook du poste ne les voit pas non plus. Verrou reel : protection de branche.
@@ -81,6 +89,22 @@ $(printf '%s\n' "$CMD" | awk '{ gsub(/;|&&|\|\|/, "\n"); print }')
 EOF
 [ "$NB_PUSH" -gt 0 ] || exit 0
 
+# ---- 2 bis. Normalisation des arguments (audit du 10.11.2026, AC-B2) ---------------------------
+# Guillemets retires (`"main"` est main pour git), redirections effacees avec leur cible
+# (`main>/dev/null`, `2>&1`), coupure au premier `|`, `&`, `)` ou accent grave (ce qui suit
+# n'appartient plus au push), `(` neutralise. Parite : Normaliser-ArgsPush de guard-poste.ps1.
+normaliser() {
+    printf '%s\n' "$1" | sed -E \
+        -e "s/[\"']//g" \
+        -e 's/[0-9]*(>>?|<)(&[0-9-]+|[[:space:]]*[^[:space:]&|;()]+)?/ /g' \
+        -e 's/[|&)`].*$//' \
+        -e 's/[(]/ /g'
+}
+PUSH_ARGS="$(while IFS= read -r a; do normaliser "$a"; done <<EOF
+$PUSH_ARGS
+EOF
+)"
+
 # ---- 3. Reference explicite a main/master, ou --all / --mirror ---------------------------------
 BLOQUE=0
 while IFS= read -r a; do
@@ -96,13 +120,26 @@ if [ "$BLOQUE" -eq 0 ]; then
     BRANCHE="$(git -C "$CWD" rev-parse --abbrev-ref HEAD 2>/dev/null)"
     case "$BRANCHE" in
         main|master|Main|Master|MAIN|MASTER)
+            # Grammaire de git : `git push [options] [<depot> [<refspec>...]]`. Le PREMIER
+            # positionnel est le depot, quel que soit son nom (jusqu'au 10.11.2026 seuls
+            # origin/upstream l'etaient, et `git push fork` passait). Sans refspec, ou avec la
+            # refspec `HEAD`/`@`, c'est la branche courante, donc main, qui part.
             while IFS= read -r a; do
                 [ "$NB_PUSH" -gt 0 ] || break
-                refish=""
-                for tok in $a; do
-                    case "$tok" in -*|origin|upstream) ;; *) refish="$tok" ;; esac
+                read -ra toks <<<"$a"
+                npos=0; nrefs=0; courante=0; sauter=0
+                for tok in "${toks[@]+"${toks[@]}"}"; do
+                    if [ "$sauter" -eq 1 ]; then sauter=0; continue; fi
+                    case "$tok" in
+                        -o|--push-option|--repo|--receive-pack|--exec) sauter=1; continue ;;
+                        -*) continue ;;
+                    esac
+                    npos=$((npos + 1))
+                    [ "$npos" -eq 1 ] && continue
+                    nrefs=$((nrefs + 1))
+                    case "$tok" in HEAD|+HEAD|@|+@) courante=1 ;; esac
                 done
-                [ -z "$refish" ] && BLOQUE=1
+                if [ "$nrefs" -eq 0 ] || [ "$courante" -eq 1 ]; then BLOQUE=1; fi
             done <<EOF
 $(printf '%s\n' "$PUSH_ARGS" | sed '1{/^$/d}')
 EOF
