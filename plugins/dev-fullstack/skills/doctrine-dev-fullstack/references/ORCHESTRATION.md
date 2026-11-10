@@ -1,7 +1,7 @@
 # Orchestration des sub-agents
 
 > Source canonique : `templates/profiles/dev-fullstack/agents/ORCHESTRATION.md` (dépôt `claude-profiles`) ; la copie déployée vit dans `agents/` du home actif.
-> Dernière mise à jour : 10.11.2026 (v2.22 — `reviewer` v3.0 précharge `ux-preuves` (deux fiches `revue-*.md`) et oppose les règles de `frontend`, `backend` et `securite` d'après leurs fiches ; discipline d'un LLM relecteur ; `ux-preuves` 1.10. Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
+> Dernière mise à jour : 10.11.2026 (v2.23 — gabarit de brief : où se lance la suite de tests, la CI fait foi pour la suite complète (proposition P004 du labo des profils, frottement F06). Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
 
 Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les séquences typiques. Il complète le `CLAUDE.md` global et les frontmatters de chaque agent.
 
@@ -95,6 +95,8 @@ lit tout le dépôt en perd le fil et le budget — et quelles commandes sont at
 « rien » est une réponse valable, et la plus fréquente. `RETOUR` borne ce qui revient dans ton
 contexte : le livrable long se dépose sur disque, seul le résumé remonte. Un retour de
 8 000 tokens n'est pas un rapport complet, c'est un livrable mal rangé.
+
+**Où se lance la suite de tests (06.11.2026, frottement F06).** La suite complète de la CI lancée en local par un agent s'est arrêtée à 57 % faute de mémoire. Dans `OUTILS`, écrire, quand le dépôt a une CI : « la CI fait foi pour la suite complète ; en local, seulement les fichiers de test touchés ou cités » ; sans CI, nommer la commande de test voulue.
 
 ### Ce qu'on vérifie au retour, agent par agent
 

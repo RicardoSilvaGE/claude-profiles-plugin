@@ -1,8 +1,11 @@
 ---
 name: garde-fous-powershell
-description: "Garde-fous d'écriture de fichiers sous Windows PowerShell 5.1 : BOM ajouté par Set-Content, un seul BOM sur un .ps1, arrays imbriqués dans une table de substitutions, -replace avec de l'Unicode, audit post-batch (motifs mojibake, BOM, restauration git), cible qui doit être un fichier, sorties console en ASCII. À charger avant d'écrire ou de lancer un .ps1, avant toute écriture de fichier par PowerShell, et devant un texte mojibaké."
+description: "Garde-fous d'écriture de fichiers sous Windows PowerShell 5.1 : BOM ajouté par Set-Content, un seul BOM sur un .ps1, arrays imbriqués dans une table de substitutions, -replace avec de l'Unicode, audit post-batch (motifs mojibake, BOM, restauration git), cible qui doit être un fichier, sorties console en ASCII ; et, sur le même poste Windows, édition par script (Git Bash, heredoc, Python) d'un fichier accentué ou en CRLF. À charger avant d'écrire ou de lancer un .ps1, avant toute écriture de fichier par PowerShell, avant de modifier par un script Python ou un heredoc Git Bash un fichier accentué ou en CRLF, et devant un texte mojibaké."
 ---
 
+> Version 1.1 — 10.11.2026 (proposition P004 du labo des profils, frottement F05 : section
+> « Éditer par script un fichier accentué ou en CRLF », et description élargie à Git Bash et
+> Python pour que le skill se charge dans cette situation).
 > Version 1.0 — 05.09.2026 (création, PR 2.1 de l'audit du 05.09.2026, constat F1). Le contenu
 > est la table « Garde-fous techniques » du `global-CLAUDE.md` du profil, **sortie du résident
 > telle quelle** : elle ne vaut que sur un poste Windows, et coûtait ~3 500 octets à chaque
@@ -72,6 +75,13 @@ Copy-Item -LiteralPath $source -Destination $cible -Force
   tableau, règle 2).
 - **Après une passe qui a écrit sur un partage réseau, relire l'état réel** dossier par dossier,
   jamais le seul compte rendu du script : c'est cette relecture qui a révélé l'incident.
+
+## Éditer par script un fichier accentué ou en CRLF (Git Bash, Python)
+
+Relevé dans la boîte de frottements du labo des profils (F05) :
+
+- **Accents** : un heredoc Git Bash qui porte du texte accentué vers Python l'abîme. Écrire le script avec l'outil Write, le lancer par `python -X utf8 script.py`.
+- **CRLF** : un remplacement Python écrit avec `\n` ne trouve rien dans un fichier CRLF. Écrire les motifs en `\r\n`, ou lire en octets et normaliser avant de comparer.
 
 ## Auto-check avant de rendre la main
 

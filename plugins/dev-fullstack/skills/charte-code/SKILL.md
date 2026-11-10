@@ -5,6 +5,7 @@ description: "Charte des bonnes pratiques de programmation du profil : gestion d
 
 # Charte de code
 
+> Version 1.2 — 10.11.2026 (proposition P004 du labo des profils, frottement F02 : corollaire de la règle 1, une sonde de session ne jette pas stderr par défaut).
 > Version 1.1 — 05.09.2026 (PR 2.4 de l'audit du 05.09 : la règle 8 renvoie au hook `guard-secrets` / règle E du poste, qui la rend opposable sur le nom du fichier ; l'échelle du moindre code de `backend` et `frontend` renvoie désormais ici pour ses trois paragraphes communs).
 > Détail des **onze règles opposables** du
 > `global-CLAUDE.md` § « Charte de code ». Les règles y sont résidentes parce qu'elles doivent
@@ -76,6 +77,7 @@ alors dans le code (`// dégradation volontaire : ...`) et se journalise au nive
 - Pas de `catch` qui perd la cause : `{ cause: err }` en TS, `raise ... from err` en Python.
 - Une promesse non attendue est une erreur avalée (`floating promise`) : `await`, `void` explicite, ou `.catch()`.
 - Un code de retour ignoré (`subprocess`, `fs`, appel shell) est le même défaut sous un autre nom.
+- Une sonde de session (boucle d'attente, `ssh … "commande"` répété) ne jette pas stderr par défaut : `2>/dev/null` sur une commande dont on attend un état a fait tourner une boucle d'attente à vide, alors que le message d'erreur donnait la cause (06.11.2026). Garder stderr, ou borner la boucle sur « succès OU erreur lue » ; jeter stderr reste un repli décidé et signalé.
 
 ## 2. Échouer tôt, à la frontière
 
