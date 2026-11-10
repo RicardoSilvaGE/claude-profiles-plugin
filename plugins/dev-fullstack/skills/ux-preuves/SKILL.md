@@ -5,7 +5,7 @@ description: "Référentiel de preuves vérifiées et datées (niveau de preuve,
 
 # UX fondée sur des preuves — référentiel vérifié
 
-> Version 1.9 — 10.11.2026 (allègement du préchargement : index détaillé des fiches et niveaux par domaine sortis dans `references/index.md`, historique des versions dans `references/provenance.md` ; de 28 à 14 Ko pour chacun des huit agents qui précharge ce skill.) Versions 1.0 à 1.8 : `references/provenance.md` § « Versions du skill ».
+> Version 1.10 — 10.11.2026 (volet revue de code : deux fiches `revue-*.md`, 70 entrées, préchargé aussi par `reviewer` v3.0.) Version 1.9 — 10.11.2026 (allègement du préchargement : index détaillé des fiches et niveaux par domaine sortis dans `references/index.md`, historique des versions dans `references/provenance.md` ; de 28 à 14 Ko pour chacun des huit agents qui précharge ce skill.) Versions 1.0 à 1.8 : `references/provenance.md` § « Versions du skill ».
 > Contenu issu d'une **recherche documentaire des 09 et 10.11.2026** : chaque entrée des fiches cite une
 > page effectivement ouverte pendant cette recherche, avec un extrait lu. Cf. § « D'où vient ce contenu ».
 > **C'est un instantané** : § « Quand vérifier en ligne » dit quand il ne suffit plus.
@@ -140,6 +140,7 @@ domaine) : `references/index.md`.
 | Backend | `backend-securite-api-auth.md`, `backend-donnees-postgres.md`, `backend-fiabilite-contrats-api.md`, `backend-observabilite-tests-donnees.md`, `backend-pile-serveur-code-ia.md` |
 | Architecture | `architecture-decisions-adr.md`, `architecture-qualites-nfr.md`, `architecture-modularite-dette.md`, `architecture-dependances-build-buy.md`, `architecture-risques-estimation-llm.md` |
 | Sécurité | `securite-menaces-priorisation.md`, `securite-outils-detection.md`, `securite-incidents-secrets.md`, `securite-plateforme-deploiement.md`, `securite-llm-agents.md` |
+| Revue de code | `revue-efficacite.md`, `revue-llm.md` |
 | Transverse | `index.md` (détail des fiches), `mythes.md` (affirmations à ne jamais reproduire), `provenance.md` (volumes, sources, contrôles, versions) |
 
 ## Trois niveaux pour toute règle

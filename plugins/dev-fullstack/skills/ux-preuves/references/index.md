@@ -48,6 +48,8 @@
 | `references/backend-fiabilite-contrats-api.md` | **Backend.** Timeouts, retries, jitter et budgets, pannes métastables, gestion d'erreur et pannes réelles, idempotence, outbox et webhooks, codes HTTP et Problem Details, pagination, temps réel, files |
 | `references/backend-observabilite-tests-donnees.md` | **Backend.** Journaux structurés, W3C Trace Context et OpenTelemetry, SLO et signaux dorés, tests contre une vraie base, tests de contrat, de propriétés et de mutation, nLPD et RGPD dans un backend, effacement et rétention |
 | `references/backend-pile-serveur-code-ia.md` | **Backend.** Node.js (LTS, crypto par défaut), Hono et Standard Schema, Prisma 7 et 8, Drizzle, Python, FastAPI, Pydantic, SQLAlchemy, uv, Zod 4 côté serveur, nouvelles clés Supabase, code backend généré (BaxBench, SusVibes), OWASP Top 10:2025 |
+| `references/revue-efficacite.md` | **Revue de code.** Ce que la revue trouve vraiment (défauts contre évolutivité), taille et vitesse, commentaires utiles, norme d'approbation de Google, checklists, ordre des fichiers, biais du relecteur, changements mêlés, revue des tests |
+| `references/revue-llm.md` | **Revue de code.** Revue automatisée en conditions réelles, biais d'un LLM relecteur (cadrage, indulgence envers le code de LLM, sur-correction), vérifier par exécution, défauts typiques du code généré, tests qui valident le bug |
 | `references/mythes.md` | **Transverse.** Les affirmations à ne jamais reproduire, par domaine, chacune renvoyant à la fiche qui la réfute |
 | `references/provenance.md` | **Transverse.** Volumes, sources, lectures sur résumé seul et contrôles par sondage de chaque volet |
 | `references/front-de-recherche.md` | Résultats récents (2022-2026) ou solides et méconnus : lisibilité individualisée, effets mesurés de l'IA sur le travail (productivité, déqualification, sur-confiance), état réel de l'accessibilité, nudges et réplications ratées, passkeys, lecture des graphiques |
@@ -99,3 +101,8 @@ Chaque fiche `design-*.md`, `redaction-*.md`, `growth-*.md`, `frontend-*.md`, `b
 convention sans preuve, contredite) : c'est lui qui range une règle à son niveau. Les bandeaux de
 tendance (« bento », « glass », typographie géante) n'ont pas d'étude d'effet trouvée : N4 au
 mieux (`design-front-recent.md`).
+
+En revue de code, les exigences sont celles que les fiches de domaine rangent au niveau 1 et que
+le relecteur oppose ; les défauts fondés sur des preuves sont la lecture par ordre de risque, le diff
+des tests lu contre la SPEC, la sortie d'exécution exigée, le diff lu avant la description ; l'échelle
+de sévérité, le repère de taille et la checklist sont des conventions.
