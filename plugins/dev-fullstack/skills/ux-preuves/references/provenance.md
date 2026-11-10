@@ -55,6 +55,15 @@ extrait verbatim ; un chiffre dont la source primaire n'a pas été trouvée est
   le billet Better Auth du 22.09.2025 promet pour Auth.js les correctifs de sécurité **et les
   problèmes urgents**, pas la seule sécurité. Versions et statuts navigateurs vieillissent en mois :
   ce volet est le plus périssable de tous.
+- **Volet revue de code**, même règle, recherche du 10.11.2026, deux volets (efficacité mesurée de
+  la revue ; revue par un LLM et revue du code écrit par un LLM) : **70 entrées**. Le volet LLM
+  repose surtout sur des prépublications arXiv de 2024-2026, lues en PDF ; plusieurs entrées en
+  « résumé seul lu » (Mäntylä & Lassenius 2009, Baum et al. 2019, Wang et al.). Les règles de domaine
+  que `reviewer` oppose viennent des fiches frontend, backend et sécurité, sans recherche nouvelle.
+  Sondage à la source, sources rouvertes au contrôle de clôture : Fregnan et al. 2022 (PDF : 64 %),
+  Google « The Standard of Code Review » (deux citations), Jin & Chen 2025 (52,4 % → 11,0 %) et 2026
+  (54,8 % → 16,3 %), Alexopoulos et al. 2026 (240/247 → 9/247), Crupi et al. 2025 (50 %, pour le
+  meilleur juge testé), Bacchelli & Bird 2013 (78 commentaires, 14 %) — conformes.
 - **Volet sécurité**, même règle, recherche menée du 09 au 10.11.2026 autour de minuit UTC, cinq
   volets (menaces et priorisation ; efficacité des outils de détection ; incidents et secrets ;
   plateforme, déploiement et CI ; applications avec LLM et agents) : **175 entrées**, **203 URL

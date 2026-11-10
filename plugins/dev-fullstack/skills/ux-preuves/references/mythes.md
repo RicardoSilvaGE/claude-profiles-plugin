@@ -1,7 +1,7 @@
 # Fiche `ux-preuves` — Mythes à ne pas reproduire
 
 > Liste opposable, sortie du `SKILL.md` le 09.11.2026 pour alléger ce qu'il précharge chez `ux`,
-> `designer`, `redacteur`, `growth`, `frontend`, `backend`, `architecte` et `securite`. Ces affirmations circulent dans la littérature de
+> `designer`, `redacteur`, `growth`, `frontend`, `backend`, `architecte`, `securite` et `reviewer`. Ces affirmations circulent dans la littérature de
 > praticiens et **ne s'écrivent pas** dans un livrable, sauf pour les réfuter. Chaque réfutation est
 > sourcée dans la fiche indiquée en tête de groupe, à sa section « Mythes et affirmations contestées ».
 
@@ -246,6 +246,25 @@
   l'IA d'améliorer le code le rend plus sûr », « le modèle vérifie seul qu'un paquet existe ».
   Contredits.
 - « Anchor positioning est Baseline. » Le noyau oui, le groupe complet non : nommer la propriété.
+
+**Revue de code** — `references/revue-*.md`
+
+- « La revue de code sert d'abord à trouver des bugs. » C'est la motivation déclarée, pas le
+  résultat : 14 % des commentaires portent sur un défaut (Bacchelli & Bird 2013), trois constats sur
+  quatre touchent l'évolutivité.
+- « Au-delà de 400 lignes, la revue s'effondre. » Le sens de l'effet est mesuré, pas le seuil : il
+  vient d'une étude d'éditeur (« under 200, not to exceed 400 », Cohen 2006).
+- « Mêler refactoring et feature rend la revue impossible. » Plus de faux constats, pas moins de
+  défauts trouvés (di Biase et al. 2019, 28 sujets).
+- « Une checklist améliore la détection. » Pas de relation forte mesurée (Gonçalves et al. 2022).
+- « Un LLM qui sait écrire du code juste sait juger du code. » Sans exécuter, le meilleur juge testé
+  classe « correctes » la moitié des implémentations fausses (Crupi et al. 2025).
+- « Les tests passent, donc c'est correct. » 29,6 % de correctifs d'agents validés par les tests
+  divergent de la référence ; jusqu'à 68,1 % de suites générées valident le bug.
+- « Demander à l'IA de chercher encore améliore la revue. » Le rappel monte un peu, le rapport signal
+  sur bruit se dégrade ; expliquer puis corriger fait rejeter du code correct (Jin & Chen 2025).
+- « Un score élevé sur un banc de revue prouve la qualité. » Un quart des exemples des jeux de
+  données de revue sont du bruit.
 
 **Sécurité** — `references/securite-*.md`
 
