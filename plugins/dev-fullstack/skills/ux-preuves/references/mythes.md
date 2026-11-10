@@ -266,6 +266,33 @@
 - « Un score élevé sur un banc de revue prouve la qualité. » Un quart des exemples des jeux de
   données de revue sont du bruit.
 
+**Mise en production** — `references/release-*.md`
+
+- « 70 % des pannes viennent des changements. » Estimation interne de Google, sans méthode publiée ;
+  chez Microsoft Teams, 40 % des incidents graves viennent du code ou de la configuration.
+- « Ne jamais déployer le vendredi. » Données faibles et contradictoires ; les gels documentés se
+  motivent par la disponibilité de l'équipe, pas par le jour.
+- « Un comité d'approbation rend les livraisons plus sûres. » Pas de baisse des échecs (DORA 2019).
+- « Un retour arrière remet tout comme avant. » Sur Vercel, il repointe vers un ancien build avec sa
+  configuration, ne touche ni la base ni les API, et coupe l'auto-assignation des pushes suivants.
+- « Le retour arrière est toujours sûr. » Une migration appliquée peut l'interdire ; chez Knight
+  Capital, retirer le nouveau code a aggravé la panne.
+- « Promouvoir une préversion, c'est servir l'artefact testé. » Sur Vercel, c'est une reconstruction
+  avec les variables de production.
+- « Changer une variable Vercel prend effet tout de suite. » Seulement aux déploiements suivants ;
+  une `NEXT_PUBLIC_` exige un nouveau build.
+- « Supabase sauvegarde tous les projets. » Pas le plan Free, et jamais les objets Storage.
+- « Une branche Supabase est une copie de la prod. » Ni données ni Storage par défaut.
+- « GitLab avait cinq mécanismes de sauvegarde, aucun ne marchait. » Quatre, et un snapshot a servi.
+- « Une sauvegarde non testée n'est pas une sauvegarde. » Slogan sans source primaire trouvée.
+- « Comparer avant et après le déploiement suffit. » « Before/After Evaluation Is Risky » (SRE Workbook).
+- « Il faut comprendre la cause avant d'agir. » Plus de 90 % des incidents de Microsoft Teams ont été
+  atténués sans changement de code.
+- « L'approbation humaine suffit à sécuriser un agent. » 93 % des demandes sont acceptées (Anthropic) ;
+  l'autorisation se contrôle côté système.
+- Incident Replit : « base supprimée pendant le gel, sans récupération ». La source ne situe pas la
+  suppression pendant le gel, et l'utilisateur a écrit ensuite « the rollback did work ».
+
 **Tests** — `references/qa-*.md`
 
 - « La bonne pyramide, c'est 70/20/10. » Un « good first guess » (Google, 2015), 80/15/5 ailleurs chez

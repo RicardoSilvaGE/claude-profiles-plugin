@@ -76,6 +76,21 @@ extrait verbatim ; un chiffre dont la source primaire n'a pas été trouvée est
   RQ6 : 61,0 % et 51,8 % contre 87,8 % et 89,9 %), *Software Engineering at Google* chap. 11
   (80 / 15 / 5, « very rough guideline », « ice cream cone ») — conformes. Le billet Google de 2015
   (70/20/10, « good first guess ») a répondu 503 au contrôle : il n'est sourcé que par la fiche.
+- **Volet mise en production**, même règle, recherche du 10.11.2026, cinq volets (risque et cadence ;
+  déploiement progressif et retour arrière ; migrations et sauvegardes ; vérification et incidents ;
+  configuration, build et agents sur la production) : **173 entrées**, **180 URL distinctes**,
+  4 mentions « résumé seul lu ». Les docs de plateforme (Vercel, Supabase, Next.js) décrivent leur
+  produit au jour de la lecture : ce volet vieillit aussi vite que le frontend. Sondage à la source,
+  fait hors des volets de recherche en rouvrant la source : doc Vercel Instant Rollback (mise à jour
+  du 07.07.2026 : variables non reprises, définitions de cron restaurées, auto-assignation coupée,
+  Hobby limité au déploiement précédent), `supabase migration list` (« Only the timestamps are
+  compared »), post-mortem GitLab du 31.01.2017 (quatre mécanismes, `pg_dump` 9.2 contre 9.6,
+  snapshot LVM d'environ 6 heures), SRE Workbook On-Call (« roll back, fix, and roll forward », « quick
+  fix »), sauvegardes Supabase (Storage exclu, Free sans sauvegarde automatique), doc Next.js sur
+  `NEXT_PUBLIC_` (inline au build, figé), DORA 2024 (PDF téléchargé pendant la recherche : −7,2 %
+  par +25 % d'adoption de l'IA) — conformes. **Erreur corrigée à la rédaction** : l'agent reprenait
+  d'abord la version de l'incident Replit que la fiche classe parmi les mythes (suppression « pendant
+  le gel ») ; réécrit sur ce que la source établit.
 - **Volet sécurité**, même règle, recherche menée du 09 au 10.11.2026 autour de minuit UTC, cinq
   volets (menaces et priorisation ; efficacité des outils de détection ; incidents et secrets ;
   plateforme, déploiement et CI ; applications avec LLM et agents) : **175 entrées**, **203 URL
@@ -141,3 +156,4 @@ Historique sorti de l'en-tête du `SKILL.md` le 10.11.2026 (v1.9).
 - Version 1.9 — 10.11.2026 (allègement du préchargement : index détaillé des fiches et niveaux par domaine sortis dans `references/index.md`, historique des versions dans `references/provenance.md` ; de 28 à 14 Ko pour chacun des huit agents qui précharge ce skill.)
 - Version 1.10 — 10.11.2026 (volet revue de code : deux fiches `revue-*.md`, 70 entrées, préchargé aussi par `reviewer` v3.0.)
 - Version 1.11 — 10.11.2026 (volet tests : cinq fiches `qa-*.md`, 170 entrées, chacune finie par un verdict sourcé sur les règles de l'agent ; préchargé aussi par `qa` v3.0 ; mythes des tests.)
+- Version 1.12 — 10.11.2026 (volet mise en production : cinq fiches `release-*.md`, 173 entrées, chacune finie par un verdict sourcé sur les règles de l'agent ; préchargé aussi par `release` v3.0 ; mythes de la mise en production.)
