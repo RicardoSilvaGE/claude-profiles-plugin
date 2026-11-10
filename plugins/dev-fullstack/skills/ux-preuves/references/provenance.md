@@ -55,6 +55,17 @@ extrait verbatim ; un chiffre dont la source primaire n'a pas été trouvée est
   le billet Better Auth du 22.09.2025 promet pour Auth.js les correctifs de sécurité **et les
   problèmes urgents**, pas la seule sécurité. Versions et statuts navigateurs vieillissent en mois :
   ce volet est le plus périssable de tous.
+- **Volet sécurité**, même règle, recherche menée du 09 au 10.11.2026 autour de minuit UTC, cinq
+  volets (menaces et priorisation ; efficacité des outils de détection ; incidents et secrets ;
+  plateforme, déploiement et CI ; applications avec LLM et agents) : **175 entrées**, **203 URL
+  distinctes**, 11 mentions « résumé seul lu ». Sondage à la source, sources rouvertes au contrôle de clôture : liste complète de l'OWASP
+  Top 10:2025 sur top10.owasp.org (ajoutée à la fiche, les volets n'en citaient qu'une partie) ;
+  PDF de Basak et al. 2023 (précision 75 % et rappel 6 % pour GitHub, rappel 88 % pour gitleaks),
+  de Meli et al. 2019 (81 % jamais retirés, découverte médiane en 20 s) et de PrimeVul (F1 68,26 %
+  contre 3,09 %) ; doc Vercel des journaux d'exécution (1 h en Hobby, 1 jour en Pro, 30 jours avec
+  Observability Plus) ; doc GitHub sur la suppression de données sensibles (révoquer d'abord, réécrire
+  l'historique « may not be warranted », `git-filter-repo --sensitive-data-removal`) — conformes. Ce volet vieillit le plus vite de tous :
+  avis de sécurité, versions corrigées, KEV et EPSS changent chaque semaine.
 - **Volet architecture**, même jour, même règle, cinq volets (décisions et ADR ; qualités et
   exigences non fonctionnelles ; modularité et dette technique ; dépendances et construire ou
   acheter ; risques, estimation et LLM) : **173 entrées**, **184 URL distinctes**, 20 mentions

@@ -1,7 +1,7 @@
 # Fiche `ux-preuves` — Mythes à ne pas reproduire
 
 > Liste opposable, sortie du `SKILL.md` le 09.11.2026 pour alléger ce qu'il précharge chez `ux`,
-> `designer`, `redacteur`, `growth`, `frontend`, `backend` et `architecte`. Ces affirmations circulent dans la littérature de
+> `designer`, `redacteur`, `growth`, `frontend`, `backend`, `architecte` et `securite`. Ces affirmations circulent dans la littérature de
 > praticiens et **ne s'écrivent pas** dans un livrable, sauf pour les réfuter. Chaque réfutation est
 > sourcée dans la fiche indiquée en tête de groupe, à sa section « Mythes et affirmations contestées ».
 
@@ -246,6 +246,37 @@
   l'IA d'améliorer le code le rend plus sûr », « le modèle vérifie seul qu'un paquet existe ».
   Contredits.
 - « Anchor positioning est Baseline. » Le noyau oui, le groupe complet non : nommer la propriété.
+
+**Sécurité** — `references/securite-*.md`
+
+- « A06, ce sont les composants vulnérables », « A05, c'est la mauvaise configuration ». Numérotation
+  de 2021 : en 2025, A06 = Insecure Design, A05 = Injection, la chaîne d'approvisionnement est A03.
+- « Le Top 10 OWASP est un standard d'audit » (document de sensibilisation, « the bare minimum »),
+  « un CVSS élevé se corrige en premier » (autant tirer au hasard, Allodi et Massacci 2014),
+  « risque = EPSS × CVSS » (« never a good idea », FIRST), « EPSS v4 est la version actuelle » (v5),
+  « la BOD 22-01 fixe la règle KEV » (remplacée par la BOD 26-04).
+- « Une alerte `npm audit` est une vulnérabilité de l'application », « `npm audit` à zéro veut dire
+  des dépendances saines », « non atteignable, donc pas exploitable », « osv-scanner dit si c'est
+  atteignable » (Go et Rust seulement).
+- « Combiner tous les outils SAST donne une bonne couverture » (70,9 % des failles Java réelles
+  encore manquées), « un relecteur expérimenté trouve tout » (aucun des 30 relecteurs n'a trouvé
+  les 7 failles), « TruffleHog ne détecte que 25 % des secrets » (chiffre de 2019, obsolète).
+- « La clé Supabase dans le front est une fuite » (faux pour la clé publishable, CRITIQUE pour la
+  clé secrète), « une dépendance sans release depuis 2 ans est vulnérable » (rien ne le démontre).
+- « On a force-pushé, le secret a disparu », « supprimer et recréer le dépôt suffit », « changer la
+  variable sur Vercel suffit » (les anciens déploiements gardent l'ancienne valeur), « redémarrer
+  l'appli coupe l'accès volé », « GitHub a prévenu le fournisseur, donc la clé est révoquée ».
+- « Il faut faire tourner tous les secrets tous les 90 jours » (aucune norme lue ne le fixe), « Meli
+  et al. ont mesuré l'exploitation » (ils mesurent la découverte, 20 s).
+- « Sur Vercel, je suis protégé des failles Next.js » (vrai pour CVE-2025-29927, faux pour
+  CVE-2025-55182), « `X-XSS-Protection` protège du XSS » (déprécié), « un mot de passe fort exige
+  majuscule, chiffre et caractère spécial » (NIST l'interdit), « inutile de préciser `SameSite` »,
+  « les secrets GitHub sont masqués dans les logs, donc sans risque », « les restrictions réseau
+  Supabase protègent toute la base » (pas les API HTTPS).
+- « Un bon prompt système empêche l'injection », « un détecteur qui bloque 95 % suffit », « la règle
+  des trois propriétés suffit à sécuriser un agent » (son auteur dit que non), « le serveur MCP
+  officiel est sûr, donc l'agent l'est », « Anthropic vérifie la sécurité des serveurs MCP de
+  l'annuaire » (non), « les LLM sont devenus de bons détecteurs de vulnérabilités » (contesté).
 
 **Architecture** — `references/architecture-*.md`
 

@@ -13,6 +13,7 @@ description: "Référentiel de preuves vérifiées et datées (niveau de preuve,
 > Version 1.5 — 09.11.2026 (volet frontend : cinq fiches `frontend-*.md`, 174 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `frontend` v3.0 ; mythes du frontend ; § « Pour un choix visuel, de rédaction, de growth ou d'implémentation ».)
 > Version 1.6 — 09.11.2026 (volet backend : cinq fiches `backend-*.md`, 173 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `backend` v4.0 ; mythes du backend.)
 > Version 1.7 — 09.11.2026 (volet architecture : cinq fiches `architecture-*.md`, 173 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `architecte` v4.0 ; mythes de l'architecture.)
+> Version 1.8 — 10.11.2026 (volet sécurité : cinq fiches `securite-*.md`, 175 entrées, recherche menée du 09 au 10.11.2026, chacune finie par un verdict sourcé sur les règles du profil ; préchargé aussi par `securite` v4.0 ; mythes de la sécurité.)
 > Contenu issu d'une **recherche documentaire du 09.11.2026** : chaque entrée des fiches cite une
 > page effectivement ouverte ce jour-là, avec un extrait lu. Cf. § « D'où vient ce contenu ».
 > **C'est un instantané** : § « Quand vérifier en ligne » dit quand il ne suffit plus.
@@ -163,6 +164,11 @@ lu, portée.
 | `references/frontend-accessibilite-code.md` | **Frontend.** ARIA et ses risques mesurés, éléments natifs (`<dialog>`, popover), changements de route en SPA, régions live, formulaires accessibles, limites des tests automatiques, mouvement et couleurs forcées |
 | `references/frontend-qualite-securite.md` | **Frontend.** Effet mesuré du typage, tests et couverture, tests instables, error boundaries, XSS, CSP stricte, secrets et jetons, chaîne d'approvisionnement npm, risque des dépendances |
 | `references/frontend-code-ia-plateforme.md` | **Frontend.** Sécurité du code généré par LLM, paquets hallucinés, API dépréciées, maintenabilité, pratiques mesurées ; ce que la plateforme web fait nativement en 2025-2026, avec statut Baseline daté |
+| `references/securite-menaces-priorisation.md` | **Sécurité.** OWASP Top 10:2025 (liste vérifiée), CVSS v4.0 et ses limites, EPSS, catalogue CISA KEV, BOD 26-04 et SSVC, atteignabilité, LINDDUN, grilles de sévérité |
+| `references/securite-outils-detection.md` | **Sécurité.** Efficacité mesurée de l'analyse statique, de l'analyse des dépendances, de la détection de secrets, des tests dynamiques et de la revue humaine |
+| `references/securite-incidents-secrets.md` | **Sécurité.** NIST SP 800-61 Rev. 3, secret fuité (découverte, révocation, purge), rotation, rétention des journaux Vercel, Supabase et GitHub, post-mortem, comptes et outillage compromis |
+| `references/securite-plateforme-deploiement.md` | **Sécurité.** En-têtes, cookies, TLS, failles Next.js et React, Vercel, Supabase, GitHub Actions, auto-hébergement |
+| `references/securite-llm-agents.md` | **Sécurité.** OWASP LLM 2025 et Agentic 2026, injection de prompt et limites des défenses, MCP (spécification 2026-07-28), LLM comme auditeur de sécurité |
 | `references/architecture-decisions-adr.md` | **Architecture.** Formats d'ADR (Nygard, MADR), ISO/IEC/IEEE 42010, arc42, C4, recherche sur la décision d'architecture et ses biais (alternatives, ancrage), réversibilité, érosion, seuil d'un ADR |
 | `references/architecture-qualites-nfr.md` | **Architecture.** ISO/IEC 25010:2023, scénarios de qualité et ATAM, risques d'omission, NFR en pratique, mythe du surcoût ×100, fitness functions, modélisation des menaces, Well-Architected, DORA, local-first |
 | `references/architecture-modularite-dette.md` | **Architecture.** Parnas, loi de Conway et mirroring, monolithe modulaire et microservices, couplage et livraison, dette technique, churn et défauts, YAGNI et abstraction prématurée |
@@ -213,10 +219,14 @@ exigences sont la couverture des qualités d'ISO/IEC 25010:2023, la protection d
 conception et la qualification réglementaire du produit (posée comme question) ; les défauts fondés
 sur des preuves sont la chasse aux décisions non prises, les NFR mesurables, les alternatives générées
 avant de choisir, les risques à signal de détection et impact chiffré ; les seuils (un jour, trois
-risques, une page) sont des conventions. **Versions et statuts navigateurs vieillissent en mois** : la
+risques, une page) sont des conventions. En sécurité, les exigences sont le Top 10:2025 et
+l'ASVS 5.0, le contrôle d'accès côté serveur au plus près des données, les règles NIST sur les mots de
+passe et les MUST de la spécification MCP ; les défauts fondés sur des preuves sont la priorisation
+par l'exploitation (KEV, exposition), les limites mesurées des scanners, deux outils plutôt qu'un, le
+constat confirmé par une preuve ; la grille de sévérité est une convention. **Versions et statuts navigateurs vieillissent en mois** : la
 fiche dit où regarder, la documentation de la version installée tranche.
 
-Chaque fiche `design-*.md`, `redaction-*.md`, `growth-*.md`, `frontend-*.md`, `backend-*.md` et `architecture-*.md` finit par un **verdict sourcé sur les règles du profil** (soutenue,
+Chaque fiche `design-*.md`, `redaction-*.md`, `growth-*.md`, `frontend-*.md`, `backend-*.md`, `architecture-*.md` et `securite-*.md` finit par un **verdict sourcé sur les règles du profil** (soutenue,
 convention sans preuve, contredite) : c'est lui qui range une règle à son niveau. Les bandeaux de
 tendance (« bento », « glass », typographie géante) n'ont pas d'étude d'effet trouvée : N4 au
 mieux (`design-front-recent.md`).
