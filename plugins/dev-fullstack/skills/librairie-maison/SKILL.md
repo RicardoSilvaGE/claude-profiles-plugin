@@ -5,7 +5,7 @@ description: "Socles de démarrage repris de code en service (non rejoués ici, 
 
 # Librairie maison — deux jeux, étiquetés
 
-> Version 1.3 — 11.11.2026 (renotation : en-tête de la table des parts corrigé). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
+> Version 1.4 — 11.11.2026 (provenance sortie vers `references/provenance.md`). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
 > Contenu issu d'une **mesure** des dépôts réels, pas d'une
 > idée de ce qu'ils devraient contenir : cf. § « D'où vient ce contenu ».
 
@@ -35,11 +35,13 @@ fichiers à copier : `generer-certificat-https.ps1`, `docx_vers_pdf.py`, `manife
 3. **En cas de doute, le dire** plutôt que choisir : reprendre le mauvais socle se paie en refonte,
    pas en correction.
 
+**L'annonce tient en une ligne, avant tout fichier** : `Jeu : VANILLA | NEXT-TS — motif : <fichier
+du dépôt qui décide, ou réponse de l'utilisateur>`.
+
 ## Auto-check avant de copier quoi que ce soit
 
-1. **Le jeu a-t-il été choisi par le dépôt, ou annoncé et validé** (projet neuf) — jamais présumé ?
-2. **Le fichier a-t-il été exécuté dans le projet** avant de conclure qu'il convient — jamais copié et déclaré « ok » sur lecture ?
-3. **La date de fraîcheur du § « Fraîcheur » du `README.md` du jeu a-t-elle été lue**, et l'écart signalé si elle a plus de quelques mois ?
+1. **Le fichier a-t-il été exécuté dans le projet** avant de conclure qu'il convient — jamais copié et déclaré « ok » sur lecture ?
+2. **La date de fraîcheur du § « Fraîcheur » du `README.md` du jeu a-t-elle été lue**, et l'écart signalé si elle a plus de quelques mois ?
 
 ## Ce que cette librairie N'EST PAS
 
@@ -54,28 +56,7 @@ fichiers à copier : `generer-certificat-https.ps1`, `docx_vers_pdf.py`, `manife
 
 ## D'où vient ce contenu
 
-Mesure du 25.08.2026 sur les 8 dépôts applicatifs. Deux fichiers seulement étaient **réellement
-dupliqués** entre projets, après neutralisation du nom de l'application :
-
-| Fichier | Part de lignes identiques entre dépôts, ou constat |
-|---|---|
-| `scripts/generer-certificat-https.ps1` | **84 %** |
-| `scripts/docx_vers_pdf.py` | **84 %** |
-| `manifest.json` | 63 % (mais 15 lignes) |
-| `sw.js` | **34 %** — trop divergent |
-| `start-hidden.vbs` | 10 lignes, divergentes |
-
-**Conséquence assumée, et c'est la ligne de partage de cette librairie** : ce qui est réellement
-dupliqué est versé en **fichier**, ce qui diverge est versé en **recette**. Verser `sw.js` comme
-fichier aurait imposé une stratégie de cache à des projets qui en avaient délibérément choisi deux
-différentes.
-
-## Neutralisation appliquée au versement
-
-Les originaux portaient le **prénom et le nom d'utilisateur Windows d'un collègue**, ainsi que son
-chemin de poste en dur. Tout cela est retiré : les copies versées ici sont anonymes, et les chemins
-sont paramétrés.
-
-Les sorties console des `.ps1` sont en outre passées en **ASCII pur** (règle 5bis du skill `garde-fous-powershell`),
-ce que les originaux ne respectaient pas — un script sans BOM dont les messages portent des accents
-s'affiche corrompu sous PowerShell 5.1.
+Mesure du 25.08.2026 sur les 8 dépôts applicatifs. **Ligne de partage** : ce qui était réellement
+dupliqué entre dépôts est versé en **fichier**, ce qui diverge (`sw.js`, `server.js`) en **recette**.
+Parts mesurées par fichier et neutralisation appliquée au versement : `references/provenance.md`, à
+ouvrir avant de verser une nouvelle pièce ou de contester le statut fichier / recette d'une pièce.

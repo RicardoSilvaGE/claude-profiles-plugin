@@ -13,9 +13,8 @@ paths:
 description: "Upgrade d'un framework majeur (Next.js, React, Tailwind, shadcn, TypeScript, Node) : inventaire des breaking changes, audit d'impact, stratégie big bang vs feature flag, codemods, plan de rollback, vérification post-upgrade. Interdit le `npm install <pkg>@latest` à l'aveugle. Déclencheurs : upgrade ou saut de version nommé (Next 14 vers 15, Tailwind v3 vers v4), breaking changes, codemod, framework périmé. Pas pour : une dépendance mineure hors framework, un bug de dépendance (`debug-investigation`), ni Pages Router vers App Router (`architecte`)."
 ---
 
-> Version 1.5 — 11.11.2026 (renotation : ligne de version allégée). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
-> **Ce skill porte `paths`, et c'est délibéré** (`publication-store` en a porté du 04.09 au 05.09.2026 ; son déclencheur naturel étant une phrase, `paths` lui a été retiré sur la mesure ci-dessous — constat D10 de l'audit du 05.09). Deux raisons cumulées. D'abord il n'est préchargé dans aucun sub-agent : `paths` et le préchargement (`skills:`) sont **exclusifs** — un skill portant `paths` n'est pas préchargeable, vérifié par témoin isolé le 17.08.2026 et absent de la documentation officielle. Ensuite un upgrade de framework est **inconcevable sans manifeste** : la première chose que fait ce skill est de lire le `package.json`, donc la borne se referme sur elle-même au lieu de rater le déclenchement.
-> **Sémantique à connaître avant d'en poser ailleurs** : `paths` ne se déclenche pas parce que le dossier *contient* un fichier concordant, mais parce qu'un tel fichier est **effectivement manipulé**. Mesuré le 17.08.2026 : dans un dossier contenant un `.tsx`, un skill borné sur `**/*.tsx` reste absent tant que le fichier n'a pas été lu. Un skill dont le déclencheur naturel est une phrase et non un fichier ne doit donc **pas** porter `paths` — il se tairait sans que rien ne le signale.
+> Version 1.6 — 11.11.2026 (cure de poids : pièges par framework en annexe, porte `spec-builder` et règle des release notes écrites une fois, livrable défini). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
+> **Ce skill porte `paths`, et c'est délibéré** : il n'est préchargé dans aucun sub-agent (`paths` et `skills:` sont exclusifs), et un upgrade est inconcevable sans manifeste. `paths` ne se déclenche que sur un fichier concordant **effectivement manipulé** (mesure du 17.08.2026).
 
 # framework-upgrade — Upgrade de framework structuré
 
@@ -23,7 +22,7 @@ description: "Upgrade d'un framework majeur (Next.js, React, Tailwind, shadcn, T
 
 ## Principe directeur
 
-**Lire les release notes en entier avant de toucher au `package.json`.** Un upgrade réussi n'est pas un `npm install` : c'est un projet avec scope, plan, rollback et vérification.
+**Un upgrade réussi n'est pas un `npm install` : c'est un projet avec scope, plan, rollback et vérification.**
 
 ## Périmètre
 
@@ -31,7 +30,7 @@ description: "Upgrade d'un framework majeur (Next.js, React, Tailwind, shadcn, T
 - Upgrade major / minor de framework principal : Next.js, React, Tailwind, shadcn/ui, TypeScript, Node.js.
 - Inventaire des breaking changes vs base de code existante.
 - Choix stratégique : big bang vs incrémental vs feature flag.
-- Application des codemods officiels (`@next/codemod`, `types-react-codemod`, etc.).
+- Application des codemods officiels, nommés par l'upgrade guide lu le jour même.
 - Plan de rollback explicite avant l'exécution.
 - Plan de vérification post-upgrade (tests + smoke + monitoring).
 
@@ -45,7 +44,7 @@ description: "Upgrade d'un framework majeur (Next.js, React, Tailwind, shadcn, T
 
 - **`WebFetch` / `WebSearch`** : requis en Phase 1 pour lire les release notes et upgrade guides officiels (URLs listées en Phase 1). Si indisponibles dans la session, demander à l'utilisateur de coller les release notes — ne jamais les réciter de mémoire.
 - **`debug-investigation`** (hand-off) : régression isolée découverte post-upgrade.
-- **`spec-builder`** : **obligatoire avant la Phase 5**. Une dépendance majeure est « structurelle » dans la doctrine du profil (§ « Règle absolue spec-builder » : schéma de données, auth, dépendance majeure, contrat d'API, migration), donc **spec complète, commitée avant le code**, quel que soit le nombre de lignes touchées. Les Phases 0 à 4 de ce skill en fournissent la matière (inventaire, stratégie, rollback) ; elles ne la remplacent pas.
+- **`spec-builder`** : entre la Phase 4 et la Phase 5 (porte écrite en tête de Phase 5).
 - Sub-agent **`reviewer`** : review du diff de la branche d'upgrade avant `release` Mode A (séquence 8 d'`ORCHESTRATION.md`).
 
 ## Workflow (7 phases, de 0 à 6)
@@ -55,7 +54,7 @@ description: "Upgrade d'un framework majeur (Next.js, React, Tailwind, shadcn, T
 Avant toute action, formuler en 5 lignes max :
 1. **Cible** : quel framework, quelle version actuelle, quelle version cible ? Version actuelle **lue dans le lockfile**, jamais supposée (forme : `<framework> <actuelle> → <cible>`).
 2. **Motivation** : performance, feature requise, fin de support, dépendance qui le force.
-3. **Périmètre projet** : taille (`find src -name '*.tsx' | wc -l`), nombre de pages/routes.
+3. **Périmètre projet** : taille (`git ls-files '*.tsx' | wc -l`), nombre de pages/routes.
 4. **Contraintes** : freeze prochain ? feature en cours sur main ? autre dev sur le repo ?
 5. **Niveau de risque acceptable** : peut-on casser temporairement le dev pour 2h ? La prod ?
 
@@ -65,7 +64,7 @@ Si une dimension manque (notamment 4 ou 5), poser **une seule question groupée*
 
 Lire **avant** de toucher au `package.json`, sans exception :
 
-1. **Release notes officielles** entre version actuelle et version cible. Lire chaque release majeure ET mineure.
+1. **Release notes officielles** entre version actuelle et version cible : chaque release majeure ET mineure, et **en entier** pour chaque majeure intermédiaire.
    - Next.js : https://nextjs.org/blog/next-X (à fetch via WebFetch).
    - React : https://react.dev/blog.
    - Tailwind : https://tailwindcss.com/blog.
@@ -77,9 +76,9 @@ Lire **avant** de toucher au `package.json`, sans exception :
 5. **CLAUDE.md projet** : conventions à respecter, sub-agents impliqués.
 6. **Tests existants** : présence d'une suite (unit, e2e) qui validera le post-upgrade.
 
-**Pas d'upgrade sans avoir lu en entier les release notes de chaque release majeure intermédiaire.**
-
 ### Phase 2 — Inventaire des breaking changes
+
+Où chercher les ruptures selon le framework (forme des pièges, sans numéro de version) : `references/pieges-par-framework.md` de ce skill, à ouvrir en début de phase.
 
 Pour chaque breaking change identifié, écrire :
 - **Description** : ce qui change (1 phrase).
@@ -87,7 +86,7 @@ Pour chaque breaking change identifié, écrire :
 - **Fix automatisable ?** : oui (codemod) / non (manuel).
 - **Effort** : XS / S / M / L.
 
-Forme du tableau — **gabarit, sans aucun fait de version** : chaque ligne se remplit depuis les release notes et l'upgrade guide lus en Phase 1, les versions depuis le lockfile, jamais de mémoire.
+Forme du tableau — **gabarit, sans aucun fait de version** : chaque ligne se remplit depuis les sources de la Phase 1 et le lockfile, jamais de mémoire.
 | Breaking change | Impact actuel (grep) | Codemod | Effort |
 |---|---|---|---|
 | `<rupture citée de la release note, avec son lien>` | `grep -r "<motif>" <dossier>` → N occurrences | `<codemod nommé par l'upgrade guide>` ou manuel | XS/S/M/L |
@@ -112,7 +111,7 @@ Décider entre :
 
 **Stratégie D — Reporter** : si effort > 1 semaine sans gain immédiat, documenter et reporter. Pas honteux.
 
-Trancher en début de Phase 3 et écrire la stratégie choisie dans le livrable.
+Trancher en début de Phase 3 et écrire la stratégie choisie dans le livrable (défini en fin de Phase 4).
 
 ### Phase 4 — Plan de rollback
 
@@ -125,9 +124,23 @@ Avant d'exécuter, documenter :
 3. **Critère de rollback** : à quel signe on revient en arrière ? (tests qui échouent > N, perf qui se dégrade > X%, bug bloquant en prod).
 4. **Limite de temps** : « si après 2h de tentatives le build ne passe pas, rollback ».
 
+Cette procédure vaut **tant que la branche n'est pas fusionnée**. Après fusion ou mise en prod, le retour arrière n'est plus un `git reset` : sa commande s'écrit au Mode A de `release` et s'exécute en Mode D.
+
+**Livrable des Phases 0 à 4** — une note d'upgrade rendue dans la conversation, matière de la spec :
+
+```
+# Upgrade <framework> <actuelle> → <cible> — <date>
+## Brief (Phase 0) : motivation, périmètre, contraintes, risque acceptable
+## Sources lues (Phase 1) : release notes et upgrade guide, avec liens et date de lecture
+## Inventaire (Phase 2) : tableau des breaking changes
+## Stratégie (Phase 3) : A / B / C / D, et pourquoi
+## Rollback (Phase 4) : snapshot, commandes, critère, limite de temps
+## Vérification prévue (Phase 6)
+```
+
 ### Phase 5 — Exécution
 
-**Préalable (HARD GATE)** : la spec complète de l'upgrade est écrite via `spec-builder` et **commitée avant** le premier bump — dépendance majeure = structurel (doctrine du profil, § « Règle absolue spec-builder »). Pas de spec, pas de Phase 5.
+**Préalable (HARD GATE)** : la spec complète de l'upgrade est écrite via `spec-builder` et **commitée avant** le premier bump, quel que soit le nombre de lignes touchées — dépendance majeure = structurel (doctrine du profil, § « Règle absolue spec-builder »). La note des Phases 0 à 4 en fournit la matière ; elle ne la remplace pas. Pas de spec, pas de Phase 5.
 
 1. **Brancher** : `git checkout -b upgrade/<framework>-<from>-to-<to>`.
 2. **Bump versions** dans `package.json`. Bumper les peer deps liées.
@@ -153,17 +166,13 @@ Une fois le build vert :
 
 ## Garde-fous (règles dures)
 
-- Aucun `npm install <framework>@latest` sans Phase 1 lecture des release notes complètes.
-- Aucun upgrade sans stratégie (Phase 3) explicitement choisie.
-- Aucun upgrade sans plan de rollback (Phase 4) écrit avant l'exécution.
-- Aucune Phase 5 sans spec complète `spec-builder` commitée avant le code.
+- Les phases sont des portes, dans l'ordre : pas de bump sans Phase 1, pas de Phase 5 sans stratégie (3), rollback (4) et spec.
 - Aucun merge sur main sans vérification Phase 6 complète.
 - Si effort réel > effort estimé Phase 2 × 2 → stop, re-cadrer.
 - Si un breaking change cross-cutting est découvert en Phase 5 (pas anticipé Phase 2) → stop, repasser Phase 2.
 
 ## Anti-patterns interdits
 
-- **`npm install next@latest`** sans avoir lu les release notes.
 - **Bumper plusieurs frameworks en même temps** (Next + React + Tailwind ensemble) — diagnostic impossible si ça casse.
 - **Ignorer les warnings de peer deps** : ils prédisent les bugs de demain.
 - **Commit unique "upgrade Next.js"** sans découpage : non-rollback-friendly, non-reviewable.
@@ -172,52 +181,10 @@ Une fois le build vert :
 - **Upgrade « pour rester à jour »** sans motivation produit ou technique claire.
 - **Tester uniquement le happy path** post-upgrade : c'est sur les edges que les régressions cassent.
 
-## Connaissance domaine métier — les pièges structurels, jamais les numéros
-
-Aucun numéro de version ici, à dessein (05.09.2026, audit § Skills) : cette section en récitait
-une trentaine, contre sa propre règle « ne jamais réciter de mémoire », et chacun périmait en
-silence. Ce qui suit est ce qui ne change pas d'une version à l'autre : la **forme** des ruptures,
-à confronter aux release notes lues le jour même en Phase 1.
-
-- **Next.js** : les ruptures portent sur les API de requête (paramètres, en-têtes et cookies qui
-  deviennent asynchrones), sur les défauts de cache de `fetch`, sur la version de React exigée,
-  et sur le passage Pages Router → App Router — qui est une **migration**, pas un upgrade :
-  cadrer avec `architecte`. Chercher le codemod officiel (`@next/codemod`) avant de toucher à
-  la main.
-- **React** : une majeure casse d'abord par les **types** (`@types/react` durcit ce qu'accepte
-  `ReactNode`), puis par les API dépréciées (`forwardRef`, refs passées en prop) ; les nouveaux
-  primitifs (actions, état de formulaire, optimistic UI) ne cassent rien mais rendent l'ancien
-  idiome obsolète — ne pas les adopter dans un upgrade, c'est un chantier à part.
-- **Tailwind** : un changement de moteur déplace la configuration (fichier JS → CSS), change les
-  directives d'import et rend les plugins tiers incompatibles jusqu'à leur propre mise à jour ;
-  un codemod existe, à lire avant de l'exécuter, jamais en `@next` aveugle.
-- **shadcn/ui** : pas une lib npm, du code copié. « Upgrade » = re-coller depuis le registre et
-  réappliquer les customisations à la main ; vérifier la version de Radix UI sous-jacente.
-- **TypeScript** : une mineure est presque toujours indolore ; une majeure casse par les flags de
-  rigueur ajoutés par défaut et par les types utilitaires — lire le tableau des breaking changes
-  de la release note, pas le résumé.
-- **Node.js** : entre deux LTS, vérifier la matrice de compatibilité de l'hébergeur (Vercel,
-  Render, NAS) et du client base de données, puis bumper `engines.node` dans `package.json`.
-
-### Outils utiles
-- `npx npm-check-updates` (pour **voir**, jamais `-u` à l'aveugle).
-- Les codemods officiels de chaque outil, nommés dans leur upgrade guide du jour.
-- `npm ls <pkg>` : voir où une dep est utilisée ; `npm dedupe` : nettoyer après upgrade.
-
 ## Auto-check final (avant livraison)
 
-- Phase 0 brief formulé (versions + motivation + risque acceptable) ?
-- Phase 1 release notes lues en ENTIER pour chaque version intermédiaire ?
-- Phase 2 inventaire des breaking changes avec impact grep et effort estimé ?
-- Phase 3 stratégie choisie explicitement (A/B/C/D) ?
-- Phase 4 plan de rollback écrit AVANT exécution ?
-- Spec complète `spec-builder` commitée AVANT le premier bump ?
-- Phase 5 commits découpés (1 codemod = 1 commit, pas méga-commit) ?
-- Phase 6 vérifications complètes (build + tests + Lighthouse + bundle + preview) ?
-- Hand-off `release` Mode A avant merge prod ?
+- Chaque version citée vient-elle du lockfile ou d'une release note lue ce jour, avec son lien ?
+- Chaque ligne de l'inventaire porte-t-elle son grep et son nombre d'occurrences ?
+- Le hand-off `reviewer` puis `release` Mode A est-il écrit en fin de livraison ?
 
 Si une seule réponse est non → corriger avant livraison.
-
-## Incidents source
-
-- *(à compléter au fil des upgrades — chaque upgrade qui découvre un piège non documenté ailleurs mérite une entrée).*

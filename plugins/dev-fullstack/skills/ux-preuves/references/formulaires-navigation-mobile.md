@@ -18,11 +18,11 @@ de praticien.
 
 Remarque de méthode : les articles NN/g et Baymard sont des synthèses de recherches
 propriétaires dont la méthode complète n'est pas publiée dans l'article lu. Ils sont classés N2
-seulement quand l'article lu donne l'échantillon ; sinon N4 (NN/g) ou N2 « faible » (Baymard,
-dont l'échantillon est réel mais non chiffré dans l'article) — c'est dit dans chaque entrée.
-« N2 faible » n'est pas un niveau de l'échelle du `SKILL.md`, qui fait foi : c'est une entrée dont la
-condition de N2 (grand échantillon et méthode publiée) n'est pas établie par la page lue. La citer avec
-cette réserve, jamais comme une N2 pleine.
+seulement quand la page lue établit la condition de l'échelle du `SKILL.md`, qui fait foi (grand
+échantillon et méthode publiée) ; sinon N4, NN/g comme Baymard — la parenthèse de chaque entrée dit
+ce qui manque. Les entrées marquées « N2 faible » jusqu'au 10.11.2026 (niveau absent de l'échelle)
+ont été reclassées le 11.11.2026 : quatre Baymard en N4, « Milliseconds make millions » en N2 avec
+ses réserves.
 
 ---
 
@@ -41,7 +41,7 @@ cette réserve, jamais comme une N2 pleine.
 - Portée / limites : sept motifs listés (mémoire de travail, impossibilité de relire avant envoi, correction d'erreur, navigation clavier, champ moins visible, confusion avec une donnée préremplie, suppression manuelle). Synthèse d'observations de tests, sans échantillon chiffré dans l'article.
 
 ### Disposer le formulaire sur une seule colonne ; seuls deux ou trois champs liés (ville / NPA) partagent une ligne
-- Niveau de preuve : N2 faible (tests d'utilisabilité Baymard, échantillon non chiffré dans l'article)
+- Niveau de preuve : N4 (tests d'utilisabilité Baymard, échantillon non chiffré dans l'article : condition de N2 non établie)
 - Source : Edward Scott (Baymard Institute), 2023, « Form Field Usability: Avoid Extensive Multicolumn Layouts (16% Make This Form Usability Mistake) », https://baymard.com/blog/avoid-multi-column-forms
 - Extrait lu : « single-column layouts resulted in fewer skipped fields, misinterpreted fields, and errors compared to multicolumn layouts. »
 - Portée / limites : contexte e-commerce (checkout). Une mise en page globale à deux colonnes est dite « generally problematic and never recommended ». Concordant avec NN/g (« Present fields in a single column layout. », même article que l'entrée sur les labels).
@@ -89,7 +89,7 @@ cette réserve, jamais comme une N2 pleine.
 - Portée / limites : moyenne non pondérée d'études hétérogènes. Les causes sont calculées après exclusion des personnes qui « regardaient seulement » (42 % des répondants US) : surcoûts 40 %, livraison lente 20 %, méfiance carte 19 %, création de compte imposée 18 %, checkout trop long ou compliqué 17 %, erreurs du site 17 %, coût total invisible d'avance 12 %. La page ne donne ni la taille ni la date de l'enquête.
 
 ### Viser 12 à 14 éléments de formulaire (7 à 8 champs) dans un checkout, contre 23,48 en moyenne aux États-Unis
-- Niveau de preuve : N2 faible (benchmark Baymard, méthode non détaillée sur la page)
+- Niveau de preuve : N4 (benchmark Baymard, méthode non détaillée sur la page : condition de N2 non établie)
 - Source : Baymard Institute (consultée le 09.11.2026), « Cart Abandonment Rate Statistics », https://baymard.com/lists/cart-abandonment-rate
 - Extrait lu : « The average US checkout shows 23.48 form elements versus an ideal 12–14. » ; « the average large-sized ecommerce site can gain a 35.26% increase in conversion rate though better checkout design. »
 - Portée / limites : grands sites e-commerce US/Europe. Le +35,26 % est une estimation de potentiel par Baymard, pas un résultat d'expérience contrôlée.
@@ -107,7 +107,7 @@ cette réserve, jamais comme une N2 pleine.
 - Portée / limites : exceptions — ressaisie essentielle, sécurité, information devenue invalide. Cas typique : adresse de facturation identique à la livraison.
 
 ### N'utiliser un masque de saisie que pour les champs à format contraint (téléphone, date, carte), localisé et tolérant à l'édition ; sinon le désactiver
-- Niveau de preuve : N2 faible (tests checkout Baymard, échantillon non chiffré dans l'article)
+- Niveau de preuve : N4 (tests checkout Baymard, échantillon non chiffré dans l'article : condition de N2 non établie)
 - Source : Edward Scott (Baymard Institute), 2017, « Input masking form field » (titre de l'URL), https://www.baymard.com/blog/input-masking-form-field
 - Extrait lu : « we recommend implementing input masks for restricted form fields such as phone number, date, credit card auto-spacing, » ; « An input mask that doesn’t align with a user’s domestic formatting will often result in an abandonment »
 - Portée / limites : 64 % des sites du benchmark n'en utilisent pas ou mal. Risque principal observé : la logique du masque ne gère pas l'édition au milieu du champ. L'article ne traite ni du copier-coller ni des conflits avec l'autoremplissage — à tester soi-même.
@@ -147,7 +147,7 @@ cette réserve, jamais comme une N2 pleine.
 - Portée / limites : utile pour les sites à hiérarchie profonde ; inutile pour un site plat. Lignes directrices d'expert sans échantillon chiffré.
 
 ### Une page « zéro résultat » doit offrir une suite : catégories liées, requêtes alternatives, aide humaine, contenus populaires — les conseils de saisie seuls ne suffisent pas
-- Niveau de preuve : N2 faible (tests de recherche interne Baymard et benchmark, échantillon non chiffré dans l'article)
+- Niveau de preuve : N4 (tests de recherche interne Baymard et benchmark, échantillon non chiffré dans l'article : condition de N2 non établie)
 - Source : Sonia Sousa (Baymard Institute), 2019 (maj 2025), « No Results Page » (titre de l'URL), https://baymard.com/blog/no-results-page
 - Extrait lu : « nearly 50% of sites fail to provide users with effective ways to recover from a search that yields no results. » ; « search tips aren't enough on their own. »
 - Portée / limites : e-commerce. Cinq stratégies recommandées (catégories liées, recherches alternatives, recommandations personnalisées, téléphone/chat/aide, produits populaires). Le chiffre plus ancien « 68 % de culs-de-sac » n'a été vu que dans des résumés tiers.
@@ -245,7 +245,7 @@ cette réserve, jamais comme une N2 pleine.
 - Portée / limites : mesure de terrain, « the 75th percentile of page loads recorded in the field », segmentée mobile/desktop. INP succède à FID ; la page « Web Vitals » dit seulement « INP became a stable Core Web Vital metric in 2024 » (date exacte non vérifiée ici). Seuils choisis par Google, pas des seuils perceptifs.
 
 ### Un gain de 0,1 s de vitesse mobile est associé à environ +8 % de conversion en retail et +10 % en voyage — association observée, non causale démontrée
-- Niveau de preuve : N2 faible (30 millions de sessions, 37 marques ; étude commandée par Google, non revue par pairs, observationnelle)
+- Niveau de preuve : N2 (étude empirique à grand échantillon et méthode décrite : 30 millions de sessions, 37 marques ; commandée par Google, non revue par pairs, observationnelle)
 - Source : Google / 55 / Deloitte Digital, 2020, « Milliseconds make millions », présenté sur web.dev, https://web.dev/case-studies/milliseconds-make-millions
 - Extrait lu : synthèse de la page : retail « Conversion rose about 8.4% », voyage environ 10,1 % (la formulation exacte n'a pas été restituée verbatim par l'outil ; le PDF Deloitte arrondit à 8 % et 10 %).
 - Portée / limites : 37 sites européens et américains (retail, luxe, voyage, génération de leads), suivi horaire sur 30 jours fin 2019 ; quatre métriques (dont First Meaningful Paint, aujourd'hui déprécié) devaient toutes s'améliorer de 0,1 s. Aucun groupe témoin mentionné : à présenter comme corrélation. Commanditaire intéressé (Google).

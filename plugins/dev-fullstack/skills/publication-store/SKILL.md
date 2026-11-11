@@ -1,15 +1,12 @@
 ---
 name: publication-store
-description: "Publication d'une app web (PWA) sur le Google Play Store via Capacitor Android : identité figée (applicationId, versionCode), AAB signé avec keystore hors dépôt et Play App Signing, tracks internal → production, Data Safety, IARC, limites de la fiche, assets, App Links (assetlinks.json), validation sur device, pièges Android 15+ / Capacitor 8 mesurés. Déclencheurs : release Play Store, publier l'app, build Android, AAB, keystore, Play Console, internal testing, Capacitor. Pas pour : la copy de la fiche (`growth`), les visuels (`designer`), le déploiement web (`release`), iOS (non mesuré)."
+description: "Publication d'une app web (PWA) sur le Google Play Store via Capacitor Android : identité figée (applicationId, versionCode), AAB signé avec keystore hors dépôt et Play App Signing, tracks internal → production, Data Safety, IARC, limites de la fiche, App Links, validation sur device, pièges Android 15+ / Capacitor 8 mesurés. Déclencheurs : release Play Store, publier l'app, AAB, keystore, Play Console, internal testing, Capacitor. Pas pour : un build Android de test, la copy de la fiche (`growth`), les visuels (`designer`), le déploiement web (`release`), iOS (non mesuré)."
 ---
 
 # Publication store — Android via Capacitor, Play Console
 
-> Version 1.5 — 11.11.2026 (renotation : ligne de version allégée). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
-> Contenu issu d'une **mesure sur un dépôt réel** qui a
-> mené une PWA React jusqu'à l'internal testing du Play Store (Capacitor 8, targetSdk 36) —
-> pas d'une idée de ce qu'une publication devrait être. Cf. § « D'où vient ce contenu ».
-> **iOS / App Store : hors périmètre**, jamais mesuré ; ne rien affirmer dessus.
+> Version 1.6 — 11.11.2026 (cure de poids : pièges, provenance et App Links en annexes, gabarits ajoutés, redites retirées). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
+> Contenu **mesuré le 04.09.2026 sur un seul dépôt réel** (Capacitor 8, targetSdk 36) : « le dépôt mesuré » ci-dessous, et toute valeur donnée sans autre source (V1 + V2, délai de propagation) vient de lui. Portée et incidents : `references/provenance.md`.
 
 ## Principe directeur
 
@@ -47,8 +44,8 @@ dépôt + une checklist manuelle nominative**, jamais « c'est publié ».
 
 ## Skills à invoquer ou MCPs à utiliser
 
-- `spec-builder` : **obligatoire** avant de toucher une zone système (`AndroidManifest.xml`, `build.gradle`, `variables.gradle`, `capacitor.config.json` au-delà de `appId/appName/webDir/server`, `MainActivity`, `res/values*`). C'est la règle absolue du profil, et le dépôt mesuré l'a rendue **explicite pour ces fichiers** après un incident de status bar.
-- Sub-agent `growth` en hand-off pour la copy, `designer` pour les visuels, `securite` avant la première ouverture publique (le dépôt mesuré a fait un audit tous secteurs pré-store, verdict « GO avec réserves », et c'est ce qui a levé deux bloquants ops).
+- `spec-builder` : **obligatoire** avant de toucher une zone système (`AndroidManifest.xml`, `build.gradle`, `variables.gradle`, `capacitor.config.json` au-delà de `appId/appName/webDir/server`, `MainActivity`, `res/values*`). C'est la règle absolue du profil.
+- Sub-agent `growth` en hand-off pour la copy, `designer` pour les visuels, `securite` avant la première ouverture publique.
 - Sub-agent `release` pour la partie web du même lancement.
 
 ## Workflow (8 phases, de 0 à 7)
@@ -60,7 +57,7 @@ Avant toute action, établir et **annoncer** :
 1. **Quel track** : internal testing (famille, testeurs nommés), closed, open, production. Le premier upload est toujours **internal**.
 2. **Quelle version** : `versionCode` précédent (lu dans `build.gradle`, jamais supposé) et `versionName` visé. Si la version précédente n'est pas certaine : **lister les valeurs trouvées et demander**.
 3. **Ce qui a changé depuis la dernière release** : `git log <tag-precedent>..HEAD`, et les migrations SQL en attente côté prod.
-4. **Qui signe et qui uploade** : la personne, sur sa machine. Le skill s'arrête au `cap sync`.
+4. **Qui signe et qui uploade** : la personne, sur sa machine. Le skill s'arrête au `cap sync` (seule suite possible : le tag de la Phase 4, sur confirmation).
 
 ### Phase 1 — Lecture obligatoire (HARD GATE)
 
@@ -117,7 +114,7 @@ Checklist mesurée sur le dépôt de référence, à passer **avant** de bumper 
 5. **Vérifier la signature avant l'upload** : `jarsigner -verify -verbose -certs app-release.aab` doit finir par `jar verified.`. Un bundle non signé est rejeté par la Console, mais seulement après l'upload.
 6. **Tag git** après build OK : `git tag -a v<versionName> -m "…"`, poussé. C'est ce que `release` Mode B lira pour `git log <tag>..HEAD` la prochaine fois.
 
-**Ce que le skill livre à la personne** : une checklist nominative (Android Studio → Play Console → testeurs), avec les chemins exacts des artefacts et les valeurs attendues au scan de la Console (`applicationId`, `versionCode`, `targetSdk`, permissions).
+**Ce que le skill livre à la personne** : une checklist nominative (Android Studio → Play Console → testeurs), avec les chemins exacts des artefacts et les valeurs attendues au scan de la Console (`applicationId`, `versionCode`, `targetSdk`, permissions). Gabarit : `references/gabarits.md`, qui porte aussi le tableau Data Safety et les notes de release de la Phase 5.
 
 ### Phase 5 — Play Console
 
@@ -129,19 +126,13 @@ Checklist mesurée sur le dépôt de référence, à passer **avant** de bumper 
 
 **Classification IARC** (*Content rating*) : questionnaire par e-mail, catégorie *Utility/Productivity* pour un agenda, toutes réponses « non » → PEGI 3 / Everyone. Le documenter dans le dépôt pour la prochaine fois.
 
-**Limites de la fiche**, à donner à `growth` : titre ≤ 30 (« Your app title must be 30 characters or less », Play Console Help « Metadata », lu le 09.11.2026 ; le « 60 » écrit ici jusqu'à cette date était faux), description courte ≤ 80, description longue ≤ 4 000 caractères, par locale. Pas de superlatif non prouvé, pas de feature absente.
+**Limites de la fiche**, à donner à `growth` : titre ≤ 30 (« Your app title must be 30 characters or less », Play Console Help « Metadata », lu le 09.11.2026 ; le « 60 » écrit ici jusqu'à cette date était faux), description courte ≤ 80, description longue ≤ 4 000 caractères, par locale (`ux-preuves/references/growth-aso-stores.md`, § « Description courte ≤ 80 caractères […] », Play Console Help). Pas de superlatif non prouvé, pas de feature absente.
 
 **Assets**, à donner à `designer` : **captures** — 1080 × 2400 est le **choix du dépôt mesuré** (portrait Pixel 7, 4 claires + 2 sombres), pas la règle Play, qui est dans `ux-preuves/references/growth-aso-stores.md` l. 62-67 (jusqu'à 8 captures par type d'appareil ; au moins 4 captures ≥ 1080 px pour l'éligibilité aux recommandations ; minimum de publication : deux captures) ; toujours sur des **données de démonstration seedées**, jamais des données réelles ; **feature graphic 1024 × 500** lisible aussi à 320 × 156 (taille de vignette dans les résultats). Captures depuis un émulateur ou un device (`adb shell screencap`), pas depuis DevTools — la barre système manque.
 
 ### Phase 6 — App Links (deep-link natif HTTPS)
 
-Pour qu'un lien `https://<domaine>/<chemin>` ouvre l'app installée sans dialogue « ouvrir avec » :
-
-1. `intent-filter` `VIEW` avec `android:autoVerify="true"`, `scheme="https"`, `host`, `pathPrefix` — dans le Manifest (**zone système : SPEC d'abord**).
-2. `https://<domaine>/.well-known/assetlinks.json` servi en `Content-Type: application/json`, portant l'**empreinte SHA-256 du certificat de signature release** — celle du keystore de release, **pas** celle du keystore de debug (erreur classique, silencieuse : la vérification échoue et le lien ouvre le navigateur).
-3. L'empreinte s'obtient par `keytool -list -v -keystore release.keystore` — c'est un **input bloquant de la personne** ; sans elle le fichier est inécrivable. Avec Play App Signing, c'est l'empreinte de la **clé de signature Google** (Console → *App integrity*) qui fait foi pour les installations depuis le store, pas celle de l'upload key.
-4. Réutiliser la **route web existante** comme cible du deep-link plutôt qu'une route parallèle — le dépôt mesuré a tranché ainsi (ADR) : un seul gate, testable en PWA.
-5. Vérification : `adb shell pm verify-app-links --re-verify <applicationId>` puis `adb shell pm get-app-links <applicationId>` doit dire `verified`. Un hébergeur qui intercepte `/.well-known/` casse tout : le tester en `curl`.
+**Seulement si la release doit ouvrir l'app depuis un lien `https://`** ; sinon passer à la Phase 7. Les cinq étapes (`intent-filter` `autoVerify`, `assetlinks.json`, empreinte, route cible, vérification `adb`) sont dans `references/app-links.md`, à ouvrir avant d'y toucher. Trois points qui ne se rattrapent pas : le Manifest est une **zone système (SPEC d'abord)** ; l'empreinte SHA-256 est celle du certificat de **release** — avec Play App Signing, celle de la clé de signature Google —, **jamais** celle du keystore de debug ; elle est un **input bloquant de la personne**.
 
 ### Phase 7 — Validation sur device
 
@@ -150,17 +141,17 @@ Une checklist par **catégorie fonctionnelle** (le dépôt mesuré en a dix : au
 Trois règles mesurées :
 
 - **Tester l'app complètement fermée** (retirée des applications récentes), pas seulement en arrière-plan : c'est là que les notifications et le boot diffèrent.
-- **Une hypothèse à la fois** sur tout défaut natif : observation factuelle d'abord (`chrome://inspect` pour le WebView, `adb logcat` pour le natif), modification unique, revert immédiat si échec. Pas de cumul de correctifs. Le dépôt mesuré a posé cette discipline après un incident de status bar résolu au tâtonnement.
+- **Une hypothèse à la fois** sur tout défaut natif : observation factuelle d'abord (`chrome://inspect` pour le WebView, `adb logcat` pour le natif), modification unique, revert immédiat si échec. Pas de cumul de correctifs. Pièges natifs déjà mesurés (status bar, safe areas, splash, notifications) : `references/pieges-android-capacitor.md`, à lire avant la première hypothèse.
 - **Une permission ne se re-teste qu'après désinstallation** : un « accordé » persiste.
 
 Séparer **bloquant** (perte de données hors-ligne, push non reçu, crash) — corriger, nouveau `versionCode`, re-upload — de **mineur**, consigné dans un `known-issues` versionné et non bloquant pour la promotion.
 
 ## Garde-fous (règles dures)
 
-1. **`applicationId` : jamais.** Une demande de le changer se refuse une fois, avec la conséquence (nouvelle app, anciens utilisateurs orphelins), avant d'obéir si elle est maintenue.
+1. **`applicationId` : jamais** (Phase 2 : refus une fois, avec la conséquence, avant d'obéir).
 2. **Aucun secret dans le dépôt** : keystore, `keystore.properties`, `gradle.properties` avec mots de passe, `google-services.json`, `local.properties`. Vérifier le `.gitignore` **avant** le premier build signé, pas après. Un keystore commité puis supprimé reste dans l'historique : c'est une révocation, pas un nettoyage.
 3. **`versionCode` bumpé à chaque upload**, y compris pour un re-upload correctif sur le même track.
-4. **Play App Signing au premier upload**, et sauvegarde double du keystore d'upload. Sans quoi une machine qui meurt tue l'app.
+4. **Play App Signing au premier upload**, et sauvegarde double du keystore d'upload (Phase 2).
 5. **Toute zone système passe par une SPEC** (Manifest, Gradle, `capacitor.config.json` hors champs CLI, activité, ressources) — pas d'« exception hotfix », même pour une ligne. Lire le **code Java du plugin** concerné (`node_modules/@capacitor/…/android/…`) avant d'écrire la SPEC.
 6. **Ne jamais annoncer « publié »** : le skill livre un dépôt prêt et une checklist ; la publication est constatée par la personne dans la Console.
 7. **Captures sur données de démonstration**, jamais sur une famille ou un client réel.
@@ -168,60 +159,19 @@ Séparer **bloquant** (perte de données hors-ligne, push non reçu, crash) — 
 ## Anti-patterns interdits
 
 - Uploader un APK là où le store attend un AAB (accepté sur les vieux tracks, refusé en production depuis 2021 pour une nouvelle app).
-- Recopier l'empreinte SHA-256 du keystore **debug** dans `assetlinks.json`.
-- Tester le flow d'opt-in avec le seul compte du développeur.
-- Prendre les captures dans DevTools : barre système absente, refusé ou moche.
-- Corriger un défaut natif en changeant trois choses à la fois.
 - « Passer en `LIGHT` la status bar » ou toute retouche de `capacitor.config.json` sans SPEC, parce que ça a l'air petit.
-- Écrire la copy de la fiche soi-même au lieu de la passer à `growth` avec les limites.
 
-## Connaissance domaine — pièges Android 15+ / Capacitor 8 mesurés
+Les autres interdits sont écrits là où ils décident : empreinte de debug (Phase 6), opt-in testé sur le seul compte du développeur (Phase 5), captures dans DevTools (Phase 5), correctifs natifs cumulés (Phase 7), copy écrite ici (Hors-scope).
 
-Tirés d'un dépôt réel sur `targetSdk 36`, `@capacitor/core 8.3.1`, WebView Chrome. À vérifier contre la version installée avant de s'y fier.
+## Annexes — quand les ouvrir
 
-- **`setStatusBarColor()` est déprécié au niveau OS** (API 35+) ; `android:statusBarColor` dans `styles.xml` et `StatusBar.setBackgroundColor()` de `@capacitor/status-bar` sont **ignorés en silence**. La voie qui marche : plugin **`SystemBars`** intégré à `@capacitor/core` ≥ 8.0, configuré par `plugins.SystemBars.insetsHandling: "css"`, et **fond peint en CSS** (`env(safe-area-inset-top)` + couleur de fond sur `body`).
-- **`env(safe-area-inset-*)` vaut 0 sur WebView < 140** même avec `viewport-fit=cover` ; `SystemBars` injecte alors des variables `--safe-area-inset-*` et décale la WebView. Utiliser `env()` directement couvre les deux cas sans double padding.
-- **`SystemBars` est auto-enregistré** : pas de `npm install`, pas de `registerPlugin`.
-- **`Theme.SplashScreen` ne transitionne pas** vers `postSplashScreenTheme` sans `installSplashScreen()` — Capacitor ne l'appelle pas. Ne pas chercher à styler la barre via le thème de l'activité.
-- **`style: "DEFAULT"`** lit le thème **système** au boot : flash d'icônes d'environ une seconde si le thème système et celui de l'app diffèrent. Cosmétique ; `"LIGHT"` le supprime, mais c'est une zone SPEC.
-- **`access origin="*"`** dans `config.xml` est le défaut Capacitor ; sans `server.url` externe l'exposition est faible, pas un motif de rejet.
-- **Android 13+** : `POST_NOTIFICATIONS` est une permission runtime — un **pré-prompt applicatif** avant le prompt système évite un refus définitif au premier contact, et se persiste pour ne pas re-demander.
-- **Manifeste PWA : une seule `theme_color`**, pas de media query — le splash de la PWA installée reste dans la couleur claire même en sombre. Compromis non résoluble ; côté natif, `SystemBars` + `backgroundColor` prennent le relais.
+- `references/gabarits.md` : fin de Phase 4 et Phase 5 (checklist nominative, Data Safety, notes de release).
+- `references/app-links.md` : Phase 6, si un deep-link est demandé.
+- `references/pieges-android-capacitor.md` : avant de toucher status bar, splash, safe areas, notifications ; devant un défaut natif.
+- `references/provenance.md` : d'où vient ce contenu (n = 1) et les deux incidents source.
 
 ## Auto-check final (avant livraison)
 
-1. `applicationId` / `appId` relus et inchangés ?
-2. `versionCode` strictement supérieur au précédent, lu et non supposé ?
-3. Aucun fichier secret ajouté au dépôt, `.gitignore` vérifié ?
-4. Migrations prod en attente identifiées et signalées comme préalables ?
-5. La checklist remise à la personne dit **qui** fait **quoi**, avec chemins et valeurs attendues ?
-6. Copy et visuels **passés** à `growth` / `designer` avec les limites, pas produits ici ?
-7. Zones système touchées ? Alors une SPEC existe et a été lue.
-8. Le livrable dit « prêt à uploader » et jamais « publié » ?
-
-## D'où vient ce contenu
-
-Mesure du 04.09.2026 sur **un** dépôt applicatif ayant mené une PWA React (Vite, Supabase) jusqu'à
-l'internal testing Play Store : `capacitor.config.json`, `build.gradle` avec `signingConfigs`
-conditionnelle, `variables.gradle` (min 24 / cible 36), Manifest (`allowBackup=false`, règles
-d'extraction), `keystore.properties.example`, `.gitignore`, un dossier `docs/play-store/` de
-treize fichiers (procédure AAB, checklist QA en dix tests, Data Safety en sept catégories, IARC,
-fiches en trois locales, captures, feature graphic, seed de démonstration), une spec de release,
-un ADR App Links, un audit tous secteurs pré-store et une section de pièges Android 15+ écrite
-après incident. **iOS n'y figure pas** : rien ici n'en parle.
-
-Neutralisation appliquée : nom de l'app, domaine, adresses, prénoms, chemins de poste retirés ;
-les valeurs numériques (tailles, limites, versions de SDK) sont celles constatées.
-
-**Un dépôt, pas huit** : c'est une mesure à n = 1. Ce qui est générique (invariants, tracks,
-formulaires de la Console, App Links) tient par la documentation Google ; ce qui est spécifique
-(checklists, ordre des gestes) reflète une pratique et sera à confronter au deuxième dépôt publié.
-
-## Incidents source
-
-- **23.05.2026 (dépôt mesuré)** — status bar Android corrigée au tâtonnement sur plusieurs
-  fichiers système, puis revert. Leçon : SPEC obligatoire sur toute zone système, lecture du code
-  Java du plugin avant d'écrire, une hypothèse à la fois. Origine de la Phase 7 et du garde-fou 5.
-- **30.05.2026 (dépôt mesuré)** — audit pré-store : Play App Signing non confirmé, migrations SQL
-  non appliquées en prod, absence de recovery codes MFA. Deux des trois étaient des gestes ops
-  invisibles du code. Origine de la Phase 3 et de l'invariant keystore.
+1. `applicationId` et `versionCode` **relus dans les fichiers** au moment de livrer, pas repris du brief ?
+2. Migrations prod en attente identifiées et signalées comme préalables ?
+3. La checklist remise dit **qui** fait **quoi**, avec chemins et valeurs attendues, et « prêt à uploader », jamais « publié » ?

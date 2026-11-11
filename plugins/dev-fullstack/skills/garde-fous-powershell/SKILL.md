@@ -1,15 +1,11 @@
 ---
 name: garde-fous-powershell
-description: "Garde-fous d'écriture de fichiers sous Windows PowerShell 5.1 : BOM ajouté par Set-Content, un seul BOM sur un .ps1, arrays imbriqués dans une table de substitutions, -replace avec de l'Unicode, audit post-batch, cible qui doit être un fichier, sorties console en ASCII ; et, sur le même poste Windows, édition par script (Git Bash, heredoc, Python) d'un fichier accentué ou en CRLF. À charger avant d'écrire ou de lancer un .ps1, avant toute écriture de fichier par PowerShell, avant de modifier par un script Python ou un heredoc Git Bash un fichier accentué ou en CRLF, et devant un texte mojibaké. Sans objet en session cloud (Linux), sauf pour éditer un .ps1 destiné au poste."
+description: "Garde-fous d'écriture de fichiers sous Windows PowerShell 5.1 (BOM de Set-Content, BOM unique d'un .ps1, arrays imbriqués, -replace Unicode, audit post-batch, cible = fichier, sorties console ASCII) et, sur le même poste, d'édition par script (Git Bash, heredoc, Python) d'un fichier accentué ou en CRLF. À charger avant d'écrire ou de lancer un .ps1, avant toute écriture de fichier par PowerShell, avant de modifier par un script Python ou un heredoc Git Bash un fichier accentué ou en CRLF, et devant un texte mojibaké. Sans objet en session cloud (Linux), sauf pour éditer un .ps1 destiné au poste."
 ---
 
-> Version 1.3 — 11.11.2026 (renotation : la recette de pose du BOM écrit en octets, fins de ligne intactes). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
-> est la table « Garde-fous techniques » du `global-CLAUDE.md` du profil, **sortie du résident
-> telle quelle** : elle ne vaut que sur un poste Windows, et coûtait ~3 500 octets à chaque
-> session, cloud compris, où PowerShell n'est pas. Quatre règles restent résidentes dans la
-> doctrine (Edit/Write d'abord, BOM de `Set-Content`, BOM unique des `.ps1`, cible = fichier) ;
-> tout le reste est ici. Incidents fondateurs : `CHANGELOG.md` du profil § « Garde-fous
-> PowerShell » (fichier du dépôt `claude-profiles`, non déployé avec le skill).
+> Version 1.4 — 11.11.2026 (cure de poids : en-tête et récits d'incident réduits). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
+> Quatre de ces règles sont aussi résidentes dans la doctrine (Edit/Write d'abord, BOM de
+> `Set-Content`, BOM unique des `.ps1`, cible = fichier) ; tout le reste n'est qu'ici.
 
 # Garde-fous PowerShell 5.1 — la table complète
 
@@ -58,7 +54,7 @@ $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 if (-not (Test-Path -LiteralPath $cible -PathType Leaf)) {
     Write-Host "REFUS : $cible n'est pas un fichier"; continue
 }
-Copy-Item -LiteralPath $source -Destination $cible -Force
+Copy-Item -LiteralPath $source -Destination $cible -Force   # $source : le fichier a copier
 ```
 
 **Poser le BOM d'un `.ps1`** (règle 5) : recette Python idempotente, opération rare.
@@ -80,11 +76,9 @@ deux premiers octets réels du script.
 ## Deux réflexes transverses, nés de la règle 7
 
 - **Une parade se transporte avec son contexte** : avant de recopier un contournement d'un script
-  à l'autre, se demander si sa cause existe encore (l'incident du 12.08.2026 vient d'un `[char]92`
-  hérité d'un lancement depuis bash, sans objet sous PowerShell — et c'est lui qui a déroulé le
-  tableau, règle 2).
+  à l'autre, se demander si sa cause existe encore.
 - **Après une passe qui a écrit sur un partage réseau, relire l'état réel** dossier par dossier,
-  jamais le seul compte rendu du script : c'est cette relecture qui a révélé l'incident.
+  jamais le seul compte rendu du script.
 
 ## Éditer par script un fichier accentué ou en CRLF (Git Bash, Python)
 
@@ -103,5 +97,3 @@ Relevé dans la boîte de frottements du labo des profils (F05) :
 Incidents fondateurs, règle par règle : `CHANGELOG.md` du profil § « Garde-fous PowerShell », dans
 le dépôt `claude-profiles` — non déployé, donc hors de portée ailleurs ; tout ce qui sert à
 appliquer les règles est dans ce skill.
-Mémoires associées, sur le poste seulement (absentes en session cloud) :
-`powershell-version-constraints`, `bom-ps1-un-seul-edit-le-conserve`.

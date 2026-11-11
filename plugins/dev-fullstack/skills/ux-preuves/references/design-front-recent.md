@@ -142,7 +142,7 @@ N3 guideline officielle de plateforme ou d'institution · N4 avis d'expert, arti
 - En conception visuelle : il faut vérifier sur le rendu, pas dans l'explication de l'outil, que chaque choix annoncé (hiérarchie, contraste, état) est réellement implémenté.
 
 ### Des sites « vibe-codés » par une même cohorte se concentrent visuellement, sans que leurs auteurs le perçoivent
-- Niveau de preuve : N2 faible (préprint non revu, 73 sites, un seul outil ; résumé seul lu)
+- Niveau de preuve : N4 (préprint non revu, 73 sites, un seul outil ; résumé seul lu : condition de N2 non établie)
 - Source : Léonard Boussioux, Ziyi Zhao, Kanghyun Cho, 5 août 2026, « One Tool, One Taste? How Vibe Coding Trades Collective Diversity for Individual Creativity », https://arxiv.org/abs/2609.38183
 - Extrait lu : « These results document within-cohort visual concentration » ; « collective cost of generative production reaches visual design »
 - Portée / limites : étudiants de master, outil Lovable, similarité calculée sur des plongements d'image (DINOv3), qui ne mesurent pas la similarité perçue. Selon le résumé, le contrôle perçu, la satisfaction et la qualité perçue ne sont pas associés à l'atypicité. Les pourcentages de similarité repris par des sites secondaires n'ont pas été lus dans la source.

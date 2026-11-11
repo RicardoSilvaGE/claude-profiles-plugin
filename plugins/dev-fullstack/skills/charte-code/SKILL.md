@@ -5,14 +5,20 @@ description: "Charte des bonnes pratiques de programmation du profil : gestion d
 
 # Charte de code
 
-> Version 1.4 — 11.11.2026 (renotation : description et préambule accordés au corps). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
+> Version 1.5 — 11.11.2026 (cure de poids : motifs, contre-exemples et migrations en `references/`). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
 > Détail des **onze règles opposables** du
 > `global-CLAUDE.md` § « Charte de code ». Les règles y sont résidentes parce qu'elles doivent
-> être opposables sans rien charger ; leur motif, des contre-exemples et leurs cas limites
-> sont ici parce qu'ils n'ont pas à peser sur toutes les sessions.
+> être opposables sans rien charger ; leurs corollaires, leurs cas limites et la grille de
+> review sont ici.
 >
 > **Préchargée** par `backend`, `frontend`, `reviewer` et `auditeur` (clé `skills:` de leur
 > frontmatter) : ces quatre-là ne peuvent pas écrire ou juger du code sans l'avoir sous les yeux.
+>
+> **Deux annexes, à ouvrir au besoin seulement** (dossier `references/` de ce skill) :
+> `motifs-et-contre-exemples.md` quand une règle est contestée, à justifier, ou face à un cas
+> limite (motif de chaque règle, contre-exemples en code des règles 1 et 4) ;
+> `compatibilite-et-migrations.md` avant de toucher un schéma déployé, une migration ou un
+> contrat d'API consommé (expand / contract, idempotence, dépréciation).
 
 ## Ce que cette charte ne couvre pas
 
@@ -41,7 +47,8 @@ Tout code livré, par l'orchestrateur ou par un sous-agent, quel que soit le lan
 dépôt porte sa propre convention (linter, `CLAUDE.md` de projet, style en place), **c'est elle
 qui l'emporte** : cette charte est un défaut, pas une préférence à imposer chez l'hôte. Le seul
 cas où elle prime est celui d'une règle de justesse — un `catch` vide reste un défaut même dans
-un dépôt qui en est plein.
+un dépôt qui en est plein. Quand deux règles s'opposent : **sécurité > justesse > accessibilité >
+performance > esthétique** (`CLAUDE.md` § « Charte de code »).
 
 ---
 
@@ -49,23 +56,6 @@ un dépôt qui en est plein.
 
 **Règle.** Aucune erreur avalée. Une erreur se traite, se propage, ou se journalise et
 s'interrompt — jamais elle ne disparaît.
-
-**Motif.** Une erreur avalée ne supprime pas la panne, elle supprime la trace de la panne. Le
-symptôme réapparaît plus loin, sur un état déjà corrompu, dans un fichier qui n'a rien à voir.
-C'est la seule classe de défaut qui rend le débogage plus coûteux que la réécriture.
-
-```ts
-// NON — le repli devient la valeur normale, personne ne saura jamais que l'appel a échoué
-try { return await getUser(id) } catch { return null }
-
-// OUI — l'échec est nommé, et l'appelant décide
-try {
-  return await getUser(id)
-} catch (err) {
-  logger.error({ err, id }, 'getUser a échoué')
-  throw new UserLookupError(id, { cause: err })
-}
-```
 
 **Cas limite légitime** : un repli est acceptable quand il est **décidé**, pas quand il est
 subi — cache indisponible, télémétrie qui tombe, fonctionnalité optionnelle. Il se signale
@@ -84,10 +74,6 @@ alors dans le code (`// dégradation volontaire : ...`) et se journalise au nive
 HTTP, formulaire, fichier lu, variable d'environnement, réponse d'une API tierce, message de
 file. Passé ce point, le code fait confiance à ses types.
 
-**Motif.** Valider partout un peu revient à ne valider nulle part : chaque fonction porte des
-gardes défensives, personne ne sait laquelle fait foi, et la donnée invalide finit quand même
-en base. Une frontière nette rend le reste du code lisible.
-
 - Zod (TS) ou Pydantic (Python) sur les entrées, y compris les **variables d'environnement** au
   démarrage : un service qui démarre sans sa clé doit refuser de démarrer, pas échouer au premier
   appel client.
@@ -103,12 +89,6 @@ en base. Une frontière nette rend le reste du code lisible.
 **Règle.** Ni fonction non appelée, ni import inutilisé, ni bloc commenté « au cas où », ni
 `TODO` sans destinataire ni ticket, ni drapeau de fonctionnalité mort depuis deux versions.
 
-**Motif.** Le code mort n'est pas neutre : il est lu, il est maintenu, il est copié. Et il ment
-sur l'état du système — quelqu'un finira par croire que ce chemin est actif.
-
-Git conserve ce qui a été supprimé. Un bloc commenté est une sauvegarde qui ne sait pas dire
-d'où elle vient ni pourquoi elle a été mise de côté.
-
 **Interdit explicite en livrable** : `// TODO`, `pass`, `NotImplementedError`, valeur codée en
 dur « provisoire », composant vide. Un livrable incomplet se **déclare** incomplet ; il ne se
 déguise pas en livrable complet.
@@ -117,16 +97,6 @@ déguise pas en livrable complet.
 
 **Règle.** Le commentaire porte l'intention, la contrainte, le renvoi à l'incident ou à la
 norme. Ce que fait le code se lit dans le code.
-
-```py
-# NON — paraphrase : deviendra faux à la première modification, et personne ne le corrigera
-# incrémente le compteur de 1
-compteur += 1
-
-# OUI — porte ce que le code ne peut pas dire
-# L'API tierce plafonne à 100 req/min ; au-delà elle renvoie 200 avec un corps vide,
-# ce qui se lit comme un succès. Incident du 12.03.
-```
 
 Corollaire : un nom bien choisi supprime le besoin de commentaire. Commenter est le second
 recours, renommer est le premier.
@@ -137,10 +107,6 @@ recours, renommer est le premier.
 seuls. Un booléen s'énonce en prédicat (`isActive`, `hasAccess`, `shouldRetry`). Une fonction
 commence par un verbe. Une unité fait partie du nom (`delayMs`, `sizeBytes`, `priceCents`).
 
-**Motif.** Le nom est la seule documentation que le compilateur maintienne à jour. Et l'unité
-absente d'un nom est une classe d'erreur entière : millisecondes contre secondes, centimes
-contre unités, octets contre kilo-octets.
-
 Le code et les identifiants sont en **anglais**, les commentaires et messages de commit en
 français (§ « Conventions git » du `CLAUDE.md`). Ne pas mélanger dans un même identifiant.
 
@@ -148,10 +114,6 @@ français (§ « Conventions git » du `CLAUDE.md`). Ne pas mélanger dans un m�
 
 **Règle.** Deux occurrences se dupliquent ; à la troisième on factorise — et on factorise ce qui
 est **le même besoin**, pas ce qui a la même forme.
-
-**Motif.** Une abstraction posée sur un cas d'usage unique code une hypothèse qu'on n'a pas
-encore vérifiée. Le jour où le second cas arrive, il ne rentre pas ; on ajoute un paramètre, puis
-un drapeau, et l'abstraction coûte désormais plus cher que la duplication qu'elle a évitée.
 
 Deux fonctions qui se ressemblent aujourd'hui mais répondent à deux besoins **divergeront** :
 les fusionner est une dette, pas une économie. Le critère est « est-ce que ces deux appelants
@@ -170,9 +132,6 @@ l'utilisateur — jamais un ajout en silence :
 3. **Sa licence est-elle compatible** avec l'usage du projet ?
 4. **Le projet fait-il déjà la même chose** sous un autre nom ? Deux bibliothèques de dates dans
    un même dépôt, c'est deux comportements aux fuseaux horaires.
-
-**Motif.** Une dépendance s'installe en dix secondes et se retire en trois jours. Elle apporte
-son arbre transitif, sa surface d'attaque, ses breaking changes et ses obligations d'upgrade.
 
 - Versions **épinglées**, lockfile commité, jamais de `@latest` à l'aveugle (skill
   `framework-upgrade` pour tout saut de version majeure).
@@ -204,10 +163,6 @@ supprimé au commit suivant : l'historique le conserve.
 explicite et un comportement défini en cas d'échec. Un `await` sans borne est une panne en
 attente.
 
-**Motif.** Sans borne, la défaillance d'un service lent ne se traduit pas par une erreur mais par
-un épuisement : connexions retenues, fils bloqués, saturation, panne totale d'un service qui
-n'avait qu'un dépendant dégradé.
-
 - **Rejouer n'est légitime que sur un appel idempotent**, avec un recul exponentiel et un
   plafond. Rejouer un paiement, c'est débiter deux fois.
 - Toute écriture déclenchable deux fois (webhook, retry client, double clic) doit être
@@ -221,9 +176,6 @@ n'avait qu'un dépendant dégradé.
 
 **Règle.** Rouge d'abord, vert ensuite. Un correctif sans test de non-régression ne prouve rien :
 ni que la cause était bien celle-là, ni que le défaut ne reviendra pas.
-
-**Motif.** C'est la même discipline que l'injection de faute qui valide les bancs du dépôt des profils :
-un test qu'on n'a jamais vu échouer ne prouve pas qu'il sait échouer.
 
 - Le test se nomme d'après le **comportement attendu**, pas d'après le numéro du ticket.
 - Ce qui se teste : la logique métier, les cas limites, les frontières (règle 2), les chemins
@@ -239,9 +191,6 @@ un test qu'on n'a jamais vu échouer ne prouve pas qu'il sait échouer.
 
 **Règle.** Aucune optimisation sans un chiffre avant et un chiffre après, obtenus sur le même
 protocole. Sans mesure, ce n'est pas une optimisation, c'est une complication.
-
-**Motif.** L'intuition de performance est fausse la plupart du temps, et le coût de l'erreur est
-double : on complique un code qui n'était pas le goulet, et on ne corrige pas celui qui l'était.
 
 - Les défauts qui valent qu'on regarde **avant** de mesurer, parce qu'ils sont structurels et non
   marginaux : N+1 sur une requête, index manquant sur une colonne filtrée, chargement complet
@@ -267,17 +216,6 @@ tourne ailleurs que sur la machine de son auteur.
 - **Jamais de donnée personnelle ni de secret** dans un log (règle 8). Un identifiant, pas un
   courriel ; un identifiant de corrélation, pas le corps de la requête.
 - Un `console.log` de mise au point laissé dans le code est du code mort (règle 3).
-
-## Compatibilité et migrations
-
-- **Expand / contract** pour tout changement de schéma déployé en continu : ajouter la nouvelle
-  forme, écrire dans les deux, migrer les données, basculer les lectures, puis seulement retirer
-  l'ancienne. Une migration qui supprime et ajoute dans le même déploiement casse les instances
-  encore en vol.
-- Une migration est **idempotente** et **réversible**, ou bien elle s'accompagne du geste de
-  restauration écrit noir sur blanc avant exécution (`release` Mode C).
-- Un contrat d'API se déprécie, il ne se rompt pas : nouvelle version en parallèle, date de
-  retrait annoncée, mesure de l'usage résiduel avant suppression.
 
 ## Grille de review (opposable)
 
