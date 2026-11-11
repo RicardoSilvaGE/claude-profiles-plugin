@@ -1,15 +1,14 @@
 ---
 name: charte-code
-description: "Charte des bonnes pratiques de programmation du profil : gestion d'erreur, validation aux frontières, nommage, abstraction, dépendances, secrets et configuration, asynchrone et réseau, tests, logs, performance, compatibilité. Rend les onze règles opposables du CLAUDE.md applicables ligne par ligne, avec leur motif, leurs contre-exemples et la grille de review. À charger avant d'écrire du code applicatif, avant une review, et lorsqu'une règle de la charte est invoquée, contestée ou appliquée à un cas limite."
+description: "Charte des bonnes pratiques de programmation du profil : gestion d'erreur, validation aux frontières, nommage, abstraction, dépendances, secrets et configuration, asynchrone et réseau, tests, logs, performance, compatibilité. Rend les onze règles opposables du CLAUDE.md applicables ligne par ligne, avec leur motif, des contre-exemples et la grille de review. À charger avant d'écrire du code applicatif, avant une review, et lorsqu'une règle de la charte est invoquée, contestée ou appliquée à un cas limite. Pas pour : rendre le verdict d'un diff (sub-agent `reviewer`), ni les audits sécurité, performance, accessibilité (`securite`, `perf-audit`, `a11y-audit`)."
 ---
 
 # Charte de code
 
-> Version 1.2 — 10.11.2026 (proposition P004 du labo des profils, frottement F02 : corollaire de la règle 1, une sonde de session ne jette pas stderr par défaut).
-> Version 1.1 — 05.09.2026 (PR 2.4 de l'audit du 05.09 : la règle 8 renvoie au hook `guard-secrets` / règle E du poste, qui la rend opposable sur le nom du fichier ; l'échelle du moindre code de `backend` et `frontend` renvoie désormais ici pour ses trois paragraphes communs).
+> Version 1.4 — 11.11.2026 (renotation : description et préambule accordés au corps). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
 > Détail des **onze règles opposables** du
 > `global-CLAUDE.md` § « Charte de code ». Les règles y sont résidentes parce qu'elles doivent
-> être opposables sans rien charger ; leur motif, leurs contre-exemples et leurs cas limites
+> être opposables sans rien charger ; leur motif, des contre-exemples et leurs cas limites
 > sont ici parce qu'ils n'ont pas à peser sur toutes les sessions.
 >
 > **Préchargée** par `backend`, `frontend`, `reviewer` et `auditeur` (clé `skills:` de leur
@@ -136,7 +135,7 @@ recours, renommer est le premier.
 
 **Règle.** Pas d'abréviation non conventionnelle, pas de `data`, `tmp`, `res`, `handle` employés
 seuls. Un booléen s'énonce en prédicat (`isActive`, `hasAccess`, `shouldRetry`). Une fonction
-commence par un verbe. Une unité fait partie du nom (`delaiMs`, `tailleOctets`, `prixCentimes`).
+commence par un verbe. Une unité fait partie du nom (`delayMs`, `sizeBytes`, `priceCents`).
 
 **Motif.** Le nom est la seule documentation que le compilateur maintienne à jour. Et l'unité
 absente d'un nom est une classe d'erreur entière : millisecondes contre secondes, centimes
@@ -213,8 +212,8 @@ n'avait qu'un dépendant dégradé.
   plafond. Rejouer un paiement, c'est débiter deux fois.
 - Toute écriture déclenchable deux fois (webhook, retry client, double clic) doit être
   **idempotente** — clé d'idempotence, contrainte d'unicité, ou vérification d'état.
-- Pas de `await` dans une boucle sur des éléments indépendants : `Promise.all` avec une
-  concurrence bornée. Une boucle de 500 `await` séquentiels est une latence multipliée par 500.
+- Pas de `await` dans une boucle sur des éléments indépendants : `Promise.all` par lots de
+  taille bornée (seul, il lance tout d'un coup). Une boucle de 500 `await` séquentiels est une latence multipliée par 500.
 - **Annulation** : ce qui peut être abandonné par l'utilisateur (recherche, navigation) porte un
   `AbortSignal` — sinon la réponse d'une requête périmée écrase celle de la requête courante.
 
@@ -223,7 +222,7 @@ n'avait qu'un dépendant dégradé.
 **Règle.** Rouge d'abord, vert ensuite. Un correctif sans test de non-régression ne prouve rien :
 ni que la cause était bien celle-là, ni que le défaut ne reviendra pas.
 
-**Motif.** C'est la même discipline que l'injection de faute qui valide les bancs de ce dépôt :
+**Motif.** C'est la même discipline que l'injection de faute qui valide les bancs du dépôt des profils :
 un test qu'on n'a jamais vu échouer ne prouve pas qu'il sait échouer.
 
 - Le test se nomme d'après le **comportement attendu**, pas d'après le numéro du ticket.

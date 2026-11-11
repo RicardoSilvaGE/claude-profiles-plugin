@@ -1,18 +1,15 @@
 ---
 name: garde-fous-powershell
-description: "Garde-fous d'écriture de fichiers sous Windows PowerShell 5.1 : BOM ajouté par Set-Content, un seul BOM sur un .ps1, arrays imbriqués dans une table de substitutions, -replace avec de l'Unicode, audit post-batch (motifs mojibake, BOM, restauration git), cible qui doit être un fichier, sorties console en ASCII ; et, sur le même poste Windows, édition par script (Git Bash, heredoc, Python) d'un fichier accentué ou en CRLF. À charger avant d'écrire ou de lancer un .ps1, avant toute écriture de fichier par PowerShell, avant de modifier par un script Python ou un heredoc Git Bash un fichier accentué ou en CRLF, et devant un texte mojibaké."
+description: "Garde-fous d'écriture de fichiers sous Windows PowerShell 5.1 : BOM ajouté par Set-Content, un seul BOM sur un .ps1, arrays imbriqués dans une table de substitutions, -replace avec de l'Unicode, audit post-batch, cible qui doit être un fichier, sorties console en ASCII ; et, sur le même poste Windows, édition par script (Git Bash, heredoc, Python) d'un fichier accentué ou en CRLF. À charger avant d'écrire ou de lancer un .ps1, avant toute écriture de fichier par PowerShell, avant de modifier par un script Python ou un heredoc Git Bash un fichier accentué ou en CRLF, et devant un texte mojibaké. Sans objet en session cloud (Linux), sauf pour éditer un .ps1 destiné au poste."
 ---
 
-> Version 1.1 — 10.11.2026 (proposition P004 du labo des profils, frottement F05 : section
-> « Éditer par script un fichier accentué ou en CRLF », et description élargie à Git Bash et
-> Python pour que le skill se charge dans cette situation).
-> Version 1.0 — 05.09.2026 (création, PR 2.1 de l'audit du 05.09.2026, constat F1). Le contenu
+> Version 1.3 — 11.11.2026 (renotation : la recette de pose du BOM écrit en octets, fins de ligne intactes). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
 > est la table « Garde-fous techniques » du `global-CLAUDE.md` du profil, **sortie du résident
 > telle quelle** : elle ne vaut que sur un poste Windows, et coûtait ~3 500 octets à chaque
 > session, cloud compris, où PowerShell n'est pas. Quatre règles restent résidentes dans la
 > doctrine (Edit/Write d'abord, BOM de `Set-Content`, BOM unique des `.ps1`, cible = fichier) ;
 > tout le reste est ici. Incidents fondateurs : `CHANGELOG.md` du profil § « Garde-fous
-> PowerShell ».
+> PowerShell » (fichier du dépôt `claude-profiles`, non déployé avec le skill).
 
 # Garde-fous PowerShell 5.1 — la table complète
 
@@ -40,16 +37,16 @@ règles 5 et 5bis s'appliquent au fichier produit, pas à l'environnement.
 ## Règle 6 — l'audit post-batch, en trois contrôles
 
 - Grep patterns mojibake connus : `Oiaie|uenior|aeruion|oroouiu|iignataire|oéuhoo|noroeu`
-- Vérifier l'absence de BOM : `[IO.File]::ReadAllBytes($p) | Select -First 3` (ne doit pas valoir `0xEF 0xBB 0xBF`)
+- Vérifier le BOM : `[IO.File]::ReadAllBytes($p) | Select -First 3` — hors `.ps1`, ne doit pas valoir `239 187 191` (soit `0xEF 0xBB 0xBF`, la commande affiche des décimaux) ; sur un `.ps1` destiné à PS 5.1, doit le valoir, une seule fois (règle 5)
 - Corruption détectée → `git checkout -- <fichier>` pour restaurer, puis refaire via l'outil Edit
 
 > La formulation « Grep patterns mojibake connus » ci-dessus est **littérale et à conserver telle
 > quelle** : `audit-mojibake.ps1` saute les lignes qui la contiennent, faute de quoi le texte qui
 > définit les motifs déclenche le détecteur qui les cherche — ce skill est déployé dans
 > `~/.claude/skills/`, donc dans le périmètre du hook. Reformuler cette ligne fait réapparaître un
-> faux positif à chaque commande shell citant ce fichier. Mémoire : `le-detecteur-qui-cite-ses-motifs`.
+> faux positif à chaque commande shell citant ce fichier. Mémoire du poste : `le-detecteur-qui-cite-ses-motifs`.
 
-## Deux recettes, à recopier telles quelles
+## Recettes, à recopier telles quelles
 
 ```powershell
 # 1 — écrire de l'UTF-8 sans BOM
@@ -57,15 +54,28 @@ $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 [System.IO.File]::WriteAllText($path, $content, $utf8NoBom)
 
 # 7 — refuser une cible qui n'est pas un fichier
+#     (se place dans la boucle qui parcourt les cibles : continue passe a la suivante)
 if (-not (Test-Path -LiteralPath $cible -PathType Leaf)) {
     Write-Host "REFUS : $cible n'est pas un fichier"; continue
 }
 Copy-Item -LiteralPath $source -Destination $cible -Force
 ```
 
-**Poser le BOM d'un `.ps1`** (règle 5) : recette Python idempotente dans `CHANGELOG.md` du profil
-§ « Garde-fous PowerShell ». Contrôle après pose : `[IO.File]::ReadAllBytes($p)[0..4]` doit valoir
-`239 187 191` suivi des deux premiers octets réels du script.
+**Poser le BOM d'un `.ps1`** (règle 5) : recette Python idempotente, opération rare.
+
+```python
+# poser le BOM d'un .ps1, de facon idempotente
+import io
+brut = io.open(chemin, "rb").read()
+bom = b"\xef\xbb\xbf"
+while brut.startswith(bom):      # retirer les BOM deja presents
+    brut = brut[len(bom):]
+io.open(chemin, "wb").write(bom + brut)   # en octets : fins de ligne et contenu intacts
+```
+
+Le `while` n'est pas décoratif : c'est lui qui rend l'opération rejouable sans empiler un second
+BOM. Contrôle après pose : `[IO.File]::ReadAllBytes($p)[0..4]` doit valoir `239 187 191` suivi des
+deux premiers octets réels du script.
 
 ## Deux réflexes transverses, nés de la règle 7
 
@@ -81,13 +91,17 @@ Copy-Item -LiteralPath $source -Destination $cible -Force
 Relevé dans la boîte de frottements du labo des profils (F05) :
 
 - **Accents** : un heredoc Git Bash qui porte du texte accentué vers Python l'abîme. Écrire le script avec l'outil Write, le lancer par `python -X utf8 script.py`.
-- **CRLF** : un remplacement Python écrit avec `\n` ne trouve rien dans un fichier CRLF. Écrire les motifs en `\r\n`, ou lire en octets et normaliser avant de comparer.
+- **CRLF** : un remplacement Python écrit avec `\n` ne trouve rien dans un fichier CRLF. Écrire les motifs en `\r\n`, ou lire en octets et normaliser avant de comparer. Reconnaître un fichier CRLF : le lire en octets et y chercher `\r\n`.
 
 ## Auto-check avant de rendre la main
 
 1. Le fichier écrit par PowerShell a-t-il été relu en octets (BOM absent, ou unique s'il s'agit d'un `.ps1`) ?
 2. Les motifs mojibake ont-ils été cherchés sur **tous** les fichiers touchés, pas sur un échantillon ?
 3. Le script lancé a-t-il des sorties console en ASCII pur ?
+4. Un fichier accentué ou en CRLF modifié par script a-t-il été relu (accents intacts, fins de ligne inchangées) ?
 
-Incidents fondateurs, règle par règle : `CHANGELOG.md` du profil § « Garde-fous PowerShell ».
-Mémoires associées : `powershell-version-constraints`, `bom-ps1-un-seul-edit-le-conserve`.
+Incidents fondateurs, règle par règle : `CHANGELOG.md` du profil § « Garde-fous PowerShell », dans
+le dépôt `claude-profiles` — non déployé, donc hors de portée ailleurs ; tout ce qui sert à
+appliquer les règles est dans ce skill.
+Mémoires associées, sur le poste seulement (absentes en session cloud) :
+`powershell-version-constraints`, `bom-ps1-un-seul-edit-le-conserve`.

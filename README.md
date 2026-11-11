@@ -1,7 +1,21 @@
 # claude-profiles-plugin
 
-Marketplace public d'un seul plugin Claude Code : le profil **`dev-fullstack`** — 12 sub-agents,
-11 skills métier, la doctrine de travail livrée comme skill, et huit hooks.
+Marketplace public d'un seul plugin Claude Code : le profil **`dev-fullstack`** : des sub-agents,
+des skills métier, la doctrine de travail livrée comme skill, et des hooks. Les chiffres sont
+mesurés sur le plugin à chaque génération :
+
+<!-- GENERE:chiffres -->
+<!-- GENERE par scripts/build-plugin.sh a chaque generation, compare par --check. Ne pas editer a la main. -->
+
+| Mesure sur le plugin genere | Valeur |
+|---|---|
+| Sub-agents | 15 |
+| Skills métier (hors skill de doctrine) | 14 |
+| Garde-fous (hooks `PreToolUse` et `Stop`) | 5 |
+| Doctrine injectée à chaque session | 49 029 octets, environ 16 200 tokens |
+
+Tokens estimés au ratio de 3,03 octets par token du budget I5 : une estimation, pas un comptage.
+<!-- /GENERE:chiffres -->
 
 ## Avant de t'en servir — trois choses qui surprennent
 
@@ -10,11 +24,11 @@ Ce n'est pas un bug : c'est un `HARD GATE` volontaire, posé après un incident.
 `spec-builder` d'abord, ou demande explicitement de court-circuiter. C'est la première chose sur
 laquelle bute un nouvel utilisateur.
 
-**2. La doctrine est injectée à chaque session** par un hook `SessionStart` — environ
-**11 300 tokens**, y compris dans les sessions où tu ne codes pas. `CLAUDE_DOCTRINE_RESIDENTE=0`
+**2. La doctrine est injectée à chaque session** par un hook `SessionStart` (son poids
+est dans le tableau ci-dessus), y compris dans les sessions où tu ne codes pas. `CLAUDE_DOCTRINE_RESIDENTE=0`
 la coupe sans désinstaller le plugin.
 
-**2 bis. Trois garde-fous s'interposent pendant que tu codes**, depuis le 02.09.2026 — ce sont
+**2 bis. Des garde-fous s'interposent pendant que tu codes**, depuis le 02.09.2026 — ce sont
 les hooks du profil sur le poste, portés en bash :
 - `PreToolUse` : écrire un fichier de code dans un dépôt sans `SPEC*.md` récent déclenche une
   demande de confirmation (mode `default`) et, dans tous les modes, un rappel de la règle des
@@ -75,14 +89,14 @@ après avoir constaté l'inverse pour un marketplace privé.
 
 | | |
 |---|---|
-| Sub-agents | `architecte`, `backend`, `brainstormer`, `designer`, `frontend`, `growth`, `qa`, `redacteur`, `release`, `reviewer`, `securite`, `ux` |
-| Skills | `a11y-audit`, `charte-code`, `debug-investigation`, `framework-upgrade`, `frontend-app-builder`, `librairie-maison`, `perf-audit`, `spec-builder`, `supabase-toolkit` |
+| Sub-agents | `architecte`, `auditeur`, `backend`, `brainstormer`, `designer`, `frontend`, `growth`, `ingenieur-ia`, `muse`, `qa`, `redacteur`, `release`, `reviewer`, `securite`, `ux` |
+| Skills | `a11y-audit`, `charte-code`, `debug-investigation`, `doctrine-de-depot`, `framework-upgrade`, `frontend-app-builder`, `garde-fous-powershell`, `librairie-maison`, `perf-audit`, `publication-store`, `spec-builder`, `supabase-toolkit`, `travail-autonome`, `ux-preuves` |
 | Doctrine | `doctrine-dev-fullstack` — méthodologie en phases, règle absolue spec-builder, conventions |
 | Hooks | `SessionStart` (doctrine en contexte, puis préférences personnelles), `SubagentStart` (préférences), `PreToolUse` (règle spec-builder), `Stop` (compilation TypeScript), `PreToolUse` sur `Bash` (push direct sur `main` refusé ; message de commit hors convention `type(scope):` française refusé), `PreToolUse` sur `Write`/`Edit` (fichiers de secrets refusés par le nom), `PostToolUse` sur `Agent` (journal d'usage) |
 
 **Le `CLAUDE.md` racine d'un plugin n'est pas chargé** : c'est pour cela que la doctrine est un
 skill. Et comme un skill se charge *à la demande* là où un `CLAUDE.md` de profil est *résident*,
-un hook `SessionStart` lui rend cette résidence — pour ~11 300 tokens par session.
+un hook `SessionStart` lui rend cette résidence, au poids indiqué dans le tableau du haut.
 `CLAUDE_DOCTRINE_RESIDENTE=0` le coupe sans désinstaller le plugin.
 
 Le hook porte trois gardes qui le font **se taire** là où la même doctrine arrive déjà par un

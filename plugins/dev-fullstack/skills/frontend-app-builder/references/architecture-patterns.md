@@ -260,6 +260,8 @@ export const useAuthStore = create<AuthState>()(
 )
 ```
 
+> Réserve : `persist` écrit l'état de ce store, **jeton compris**, dans le stockage du navigateur sous la clé `auth-storage`. C'est un choix de gabarit, pas une recommandation de sécurité : avant toute mise en production, le faire trancher par le sub-agent `securite` (revue d'auth).
+
 ### Pattern pour store métier
 
 ```typescript
@@ -506,7 +508,7 @@ export default function Login() {
 
 Chaque composant UI suit les mêmes principes : typé strictement, composable via props, stylé avec Tailwind, accessible par défaut.
 
-> Pour le détail de tous les composants (Button, Input, Card, Modal, Badge, Avatar, Table, Tabs, Toast), consulter `references/ui-components.md`.
+> Pour le détail des autres composants (Input, Card, Modal, Badge, Avatar, Table, Tabs, Toast, Sidebar, Header, PageSkeleton), consulter `references/ui-components.md`. `Button` n'est que ci-dessous.
 
 ### Button (src/components/ui/Button.tsx) — Exemple de référence
 

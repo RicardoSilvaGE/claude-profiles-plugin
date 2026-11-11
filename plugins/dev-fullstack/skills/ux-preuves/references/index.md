@@ -112,8 +112,15 @@ par l'exploitation (KEV, exposition), les limites mesurées des scanners, deux o
 constat confirmé par une preuve ; la grille de sévérité est une convention. **Versions et statuts navigateurs vieillissent en mois** : la
 fiche dit où regarder, la documentation de la version installée tranche.
 
-Chaque fiche `design-*.md`, `redaction-*.md`, `growth-*.md`, `frontend-*.md`, `backend-*.md`, `architecture-*.md`, `securite-*.md`, `qa-*.md`, `release-*.md` et `ia-profils-*.md` finit par un **verdict sourcé sur les règles du profil** (soutenue,
-convention sans preuve, contredite) : c'est lui qui range une règle à son niveau. Les bandeaux de
+Chaque fiche `design-*.md`, `redaction-*.md`, `growth-*.md`, `frontend-*.md`, `backend-*.md`, `architecture-*.md`, `securite-*.md`, `revue-*.md`, `qa-*.md`, `release-*.md` et `ia-profils-*.md` finit par un **verdict sourcé sur les règles du profil** (soutenue,
+convention sans preuve, contredite) : c'est lui qui range une règle à son niveau. Exceptions : les six
+fiches du volet UX n'ont pas de verdict ; `design-front-recent.md` et `redaction-orthotypographie.md` n'ont
+pas de section de ce nom (la seconde finit par « Ce que le profil devrait dire »).
+
+**« N2 faible »**, employé dans quelques fiches, n'est pas un niveau de l'échelle du `SKILL.md`, qui fait
+foi : l'entrée dit entre parenthèses quelle condition de N2 (revue par pairs, ou grand échantillon et
+méthode publiée) n'est pas établie par la page lue. Ne pas la citer comme une N2 pleine : reprendre sa
+réserve avec le niveau. Les bandeaux de
 tendance (« bento », « glass », typographie géante) n'ont pas d'étude d'effet trouvée : N4 au
 mieux (`design-front-recent.md`).
 

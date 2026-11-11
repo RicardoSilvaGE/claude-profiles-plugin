@@ -59,7 +59,8 @@ def convertir_libreoffice(chemin_docx, chemin_pdf, soffice_bin):
         # Sortie lue en OCTETS. soffice ecrit dans l'encodage de la console ; text=True la
         # decodait avec celui de Python (UTF-8 sous -X utf8), et un accent dans un chemin levait
         # UnicodeDecodeError a la place du vrai message. Meme defaut que _pids() de
-        # session_office_com.py, corrige le 17.10.2026.
+        # session_office_com.py (script d'un depot applicatif, absent de cette librairie),
+        # corrige le 17.10.2026.
         sortie = resultat.stderr or resultat.stdout or b""
         raise RuntimeError(
             "soffice a echoue (code %s) : %s"

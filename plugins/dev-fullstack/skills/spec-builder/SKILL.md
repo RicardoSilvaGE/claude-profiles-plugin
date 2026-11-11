@@ -1,22 +1,22 @@
 ---
 name: spec-builder
-description: "Cadre une tâche de code AVANT exécution, à l'étage qu'elle mérite : SPEC-lite d'environ 30 lignes (objectif, périmètre, vérifications) de 10 à 50 lignes, commitée avec le code ; spec complète en 13 sections au-delà de 50 lignes ou dès qu'elle est structurelle (schéma, auth, dépendance majeure, contrat d'API, migration), commitée avant le code. Lit CLAUDE.md, BACKLOG.md, audits et code réel avant toute question, tranche seule les choix techniques et ne sollicite l'utilisateur que sur les arbitrages métier non documentés. Rend un Markdown dans `specs/` du dépôt. Déclencheurs : rédige une spec, SPEC-lite, prépare un PRD, spécifie cette feature, cadre cette tâche avant développement."
+description: "Cadre une tâche de code AVANT exécution, à l'étage qu'elle mérite : SPEC-lite d'environ 30 lignes (objectif, périmètre, vérifications) pour une tâche de 10 à 50 lignes ; spec complète en 13 sections au-delà de 50 lignes ou dès que la tâche est structurelle (schéma, auth, dépendance majeure, contrat d'API, migration). Rend un Markdown dans `specs/` du dépôt. Déclencheurs : rédige une spec, SPEC-lite, prépare un PRD, spécifie cette feature, cadre cette tâche avant développement. Pas pour : docs purs, migrations SQL appliquées à la main, configuration du harness Claude Code (agents, skills, CLAUDE.md), ni la décision d'architecture en amont (sub-agent `architecte`)."
 ---
 
-> Version 1.2 — 05.09.2026 (PR 2.1 de l'audit du 05.09 : la description décrivait le skill d'avant le 18.08 — « 13 sections fixes », sans un mot de la SPEC-lite, l'étage le plus fréquent. Réécrite sur les trois étages que le corps applique depuis le 18.08.)
+> Version 1.4 — 11.11.2026 (renotation : SPEC-lite reçue par brief recopiée en fichier). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
 
 # spec-builder — Générateur de spécifications pour le harness Claude Code
 
 > Ce skill applique les règles transversales définies dans `%USERPROFILE%\Documents\Claude\claude-rules\rules\specs-claude-code.md` (**dépendance externe — hors repo `claude-profiles` et hors `<BUREAU>/`, vit uniquement sur le poste ; version épinglée : v0.2.1**). En cas de conflit ou d'évolution de claude-rules, claude-rules fait foi et le skill doit être mis à jour.
-> **Fallback si le fichier est absent** (autre machine, sandbox Linux) : les règles claude-rules résumées dans la description du frontmatter font foi (longueur 300-400 lignes, section « Décisions à prendre en cours d'exécution », bornes vérifiées par lecture du repo, chemins Windows à espaces quotés, épilogue d'export sur `globalThis` pour sandbox `node:vm`) — ne pas bloquer la rédaction de la spec, signaler le fallback dans le livrable.
+> **Fallback si le fichier est absent** (autre machine, sandbox Linux) : les règles claude-rules reprises plus bas, section « Règles de qualité obligatoires », font foi (longueur 300-400 lignes, section « Décisions à prendre en cours d'exécution », bornes vérifiées par lecture du repo, chemins Windows à espaces quotés, épilogue d'export sur `globalThis` pour sandbox `node:vm`) — ne pas bloquer la rédaction de la spec, signaler le fallback dans le livrable.
 
-Produit un fichier `SPEC.md` rigoureusement structuré, exploitable directement par Claude Code (harness Chrome) pour exécuter une tâche de développement sans ambiguïté.
+Produit un fichier `SPEC.md` rigoureusement structuré, exploitable directement par Claude Code pour exécuter une tâche de développement sans ambiguïté.
 
 ## Principe directeur
 
 **Documentation-first, décisions tranchées, structure non négociable.**
 
-La skill épuise toutes les sources documentaires avant de poser une seule question, tranche elle-même les choix techniques, et impose une structure de 13 sections strictement nommées. Cible : **0 ou 1 question** à l'utilisateur, uniquement sur arbitrages métier non documentés.
+La skill épuise toutes les sources documentaires avant de poser une seule question, tranche elle-même les choix techniques, et impose, au troisième étage (spec complète), une structure de 13 sections strictement nommées. Cible : **0 ou 1 question** à l'utilisateur, uniquement sur arbitrages métier non documentés.
 
 ---
 
@@ -27,12 +27,12 @@ La doctrine `dev-fullstack` définit **trois étages**. Ce skill ne produit la s
 | Ampleur estimée | Ce que produit ce skill |
 |---|---|
 | **< 10 lignes** | **Rien.** Le dire, en une ligne : « sous 10 lignes, pas de spec — le hook de build `check-build-ts` (Stop) sert de filet, TypeScript ou non ». Ne pas rédiger, ne pas insister. |
-| **10 à 50 lignes** | **SPEC-lite**, ~30 lignes, **trois sections seulement** : `## Objectif` (verbe d'action mesurable), `## Périmètre` (dedans / dehors), `## Vérifications avant fin de tâche` (cases concrètes). Même exigence de fond que la spec complète : pas d'invention, chemins exacts, `À DÉFINIR — <explication>` si une info manque. |
+| **10 à 50 lignes** | **SPEC-lite**, ~30 lignes, **trois sections seulement** : `## Objectif` (verbe d'action mesurable), `## Périmètre` (dedans / dehors), `## Vérifications avant fin de tâche` (cases concrètes). Même exigence de fond que la spec complète : pas d'invention, chemins exacts, `À DÉFINIR — <explication>` si une info manque. Écrite dans `<racine-du-dépôt>/specs/YYYY-MM-DD-slug.md` **commitée avec le code** ; reçue par le seul brief d'un sub-agent, elle est recopiée dans ce fichier par celui qui commite — la spec complète, elle, l'est avant. |
 | **> 50 lignes, ou structurel** | **Spec complète en 13 sections**, telle que décrite plus bas. |
 
 « **Structurel** » l'emporte sur le compte de lignes : schéma de données, auth, dépendance majeure, contrat d'API, migration. Trois lignes qui changent une clé étrangère relèvent du troisième étage.
 
-**L'étage retenu s'annonce à l'utilisateur en une ligne, avant de rédiger.** Il peut le corriger — c'est une estimation, et une estimation qui ne se dit pas ne se corrige pas.
+**L'étage retenu s'annonce à l'utilisateur en une ligne, après la lecture de la Phase 1 (l'estimation la suppose) et avant de rédiger.** Il peut le corriger — c'est une estimation, et une estimation qui ne se dit pas ne se corrige pas.
 
 ---
 
@@ -76,8 +76,8 @@ Si après la phase 1 il reste un trou métier non comblable :
 ### Phase 4 — Livraison du fichier
 
 Écrire le fichier au chemin imposé (cf. section « Livraison ») et fournir dans le chat :
-- Le lien `computer://` vers le fichier
-- Une note courte (projet ciblé, CLAUDE.md lu oui/non, règles intégrées, résultat §4 résumé, résultat §5 13/13 ou signalement, décisions laissées à l'utilisateur)
+- Le chemin du fichier (lien `computer://` seulement dans un environnement qui le fournit)
+- Une note courte (projet ciblé, CLAUDE.md lu oui/non, règles intégrées, et pour une spec complète : résultat §4 résumé, résultat §5 13/13 ou signalement ; décisions laissées à l'utilisateur)
 
 **Ne jamais afficher le contenu intégral du SPEC dans le chat.**
 
@@ -154,15 +154,13 @@ Si aucune décision n'est anticipée pour une SPEC particulière, écrire « Auc
 - [ ] Aucun fichier non commité hors scope
 - [ ] Version du package mise à jour si conventions du projet l'exigent
 
-## Merge sur main
+## Pull request vers main
 ```bash
-git fetch origin --prune
-git checkout main
-git merge origin/claude/<slug-explicite> --ff-only
-git push
+git push -u origin claude/<slug-explicite>
+gh pr create --base main --head claude/<slug-explicite> --title "<type>(<scope>): <description>"
 ```
 
-L'utilisateur teste sur `main` après le merge.
+La fusion sur `main` passe toujours par la PR, jamais par un push de la session ni par un merge local. Elle se fait **sur demande explicite de l'utilisateur** (« fusionne », « merge ») : Claude Code pousse la branche, ouvre la PR (par `gh` ou par l'outil GitHub de la session), rend son lien et s'arrête là.
 
 ## Commit message attendu
 
@@ -185,7 +183,7 @@ fonctionnalite(<scope-réel>): <description-réelle-en-français>
 4. Confirmation que l'ordre du repo est propre et version à jour
 5. Tests exécutés et résultats (happy path / non-régression / edge cases)
 6. Points d'attention résiduels ou décisions prises en cours d'exécution
-7. Confirmation du merge effectué (ou raison s'il ne l'est pas)
+7. Lien de la PR ouverte (ou raison s'il n'y en a pas) ; la fusion n'est mentionnée que si l'utilisateur l'a demandée
 
 ## Auto-review §4 — réponses aux 7 questions
 Réponses oui / non applicable avec justification factuelle pour chaque question.
@@ -221,7 +219,7 @@ Réponses oui / non applicable avec justification factuelle pour chaque question
 - [ ] Section `## Contraintes et règles à respecter` présente, avec sources citées.
 - [ ] Section `## Décisions à prendre en cours d'exécution` présente.
 - [ ] Section `## Vérifications avant fin de tâche` présente, avec les 4 sous-sections (Happy path / Non-régression / Edge cases / Ordre du repo et version).
-- [ ] Section `## Merge sur main` présente, avec bloc bash complet.
+- [ ] Section `## Pull request vers main` présente, avec bloc bash complet, sans merge local ni push sur `main`.
 - [ ] Section `## Commit message attendu` présente, avec proposition.
 - [ ] Section `## Rapport de livraison (en français)` présente, 7 points listés.
 - [ ] Section `## Auto-review §4 — réponses aux 7 questions` présente, réponses renseignées.
@@ -234,7 +232,7 @@ Réponses oui / non applicable avec justification factuelle pour chaque question
 
 ## Règle de refus de livraison
 
-Si **une seule** des 13 sections manque, est mal nommée, ou ne respecte pas son format, la skill **refuse de livrer**. Elle corrige et relit avant écriture du fichier final.
+Pour une spec complète : si **une seule** des 13 sections manque, est mal nommée, ou ne respecte pas son format, la skill **refuse de livrer**. Pour une SPEC-lite, la même règle vaut sur ses trois sections. Elle corrige et relit avant écriture du fichier final.
 
 ---
 
@@ -269,7 +267,7 @@ Chaque spec produite doit imposer dans `## Contraintes` :
 
 **Dans un dépôt git : `<racine-du-dépôt>/specs/YYYY-MM-DD-slug.md`.** C'est le défaut, et il prime.
 
-La raison est opposable : la doctrine exige que la spec soit **commitée avant le code**. Une spec écrite hors du dépôt ne peut pas l'être — elle vit à côté du travail qu'elle cadre, sans jamais y être rattachée, et un `git log` ne la retrouve pas. Dans le dépôt, elle voyage avec le code, se relit dans la PR, et survit au poste.
+La raison est opposable : la doctrine exige que la spec complète soit **commitée avant le code**, la SPEC-lite **avec** lui. Une spec écrite hors du dépôt ne peut pas l'être — elle vit à côté du travail qu'elle cadre, sans jamais y être rattachée, et un `git log` ne la retrouve pas. Dans le dépôt, elle voyage avec le code, se relit dans la PR, et survit au poste.
 
 **Hors dépôt** (script isolé, cadrage amont sans code encore) :
 ```
@@ -280,22 +278,22 @@ La raison est opposable : la doctrine exige que la spec soit **commitée avant l
 - `YYYY-MM-DD` : date du jour au format ISO **dans le nom de fichier** (tri lexicographique). Cohabite intentionnellement avec le format suisse `jj.mm.aaaa` utilisé **dans le contenu** du SPEC (en-tête > ligne « Date : »). Ne pas uniformiser : chaque format a sa raison d'être (tri vs lecture humaine).
 - `slug` : identique au slug de branche utilisé dans `## Branche cible`
 
-**Fallback environnement** : si le chemin Windows n'est pas accessible depuis l'environnement d'exécution (sandbox Linux Claude.ai), écrire dans `/mnt/user-data/outputs/<projet>/YYYY-MM-DD-slug.md` et proposer le téléchargement via le lien du panneau de fichiers (tool `present_files`). Mentionner explicitement ce fallback dans la note finale.
+**Fallback environnement** (hors dépôt seulement) : si le chemin Windows n'est pas accessible et que l'environnement est la sandbox Linux de Claude.ai (`/mnt/user-data/outputs` et le tool `present_files` y existent), écrire dans `/mnt/user-data/outputs/<projet>/YYYY-MM-DD-slug.md` et proposer le téléchargement par `present_files`. Dans une session Claude Code sans ce chemin ni ce tool (session cloud comprise), demander à l'utilisateur où écrire. Mentionner explicitement ce fallback dans la note finale.
 
 **Demande de livraison inline : une itération de push-back, puis appliquer.** Si l'utilisateur demande « inline », « dans le chat », ou « pas de fichier », le dire une fois :
-> Une spec inline se perd à la fin de la conversation, ne se commite pas avant le code et ne se retrouve pas dans un `git log`. Je la mets en fichier dans `specs/`, consultable ici par lien — sauf si tu préfères vraiment l'inline.
+> Une spec inline se perd à la fin de la conversation, ne se commite pas et ne se retrouve pas dans un `git log`. Je la mets en fichier dans `specs/`, consultable ici par lien — sauf si tu préfères vraiment l'inline.
 
 **S'il maintient, livrer inline sans relancer.** C'est la posture du profil : une seule itération de push-back par décision, puis on applique.
 
 > **Corrigé le 18.08.2026.** Ce paragraphe disait « livrer le fichier malgré la demande contraire ». Un skill qui passe outre une instruction explicite de l'utilisateur contredit frontalement la posture du profil, et il la contredisait **en silence** : l'utilisateur voyait sa demande acquiescée puis ignorée. Le motif invoqué (archivabilité) reste juste — il devient un argument, plus un veto.
 
 **Note finale dans le chat** (après écriture du fichier) :
-- Lien `computer://` vers le fichier
+- Chemin du fichier (lien `computer://` seulement là où l'environnement le fournit)
 - Projet ciblé
 - CLAUDE.md lu : oui/non
 - Règles intégrées : <liste courte>
-- Résultat auto-review §4 : <résumé en 1 ligne>
-- Résultat auto-check §5 : <X/13 ou « 13/13 ✓ »>
+- Résultat auto-review §4 : <résumé en 1 ligne> (spec complète seulement)
+- Résultat auto-check §5 : <X/13 ou « 13/13 ✓ »> (spec complète seulement)
 - Décisions laissées à l'utilisateur : <liste si applicable, sinon « aucune »>
 
 ---
@@ -306,30 +304,30 @@ La skill ne doit **jamais** :
 
 1. Renuméroter les sections (« 1. Contexte / 2. Objectif »)
 2. Renommer les titres (« ## Origine » au lieu de `## Contexte`)
-3. Omettre une des 13 sections, même si elle semble redondante
-4. Livrer inline au lieu d'un fichier
+3. Omettre une des 13 sections d'une spec complète, même si elle semble redondante
+4. Livrer inline de sa propre initiative, ou sans avoir dit une fois ce que l'inline coûte (cf. « Livraison » : si l'utilisateur maintient sa demande, on livre inline)
 5. Poser une question dont la réponse est dans le BACKLOG / CLAUDE.md / audits / code réel
 6. Poser une question purement technique (lib, format de tests, slug, scope)
 7. Hardcoder des **règles métier propres à un projet** dans la skill — les règles projet viennent du CLAUDE.md à chaque invocation. Les **règles utilisateur transversales** (chemins de livraison, conventions de slug, format de date suisse, fallback environnement) restent dans la skill par design.
 8. Mettre des emojis ou de l'humour dans la spec finale
 9. Inventer des informations manquantes — utiliser `À DÉFINIR` à la place
-10. Restituer le contenu intégral du SPEC dans le chat — uniquement le lien et la note courte
+10. Restituer le contenu intégral du SPEC dans le chat — uniquement le chemin et la note courte (sauf livraison inline maintenue par l'utilisateur)
 
 ---
 
 ## Critères d'auto-validation (avant écriture du fichier)
 
-Avant d'écrire le fichier, la skill se pose ces questions et **n'écrit que si toutes les réponses sont oui** :
+Avant d'écrire le fichier, la skill se pose ces questions et **n'écrit que si toutes les réponses sont oui**. Les trois questions marquées « spec complète » ne se posent pas pour une SPEC-lite, qui vérifie à la place ses trois sections (`## Objectif`, `## Périmètre`, `## Vérifications avant fin de tâche`) :
 
 - Les 4 sources documentaires ont-elles été lues (CLAUDE.md, BACKLOG.md, audits, code réel) ?
 - Toutes les décisions techniques ont-elles été tranchées par la skill, sans question à l'utilisateur ?
 - 0 ou 1 question a-t-elle été posée à l'utilisateur, sur arbitrage métier uniquement ?
-- Les 13 sections sont-elles présentes avec titres `##` exacts ?
-- L'auto-review §4 et l'auto-check §5 sont-ils complétés dans le fichier ?
-- **Format §4 vérifié** : chaque réponse §4 commence-t-elle par `oui — section "## ` (avec au moins une citation entre guillemets après) OU par `non applicable — ` (avec une justification d'une phrase) ? Toute autre forme (« oui — chaque… », « oui car… », « oui parce que… ») est invalide et doit être réécrite.
+- (spec complète) Les 13 sections sont-elles présentes avec titres `##` exacts ?
+- (spec complète) L'auto-review §4 et l'auto-check §5 sont-ils complétés dans le fichier ?
+- (spec complète) **Format §4 vérifié** : chaque réponse §4 commence-t-elle par `oui — section "## ` (avec au moins une citation entre guillemets après) OU par `non applicable — ` (avec une justification d'une phrase) ? Toute autre forme (« oui — chaque… », « oui car… », « oui parce que… ») est invalide et doit être réécrite.
 - Le ton est-il neutre, sans emoji ni humour ?
 - L'**étage de cadrage** a-t-il été annoncé avant rédaction, et la spec correspond-elle à cet étage (rien / SPEC-lite 3 sections / 13 sections) ?
-- Le chemin de livraison est-il bien `<racine-du-dépôt>/specs/YYYY-MM-DD-slug.md` quand on travaille dans un dépôt git — et seulement à défaut `%USERPROFILE%\Documents\Claude\Projects\Assistant DEV senior\specs\<projet>\` ou `/mnt/user-data/outputs/<projet>/` (sandbox Linux Claude.ai) ?
+- Le chemin de livraison est-il bien `<racine-du-dépôt>/specs/YYYY-MM-DD-slug.md` quand on travaille dans un dépôt git — et seulement à défaut `%USERPROFILE%\Documents\Claude\Projects\Assistant DEV senior\specs\<projet>\` ou `/mnt/user-data/outputs/<projet>/` (sandbox Linux Claude.ai seulement) ?
 - La SPEC complète reste-t-elle sous 400 lignes (300 idéalement), la SPEC-lite autour de 30 ?
 - Toute borne quantifiée a été vérifiée par lecture du repo réel ?
 

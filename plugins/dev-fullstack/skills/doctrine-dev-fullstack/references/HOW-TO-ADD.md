@@ -1,6 +1,6 @@
 # Comment ajouter un nouveau sub-agent ou skill
 
-> Version 1.6 — 02.11.2026 (longueur des descriptions : pas de cible chiffrée, arbitrage du 02.11.2026 écrit)
+> Version 1.8 — 11.11.2026 (un renvoi au registre des clés pointait encore `ORCHESTRATION.md`. Version 1.7 — 11.11.2026 : reçoit d'`ORCHESTRATION.md` le registre des clés de frontmatter, qui sert à écrire une fiche et non à router ; il couvre désormais les deux fiches transverses. Version 1.6 — 02.11.2026 : longueur des descriptions, pas de cible chiffrée.)
 > Référence pour l'utilisateur (et pour Claude qui orchestre les modifications).
 
 ## Sub-agent ou skill ?
@@ -16,7 +16,7 @@ Critère :
 
 ## Pattern obligatoire (v2 — depuis 21.05.2026)
 
-Tout nouveau sub-agent ou skill suit ces 13 sections (ORCHESTRATION.md « Pattern partagé » les détaille en **15** en séparant Format de livrable / Hand-off / Auto-check / Incidents source — même pattern, décompte différent) :
+Tout nouveau sub-agent ou skill suit ces 13 sections. Ce squelette est un plancher : les fiches ont plus de Modes (jusqu'à six) et un auto-check plus long quand leur métier le demande.
 
 1. **Frontmatter** : `name` + `description`. La description est un **routeur**, pas une norme.
 
@@ -42,7 +42,19 @@ Tout nouveau sub-agent ou skill suit ces 13 sections (ORCHESTRATION.md « Patter
    > Arbitrage de l'utilisateur du 02.11.2026 (audit du 01.11.2026, AC-17) : cette consigne fait foi ; la
    > cible « sous ~350 octets » de l'audit système du 29.10.2026 (piste 5) est écartée.
 
-   **Autres clés admises, et ce qu'elles engagent** (registre tenu dans `ORCHESTRATION.md` § « Pattern partagé », qui fait foi) : `tools:` ou `disallowedTools:` — seulement pour **restreindre** (omis = tout hérité, serveurs MCP compris) ; préférer `disallowedTools:`, qui laisse les serveurs MCP là où `tools:` les perd (témoin du 05.09.2026), et se souvenir qu'aucun des deux ne restreint les **chemins** ; `model:` — seulement pour épingler, et alors la doctrine doit l'annoncer (invariant I2), toutes les fiches sauf une n'en ont pas parce que la Phase 1bis raisonne par tâche (les compter dans les fichiers, jamais ici) ; `skills:` — précharge des skills entiers au démarrage, **exclusif avec `paths:`** sur le skill visé (invariant I3, règle R18 du banc) ; `observer:` + `observerMessage:` — observateur de fond ; posé sur `backend` et `frontend` le 19.08.2026, retiré le 31.10.2026 faute d'une seule mesure de son utilité : ne le reposer qu'avec un relevé prévu et daté ; `memory: user` — mémoire persistante propre à l'agent, éphémère en cloud. Toute clé nouvelle passe l'invariant I8 (YAML valide) sans être comprise : le registre est le seul endroit où elle est expliquée.
+   **Autres clés admises, et ce qu'elles engagent** (registre ci-dessous, qui fait foi) : `tools:` ou `disallowedTools:` — seulement pour **restreindre** (omis = tout hérité, serveurs MCP compris) ; préférer `disallowedTools:`, qui laisse les serveurs MCP là où `tools:` les perd (témoin du 05.09.2026), et se souvenir qu'aucun des deux ne restreint les **chemins** ; `model:` — seulement pour épingler, et alors la doctrine doit l'annoncer (invariant I2), toutes les fiches sauf une n'en ont pas parce que la Phase 1bis raisonne par tâche (les compter dans les fichiers, jamais ici) ; `skills:` — précharge des skills entiers au démarrage, **exclusif avec `paths:`** sur le skill visé (invariant I3, règle R18 du banc) ; `observer:` + `observerMessage:` — observateur de fond ; posé sur `backend` et `frontend` le 19.08.2026, retiré le 31.10.2026 faute d'une seule mesure de son utilité : ne le reposer qu'avec un relevé prévu et daté ; `memory: user` — mémoire persistante propre à l'agent, éphémère en cloud. Toute clé nouvelle passe l'invariant I8 (YAML valide) sans être comprise : le registre est le seul endroit où elle est expliquée.
+   `brainstormer` porte `tools` (liste blanche, sans `Edit` ni `Bash`) et `model: opus` ; aucune autre fiche du profil n'épingle de modèle, la Phase 1bis raisonnant par tâche. (L'invariant I2 lit les noms d'agents cités sur la même ligne qu'un `model:` : ne pas en ajouter d'autres ici.)
+
+   Les deux fiches transverses de `_shared` tiennent leur propre frontmatter ; l'une épingle un modèle, annoncé dans sa fiche.
+
+   **Registre des clés de frontmatter posées** (ouvert le 19.08.2026, tenu à chaque fiche ajoutée ou modifiée) — les compter dans les fichiers, jamais dans ce tableau, qui est le reflet et non la source :
+
+   | Clé | Où | Ce qu'elle fait, et ce qui la casse |
+   |---|---|---|
+   | `skills:` | `architecte`, `ingenieur-ia`, `qa`, `release` et `securite` (`ux-preuves`), `backend` (`supabase-toolkit`, `charte-code`, `ux-preuves`), `frontend` (`a11y-audit`, `charte-code`, `ux-preuves`), `reviewer` (`charte-code`, `ux-preuves`), `auditeur` (`charte-code`), `ux`, `designer`, `redacteur` et `growth` (`ux-preuves`, 09.11.2026) | Précharge le skill en entier au démarrage. **Exclusif avec `paths:`** sur le skill visé : poser un `paths` vide la ligne de son effet **en silence** (vérifié par témoin le 17.08.2026, absent de la documentation officielle). **En revanche, PAS exclusif avec `context: fork`** : mesuré par témoin le 19.08.2026, les deux cohabitent — le skill reste préchargé, et une invocation depuis un sous-agent s'exécute bien en fork imbriqué. Ne pas généraliser la première exclusion à la seconde par analogie : c'est l'erreur qui a été commise, puis corrigée par la mesure. |
+   | `disallowedTools:` | `reviewer`, `release` (`Edit, Write, NotebookEdit`) ; `architecte`, `ux`, `designer`, `growth` (`Edit, Bash, NotebookEdit`, `Write` gardé pour `docs/`) ; `qa`, `auditeur`, `muse`, `ingenieur-ia`, `securite` (`Edit, NotebookEdit`, `Write` gardé pour `docs/` ; `securite` depuis le 11.11.2026, son Mode A imposant un rapport en fichier) ; `redacteur` (`Agent, NotebookEdit` depuis le 11.11.2026 : il écrit des locales, `Edit`, `Write` et `Bash` restent) ; transverses : `mainteneur-profils` (`Agent, NotebookEdit`), `agent-mails` (`Agent, NotebookEdit, WebFetch, WebSearch`) | Liste noire d'outils, posée le 05.09.2026 (audit F2) sur les fiches qui interdisaient l'écriture par une phrase que rien n'opposait. **Témoin du 05.09.2026** (`claude -p`, dépôt jetable, serveur MCP stdio maison, agent `disallowedTools: Edit, Write, NotebookEdit`) : l'outil MCP reste appelable — appel journalisé côté serveur avec son `toolUseId` —, `Write` disparaît (fichier non créé, outil absent de la liste rendue), `Bash` reste. C'est ce que `tools:` ne donne pas : une liste blanche perd les serveurs MCP qu'elle n'énumère pas. **Ne restreint pas les chemins** : un agent qui garde `Write` pour `docs/` peut écrire ailleurs ; le champ DEHORS du brief reste la seule barrière sur le *où*. |
+   | `memory: user` | `reviewer` ; `securite`, `qa` (05.09.2026, audit F7 — même motif, un audit ou une couverture recommencent à zéro sans elle) ; `auditeur` (16.10.2026, même motif) ; `muse` (30.10.2026 : son carnet, pour ne jamais resservir une graine et apprendre ce que l'utilisateur garde ; `Bash` gardé pour le tirage au sort) | Mémoire persistante propre à l'agent (`agent-memory/<agent>/` du home), pour que le même défaut vu sur trois dépôts devienne une règle. **Éphémère en session cloud** (plugin) : le home du conteneur ne survit pas. Couverte par `backup-memoire.ps1` / `restore-memoire.ps1` depuis le 05.09.2026 (sous-dossier `_agent-memory/` de la sauvegarde) — exécutés sous PowerShell 7 dans le conteneur, puis à faire tourner sous 5.1 au poste (`EN-ATTENTE-POSTE.md`, entrée 20 : marquée faite et retirée le 18.10.2026, texte dans l'historique git). **Inactive tant que la mémoire automatique est coupée** (documentation `sub-agents.md`, § « Enable persistent memory ») : mesuré le 02.11.2026 en session cloud, `reviewer`, `muse` et deux agents témoins (avec et sans `Write`) ne reçoivent aucun dossier de mémoire, et la conversation principale n'a pas de mémoire automatique non plus. Effet de `disallowedTools: Write, Edit` sur la mémoire quand elle est active : non mesuré, la documentation n'en dit rien (épreuve au poste, `EN-ATTENTE-POSTE.md`, entrée 23). |
+
 2. **Version** : ligne `> Version X.Y — DD.MM.AAAA (changement résumé)` juste après le frontmatter.
 3. **Titre + ligne d'identité** : 1-2 phrases sur le rôle.
 4. **Modes** : A / B / C (ou D), détectés en Phase 0, déclarés en début de livrable.
@@ -82,7 +94,7 @@ Créer `templates/profiles/dev-fullstack/skills/<nom>/SKILL.md`, ligne de versio
 
 ### 3. Référencer dans l'écosystème
 
-- **Sub-agent** : ligne dans la table de délégation de la Phase 1 de `global-CLAUDE.md` (résident : elle coûte à l'invariant I5, la mesurer) ; inventaire et registre des clés d'`ORCHESTRATION.md`, plus une séquence typique si applicable.
+- **Sub-agent** : ligne dans la table de délégation de la Phase 1 de `global-CLAUDE.md` (résident : elle coûte à l'invariant I5, la mesurer) ; les six pièces d'`ORCHESTRATION.md` (son § « Mise à jour de ce fichier »), et le registre des clés ci-dessus si le frontmatter en pose une.
 - **Skill** : puce dans « Skills à connaître » de `global-CLAUDE.md` **seulement** pour ce que la description ne peut pas dire ; `ORCHESTRATION.md` § « Skills associées ».
 - **Dans les deux cas** : tableau des profils et arborescence du `CLAUDE.md` racine, ligne de version dans `CHANGELOG.md` du profil et en-tête de `global-CLAUDE.md` si la doctrine change.
 
@@ -165,7 +177,7 @@ Voir `templates/profiles/dev-fullstack/agents/backend.md` ou `agents/frontend.md
 - [ ] Anti-patterns interdits + Anti-hallucination.
 - [ ] Section Incidents source (vide est OK, présente obligatoire).
 - [ ] **Stack en défaut surpassable** (si l'agent en nomme une) : section « le projet décide » + garde-fous formulés en principes + découplage **propagé aux gates durs** (garde-fous, workflow, auto-check, checklist) avec N/A autorisé. Cf. § « Découplage de la stack ».
-- [ ] Référencement dans CLAUDE.md global + ORCHESTRATION.md (inventaire **et** registre des clés si le frontmatter en pose une) + sub-agents connexes.
+- [ ] Référencement dans CLAUDE.md global + ORCHESTRATION.md (les six pièces de son § « Mise à jour de ce fichier ») et registre des clés ci-dessus si le frontmatter en pose une + sub-agents connexes.
 - [ ] `test-conformite-fiches-agents.sh` vert, `verifier-invariants.ps1 -Strict` vert, I5 mesuré avant/après.
 - [ ] Plugin régénéré, `--check` conforme, **version bumpée**, copie publique poussée.
 - [ ] Ligne de version dans `CHANGELOG.md` du profil ; propagation aux consommateurs notée dans `EN-ATTENTE-POSTE.md` si elle ne peut pas se faire d'ici.

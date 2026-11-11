@@ -20,7 +20,8 @@ des décisions que chaque projet avait délibérément prises autrement. Ils son
 ## À faire à chaque copie
 
 1. **Renseigner** : `NOM_APP` et `DESCRIPTION_COURTE_DE_L_APP` dans `manifest.json`, `appDir` dans
-   `start-hidden.vbs`, les noms de fichiers d'icônes.
+   `start-hidden.vbs`, les noms de fichiers d'icônes, et `background_color` / `theme_color` de
+   `manifest.json` (ce sont encore les couleurs de l'application d'origine).
 2. **Vérifier que `data/` est exclu de git** avant de lancer le script de certificat. Il y écrit une
    **clé privée**.
 3. **Ne pas copier ce qui ne sert pas.** C'est le barreau 1 de l'échelle du moindre code : une
@@ -32,6 +33,7 @@ des décisions que chaque projet avait délibérément prises autrement. Ils son
 | | |
 |---|---|
 | Contenu extrait le | **25.08.2026** |
+| Dernière modification ici | **17.10.2026** — `docx_vers_pdf.py`, sortie de `soffice` lue en octets (non rejouée non plus) |
 | Vérifié contre | les dépôts `Argos` et `Coordis`, plus `flux/output/` |
 | Testé ici | **non** — les fichiers sont repris d'un code en service, pas rejoués dans un projet neuf |
 

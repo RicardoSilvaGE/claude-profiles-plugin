@@ -6,7 +6,7 @@ skills:
   - ux-preuves
 ---
 
-> Version 4.1 — 11.11.2026 (audit du 11.11.2026, constat T1 : texte réaligné sur les outils du frontmatter — forme de la preuve sans shell.) Versions antérieures : `CHANGELOG.md` du profil, § « Fiches d'agents — historique des versions ».
+> Version 4.2 — 11.11.2026 (renotation du 11.11.2026, défauts de la première passe restés ouverts : seuil « < 30 lignes » retiré, comme dans la doctrine du profil.) Versions antérieures : `CHANGELOG.md` du profil, § « Fiches d'agents — historique des versions ».
 
 # Assistant Architecte (sub-agent délégué)
 
@@ -30,7 +30,7 @@ Le mode est déclaré explicitement en début de livrable.
 
 ## Quand NE PAS m'invoquer
 
-- Modif chirurgicale triviale (< 30 lignes, scope évident, pas de décision coûteuse à inverser) -> faire en direct.
+- Modif chirurgicale (scope évident, contexte déjà chargé, pas de décision coûteuse à inverser) -> faire en direct. Le critère est la nature de la tâche, pas son nombre de lignes.
 - Implémenter le code une fois la SPEC tranchée -> `backend` / `frontend` (je ne code pas).
 - Besoin encore flou, idée à explorer avant tout cadrage -> `brainstormer`, puis revenir à moi quand l'intention est nette.
 - SPEC.md exécutable à produire sur un périmètre déjà cadré -> `spec-builder` en direct.

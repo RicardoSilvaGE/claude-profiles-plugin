@@ -1,11 +1,11 @@
 ---
 name: ux-preuves
-description: "Référentiel de preuves vérifiées et datées (niveau de preuve, limites, mythes) pour l'UX, le design visuel, la rédaction et l'i18n, le growth (marketing, stores, emails, SEO, droit suisse et européen de la publicité) l'architecture et le code (ADR, qualités, dépendances, performance, sécurité, API, PostgreSQL, données personnelles, code écrit par un LLM). Déclencheurs : justifier une recommandation UX, un choix visuel, une formulation, une décision marketing, d'architecture ou d'implémentation, quelle étude, est-ce prouvé, état de l'art, contraste, tu ou vous, pluriels, format suisse, limite de store, prix barré, newsletter et consentement, taille d'échantillon d'un test A/B, test utilisateur, sévérité. Pas pour : l'audit WCAG ex-post (`a11y-audit`)."
+description: "Référentiel de preuves vérifiées et datées (niveau de preuve, limites, mythes) pour l'UX, le design visuel, la rédaction et l'i18n, le growth (marketing, stores, emails, SEO, droit suisse et européen de la publicité), l'architecture et le code (ADR, dépendances, performance, sécurité, API, PostgreSQL, données personnelles, code écrit par un LLM), les tests, la revue de code, la mise en production et l'ingénierie IA. Déclencheurs : justifier une recommandation UX, un choix visuel, une formulation, une décision marketing, d'architecture ou d'implémentation, quelle étude, est-ce prouvé, état de l'art, contraste, tu ou vous, pluriels, format suisse, limite de store, prix barré, newsletter et consentement, taille d'échantillon d'un test A/B, test utilisateur, sévérité. Pas pour : l'audit WCAG ex-post (`a11y-audit`)."
 ---
 
-# UX fondée sur des preuves — référentiel vérifié
+# Preuves vérifiées — référentiel du profil
 
-> Version 1.13 — 10.11.2026 (volet ingénierie IA : cinq fiches `ia-profils-*.md`, 175 entrées, préchargé par le nouvel agent `ingenieur-ia`.) Versions 1.0 à 1.12 : `references/provenance.md` § « Versions du skill ».
+> Version 1.14 — 11.11.2026 (description, verdict de fin de fiche et dates d'instantané corrigés.) Versions 1.0 à 1.13 : `references/provenance.md` § « Versions du skill ».
 > Contenu issu d'une **recherche documentaire des 09 et 10.11.2026** : chaque entrée des fiches cite une
 > page effectivement ouverte pendant cette recherche, avec un extrait lu. Cf. § « D'où vient ce contenu ».
 > **C'est un instantané** : § « Quand vérifier en ligne » dit quand il ne suffit plus.
@@ -59,7 +59,7 @@ de ce skill disent où regarder et quoi éviter ; elles ne remplacent pas l'obse
 
 ## Quand vérifier en ligne (veille)
 
-Les fiches sont un instantané au 09.11.2026. Rechercher (`WebSearch` pour trouver, `WebFetch`
+Les fiches sont un instantané des 09 et 10.11.2026. Rechercher (`WebSearch` pour trouver, `WebFetch`
 pour **lire la page** — jamais le seul extrait du moteur) quand :
 
 - **le domaine bouge vite** : interfaces IA et agents, réglementation (EAA, DSA, AI Act, consentement),
@@ -157,9 +157,9 @@ range à l'un de trois niveaux, et le livrable dit lequel :
 3. **Convention ou style** (N0 assumé, N4 au mieux) : légitime, signé, jamais présenté comme une
    preuve. Il cède devant le design system, la charte ou le `CLAUDE.md` d'un projet.
 
-Chaque fiche de volet finit par un **verdict sourcé sur les règles du profil** (soutenue, convention
-sans preuve, contredite) : c'est lui qui range une règle à son niveau. La déclinaison par domaine
-est dans `references/index.md`. **Versions, statuts navigateurs et avis de sécurité vieillissent en
+Hors volet UX, les fiches finissent par un **verdict sourcé sur les règles du profil** (soutenue,
+convention sans preuve, contredite) : il range une règle à son niveau. Exceptions et déclinaison
+par domaine : `references/index.md`. **Versions, statuts navigateurs et avis de sécurité vieillissent en
 mois, parfois en jours** : la fiche dit où regarder, la source officielle du jour tranche.
 
 ## Mythes à ne pas reproduire
@@ -180,7 +180,7 @@ lire avant de citer un chiffre « connu » : les plus repris sont souvent les mo
 
 ## D'où vient ce contenu
 
-Recherche documentaire du **09.11.2026**, en volets parallèles par domaine, sous une règle unique :
+Recherche documentaire des **09 et 10.11.2026**, en volets parallèles par domaine, sous une règle unique :
 **rien de mémoire** — chaque entrée cite une page réellement ouverte et en recopie un extrait ; un
 chiffre sans source primaire trouvée va en « Non vérifié ». Volumes, sources, entrées lues sur
 résumé seul et contrôles par sondage refaits à la source : `references/provenance.md`.

@@ -17,7 +17,9 @@ sont données. Les extraits sont verbatim, dans leur langue d'origine.
 Hors périmètre, parce que déjà couvert ailleurs : ISO 24495-1, F-pattern, GOV.UK « Error message »,
 WCAG 3.3.1, placeholders (NN/g 2014), validation en ligne.
 
-Échelle des niveaux de preuve : N1 = norme ; N2 = étude empirique (taille de l'échantillon citée) ;
+Échelle des niveaux de preuve (celle du `SKILL.md`, qui fait foi) : N1 = norme ; N2 = recherche revue
+par pairs, ou étude empirique à grand échantillon et méthode publiée (la taille de l'échantillon est citée
+dans chaque entrée) ;
 N3 = guideline d'une institution ou d'une plateforme ; N4 = avis d'expert ou article de praticien.
 Les articles NN/g sont classés N4 : ce sont des articles de praticiens, nourris de tests
 utilisateurs dont la méthode n'est pas publiée avec l'article.
