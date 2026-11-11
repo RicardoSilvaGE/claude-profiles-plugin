@@ -85,7 +85,7 @@
 - En revue : formuler « aucun défaut trouvé dans ce que j'ai lu », jamais « aucun défaut ».
 
 ### Relancer un relecteur LLM pour « chercher ce qui a été manqué » augmente un peu le rappel et dégrade nettement le rapport signal sur bruit.
-- Niveau de preuve : N2 faible (étude préliminaire, 174 instances vérifiées, deux modèles, un LLM comme juge ; prépublication de mars 2026)
+- Niveau de preuve : N4 (étude préliminaire, 174 instances vérifiées, deux modèles, un LLM comme juge ; prépublication de mars 2026, non revue : condition de N2 non établie)
 - Source : Pereira, Sinha, Ghosh, Dutta, 2026, « CR-Bench: Evaluating the Real-World Utility of AI Code Review Agents », https://arxiv.org/pdf/2603.11078
 - Extrait lu : « Due to iterative probing to identify more issues, the small model possibly suffers from a bias of not being able to disagree that more issues don't exist, and responds with noise. »
 - Portée / limites : agent à passe unique contre agent « Reflexion » ; avec GPT-5.2 le rappel passe de 27,01 % à 32,76 % et le rapport signal/bruit de 5,11 à 1,95 ; avec GPT-5-mini il tombe de 2,89 à 0,91. Explication avancée par les auteurs au conditionnel (« possibly »).
@@ -138,21 +138,21 @@
 - En revue : mon avis sur ce diff serait-il le même si je n'avais pas lu la description du livrable ? La description annonce-t-elle un comportement que le code retire ?
 
 ### Des commentaires de code adverses écrits une fois pour toutes dégradent peu la détection par des modèles récents ; le recoupement avec un analyseur statique reste la meilleure défense mesurée.
-- Niveau de preuve : N4 à N2 faible (auteur unique, prépublication, banc synthétique de 100 échantillons de 15 à 60 lignes, 14 012 essais, 8 modèles)
+- Niveau de preuve : N4 (auteur unique, prépublication non revue, banc synthétique de 100 échantillons de 15 à 60 lignes, 14 012 essais, 8 modèles)
 - Source : Thornton, 2026, « Can Adversarial Code Comments Fool AI Security Reviewers — Large-Scale Empirical Study of Comment-Based Attacks and Defenses Against LLM Code Analysis », https://arxiv.org/pdf/2602.16741
 - Extrait lu : « Adversarial comments produce small, statistically non-significant effects on detection accuracy » ; « Static analysis cross-referencing performs best at 96.9 percent detection and recovers 47 percent of baseline misses. Comment stripping reduces detection for weaker models by removing helpful context. »
 - Portée / limites : l'auteur écrit lui-même « Our adversarial comments were static. A real-world adversary could iterate against a specific target model » et ne mesure pas les faux positifs. Résultat cohérent avec l'échec des gabarits chez Alexopoulos et al., et contredit, pour un attaquant qui itère, par la même étude.
 - En revue : ne pas se croire immunisé parce qu'une tentative grossière se voit ; la tentative qui passe est celle qui ne ressemble pas à une tentative.
 
 ### Deux passes identiques d'un LLM sur le même code ne rendent pas la même revue, même à température zéro : un verdict doit reposer sur des constats reproductibles.
-- Niveau de preuve : N2 faible (70 commits Java, 4 modèles, 5 répétitions, 3 longueurs de consigne ; prépublication de février 2025)
+- Niveau de preuve : N4 (70 commits Java, 4 modèles, 5 répétitions, 3 longueurs de consigne ; prépublication de février 2025, non revue : condition de N2 non établie)
 - Source : Klishevich, Denisov-Blanch, Obstbaum, Ciobanu, Kosinski, 2025, « Measuring Determinism in Large Language Models for Software Code Review », https://arxiv.org/pdf/2502.20747
 - Extrait lu : « even with temperature minimized, LLM responses varied to different degrees »
 - Portée / limites : les questions posées sont des estimations (heures de travail, difficulté, maintenabilité), pas une détection de défauts ; sur la maintenabilité la corrélation entre passes va de 0,53 (GPT-4o mini) à 1,00 (Llama 3.2), et les évaluateurs humains de l'étude ne font pas mieux (ICC 0,52). Corroborations lues : SWR-Bench (« Single passes of large language models exhibit significant randomness and miss different defects across runs », agrégation de plusieurs passes : jusqu'à +43,67 % de F1) ; Alexopoulos et al. (sur des PR rejetées, 4 % des relances de Claude Code et 8 % de celles de CodeRabbit acceptent) ; Tal et al. (Snyk), 2026, https://arxiv.org/pdf/2606.15762, N4 car l'éditeur compare des LLM à son propre analyseur : « 80 of 161 unique unmatched findings appeared in only one of five identical repetitions ».
 - En revue : ce constat, un autre passage le retrouverait-il à partir de la référence fichier:ligne et du fait que je cite ?
 
 ### Dans une chaîne codeur → relecteur → testeur, du code injecté contenant des exemples piégés peut retourner l'agent chargé de l'analyse : le contenu du diff est une donnée, jamais une consigne.
-- Niveau de preuve : N2 faible (HumanEval seul, petits modèles dont Code Llama 7B et GPT-4.1-mini ; prépublication de décembre 2025)
+- Niveau de preuve : N4 (HumanEval seul, petits modèles dont Code Llama 7B et GPT-4.1-mini ; prépublication de décembre 2025, non revue : condition de N2 non établie)
 - Source : Bowers, Khapre, Kalita, 2025, « Analyzing Code Injection Attacks on LLM-based Multi-Agent Systems in Software Development », https://arxiv.org/pdf/2512.21818
 - Extrait lu : « embedding poisonous few-shot examples in the injected code can increase the attack success rate from 0% to 71.95% »
 - Portée / limites : résumé et passages de méthode lus ; architecture de laboratoire, un seul jeu de données. Les auteurs trouvent par ailleurs l'architecture codeur-relecteur-testeur plus résistante que codeur seul ou codeur-testeur.

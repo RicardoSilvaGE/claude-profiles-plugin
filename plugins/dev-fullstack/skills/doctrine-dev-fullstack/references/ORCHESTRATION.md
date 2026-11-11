@@ -1,7 +1,7 @@
 # Orchestration des sub-agents
 
 > Source canonique : `templates/profiles/dev-fullstack/agents/ORCHESTRATION.md` (dépôt `claude-profiles`) ; la copie déployée vit dans `agents/` du home actif.
-> Dernière mise à jour : 11.11.2026 (v2.34 — renotation des skills et de la doctrine : la tâche simple de la doctrine excepte les règles 4 et 10 ; Séquence 8 avec `spec-builder` ; entrées de `librairie-maison`, `debug-investigation` et `garde-fous-powershell` accordées à leurs skills. Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
+> Dernière mise à jour : 11.11.2026 (v2.35 — cure de poids des skills : hand-off de `frontend-app-builder` accordé au skill. Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
 
 Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les séquences typiques. Il complète le `CLAUDE.md` global et les frontmatters de chaque agent.
 
@@ -540,7 +540,7 @@ Ne sont plus ici depuis le 11.11.2026 : ils servent à **écrire** une fiche, pa
 
 ### Construction
 - `librairie-maison` (créé 25.08.2026) : socles de démarrage repris de code en service (non rejoués dans le skill), en deux jeux étiquetés. **Frontière avec `frontend-app-builder`** : celui-ci *génère* une application à partir d'un cadrage, `librairie-maison` *fournit des pièces* à recopier — HTTPS local auto-signé, conversion `.docx` → PDF, manifeste PWA, montage React in-browser. Les deux se composent : le builder construit, la librairie évite de réécrire ce qui existe. Elle intervient au **barreau 2bis** de l'échelle du moindre code de `backend` / `frontend`, jamais à la place du barreau 1 (« est-ce que ça doit exister ? »).
-- `frontend-app-builder` : génération d'apps complètes **Vite** (à orchestrer avec `architecte` + `designer` + `frontend`). Renvoi croisé avec `librairie-maison` dans les deux descriptions depuis le 05.09.2026 : « nouvelle application » se routait vers trois skills qui ne se citaient pas (le troisième étant le défaut Next.js de la doctrine).
+- `frontend-app-builder` : génération d'apps complètes **Vite** (hand-off nommé par le skill : `reviewer`, `designer`, `qa`, `release`). Renvoi croisé avec `librairie-maison` dans les deux descriptions depuis le 05.09.2026 : « nouvelle application » se routait vers trois skills qui ne se citaient pas (le troisième étant le défaut Next.js de la doctrine).
 - ~~`modern-app-design`~~ : **jamais livré par ce profil** (outil d'un bundle externe). La direction visuelle est le domaine du sub-agent `designer`.
 - ~~`ui-polish`~~ : **jamais livré par ce profil** (outil d'un bundle externe). Le polish ciblé passe par `frontend` Mode C, ou `designer` Mode C quand la retouche engage les tokens.
 - `claude-api` : développement d'apps qui utilisent l'API Anthropic.

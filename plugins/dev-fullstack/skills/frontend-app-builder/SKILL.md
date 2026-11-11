@@ -3,11 +3,11 @@ name: frontend-app-builder
 description: "Génère une application React SPA complète depuis un gabarit d'architecture versionné et daté : Vite + TypeScript strict + Tailwind + React Router + Zustand + auth. Déclencheurs : créer une app React, une SPA, un dashboard, un outil web, un frontend pour une API, quand une SPA Vite est demandée ou imposée par le projet ; une demande partielle (ajouter une page, créer le routing) quand le contexte est déjà une SPA du gabarit ; rapprocher une SPA existante du gabarit. Pas pour : une app Next.js, SSR ou SEO-critique (sub-agent `frontend`), le polish d'un composant (`frontend` Mode C), l'identité visuelle (sub-agent `designer`), ni des pièces à recopier (HTTPS local, PWA, `server.js` : `librairie-maison`)."
 ---
 
-> Version 2.4 — 11.11.2026 (renotation : déclaration Tailwind 4 du dark mode, lue dans la documentation officielle le 11.11.2026). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
+> Version 2.5 — 11.11.2026 (redites retirées : chaque règle dure est écrite une fois, aux garde-fous). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
 
 # frontend-app-builder — Génération d'app React SPA sur gabarit
 
-Ce skill génère des applications React complètes en suivant un **gabarit d'architecture versionné** : scaffolding, routing, state management, authentification, couche API et design system. Le SKILL.md orchestre ; le détail des patterns vit dans `references/`, les templates de configuration dans `assets/`.
+Le SKILL.md orchestre ; le détail des patterns vit dans `references/`, les templates de configuration dans `assets/`.
 
 ## Positionnement
 
@@ -40,8 +40,6 @@ Ne pas paraphraser ces fichiers de mémoire : les **lire** au moment indiqué.
 - **Mode B — Extension d'une app existante** conforme au gabarit : nouvelle page, module, store, service ("ajoute une page de login", "crée le routing"). Étapes pertinentes uniquement, en réutilisant l'existant (jamais re-scaffolder).
 - **Mode C — Mise en conformité** : app existante à rapprocher du gabarit (structure `src/`, couche services, selectors). Étapes : Phase 0 (point 5), puis un diagnostic d'écarts en table (point du gabarit, état constaté, correctif, priorité), puis les correctifs par priorité, sans re-scaffolder.
 
-Le mode est déclaré en début de livrable.
-
 ## Phase -1 — Vérification SPEC (HARD GATE, règle 19.05.2026)
 
 Ce skill **écrit du code**. Le cadrage de son étage doit exister : SPEC-lite de 10 à 50 lignes, `SPEC.md` au-delà ou si structurel (sinon → `spec-builder` d'abord). Sous 10 lignes, annoncer l'intention en une ligne. Le code suit la spec, jamais l'inverse.
@@ -64,8 +62,8 @@ Citer en bullets compacts avant toute génération :
 4. **Composants UI** : Button (depuis `references/architecture-patterns.md` § Design System), Input, Card, Modal (depuis `references/ui-components.md`).
 5. **Layout** : Shell (Sidebar + Header + main), responsive mobile.
 6. **Routes** : `createBrowserRouter`, lazy loading si > 5 pages.
-7. **Stores** : stores Zustand par domaine, selectors granulaires.
-8. **Services** : instance API + un service par domaine — aucun fetch dans les composants.
+7. **Stores** : stores Zustand par domaine.
+8. **Services** : instance API + un service par domaine.
 9. **Pages** : composer les éléments précédents, 1 fichier = 1 route.
 10. **Auth** : ProtectedRoute, Login, gestion du token par intercepteur.
 11. **Polish** : loading states, error boundaries, empty states, transitions (4 états par écran, cf. doctrine `ux`).
@@ -91,18 +89,9 @@ En tête du livrable : mode déclaré + sources lues (Phase 0).
 - Code complet — jamais de `// TODO` ni pseudo-code.
 - Tout interactif a ses états hover / focus visible / disabled ; tout écran a ses 4 états (empty/loading/error/success).
 - Versions de dépendances : celles d'`assets/package-template.json` *(si gabarit par défaut)* ; ne pas inventer une version.
-
-## Anti-patterns interdits
-
-- **Générer une SPA Vite quand le besoin est SSR/SEO** : si le contenu doit être indexé ou rendu serveur → sub-agent `frontend` (Next.js). Le choix SPA vs SSR se tranche en Phase 0, pas après le scaffolding.
-- **Re-scaffolder une app existante** en Mode B : on étend, on ne régénère pas.
-- **Paraphraser les références de mémoire** au lieu de les lire (dérive des patterns).
-- **`<BrowserRouter>` legacy** au lieu de `createBrowserRouter`.
-- Pièges d'implémentation détaillés : cf. `references/architecture-patterns.md` § Pièges courants.
-
-## Anti-hallucination
-
-Ne jamais citer une API React/Vite/Zustand/Router sans certitude — vérifier dans les références ou la doc officielle. Les versions viennent du template, pas de mémoire. En cas de doute sur une API récente : le dire, vérifier, puis répondre.
+- Ne jamais citer une API React/Vite/Zustand/Router sans certitude — vérifier dans les références ou la doc officielle. En cas de doute sur une API récente : le dire, vérifier, puis répondre.
+- Le choix SPA ou SSR se tranche en Phase 0, pas après le scaffolding : contenu à indexer ou à rendre côté serveur → sub-agent `frontend` (Next.js).
+- `createBrowserRouter`, jamais le `<BrowserRouter>` legacy. Autres pièges d'implémentation : `references/architecture-patterns.md` § Pièges courants.
 
 ## Hand-off
 
@@ -113,17 +102,9 @@ Ne jamais citer une API React/Vite/Zustand/Router sans certitude — vérifier d
 
 ## Auto-check final (avant livraison)
 
-- Spec de l'étage existante et suivie ?
-- Phase 0 citée (CLAUDE.md projet + assets + références lues) ?
-- Mode A/B/C déclaré et respecté (pas de re-scaffolding en B) ?
-- `package.json`/`tsconfig.json` issus des templates `assets/` *(si gabarit par défaut, sinon N/A)* ?
-- Aucun fetch hors `services/`, selectors Zustand partout ?
-- 4 états UI + a11y de base (labels, focus visible) sur chaque écran livré ?
-- Build/typecheck passés ou commandes de vérification fournies ?
+- Chaque garde-fou relu contre le code livré, un par un (pas de mémoire) ?
+- A11y de base (labels, focus visible) sur chaque écran livré ?
+- En tête du livrable : mode, sources lues, et versions du gabarit acceptées telles quelles ou passées par `framework-upgrade` ?
 - Hand-off `reviewer` proposé ?
 
 Si une seule réponse est non → corriger avant livraison.
-
-## Incidents source
-
-- **12.06.2026 — audit dev-fullstack** : le skill (importé d'un bundle externe le 26.05.2026) était un guide monolithique sans structure pattern v2 ; ses `assets/` n'étaient jamais référencés dans le workflow et le tableau de stack annonçait Vite 5+ contre `^6.0.0` épinglé dans le template. Refonte : SKILL.md orchestrateur + `references/architecture-patterns.md`. Leçon : un skill importé s'aligne au pattern v2 **au moment de l'import** (cf. mémoire `skill-toujours-par-le-repo`).

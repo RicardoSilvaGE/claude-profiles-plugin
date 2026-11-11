@@ -5,7 +5,9 @@ description: "Comment un dépôt garde sa doctrine sans l'étouffer : socle char
 
 # La doctrine d'un dépôt : la garder sans l'étouffer
 
-> Version 1.2 — 11.11.2026 (renotation : le journal entre dans l'ordre des gestes). Versions antérieures : `CHANGELOG.md` du profil, non déployé. **Ce skill n'est pas la source.** Il porte les principes
+> Version 1.3 — 11.11.2026 (cure de poids : table des écartés en `references/`). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
+>
+> **Ce skill n'est pas la source.** Il porte les principes
 > **généraux** extraits du système documentaire de `<depot-prive>`, écrit le 09.09.2026 sous le
 > nom `docs/systeme-de-doctrine.md`. Ce document-là fait foi, porte la démonstration complète,
 > les mesures et les seuils ; celui-ci porte ce qui se transpose.
@@ -17,15 +19,12 @@ lui-même : *« Il n'a pas encore vu : un lot qui rouvre une règle ancienne, un
 thèmes, une reprise après plusieurs semaines. Ne pas le transposer avant d'avoir vu ces trois
 cas. »*
 
-Ce skill existe donc pour **rendre le système consultable**, pas pour l'imposer. Prendre ses
-**principes** comme grille de lecture : oui. Recopier ses **seuils, ses thèmes et ses noms de
-contrôle** : non — ils se re-dérivent sur le dépôt d'accueil, par la mesure.
+Ce skill **rend le système consultable**, il ne l'impose pas. Prendre ses **principes** comme grille de lecture : oui. Recopier ses **seuils, ses thèmes et
+ses noms de contrôle** : non — ils se re-dérivent sur le dépôt d'accueil, par la mesure.
 
-**Relu le 11.11.2026.** L'avertissement tient toujours : rien ici n'établit que les trois cas ont
-été vus. Un second cas d'application existe depuis le 18.10.2026 : le dépôt `claude-profiles` a
-ramené son propre `CLAUDE.md` racine à un socle sous plafond d'octets, avec index par déclencheur
-et liens contrôlés dans les deux sens, titre compris (garde : `scripts/tests/test-doctrine-racine.sh`
-du dépôt `claude-profiles`, absent d'un dépôt d'accueil).
+**Relu le 11.11.2026** : rien ici n'établit que les trois cas ont été vus. Second cas
+d'application depuis le 18.10.2026 : le `CLAUDE.md` racine du dépôt `claude-profiles` (garde :
+son `scripts/tests/test-doctrine-racine.sh`, absent d'un dépôt d'accueil).
 
 **Frontière** (`ORCHESTRATION.md`, règle 15) : ce skill dit **où vit quoi** — la structure
 documentaire. Une règle écrite mais pas appliquée, ou l'effet d'un découpage sur le modèle,
@@ -103,7 +102,8 @@ Déduit des principes ci-dessus, pas recopié de la source :
 3. **Écrire l'index** par déclencheur, lien gardé dans les deux sens, titre compris (principe 4).
 4. **Poser le plafond** sur la taille obtenue, opposé mécaniquement (principe 2).
 5. **Éprouver chaque garde** en réinjectant son défaut (principe 7), après avoir mesuré son taux
-   de déclenchement sur le stock (section « Un contrôle rouge… »).
+   de déclenchement sur le stock : la lancer sur l'existant, objets en écart sur objets contrôlés
+   (section « Un contrôle rouge… »).
 6. **Ouvrir le journal** daté (principe 6) : chaque bloc déplacé y laisse une ligne, d'où et vers où.
 
 Livrable : le socle réduit, les fichiers de thème, l'index, le journal, la garde et la preuve qu'elle rougit.
@@ -143,15 +143,11 @@ Corollaires, tous les trois vérifiés :
 
 ## Ce qui a été essayé et ÉCARTÉ — pour ne pas le réessayer
 
-| écarté | motif, mesuré |
-|---|---|
-| **Supprimer la doctrine ancienne** | trois fois, un registre périmé a fait re-prioriser un chantier déjà fait |
-| **Tout garder dans le fichier chargé** | 373 Ko à chaque session : lu en diagonale, donc pas appliqué |
-| **Ranger la doctrine dans les journaux** | 204 fichiers à relire pour savoir ce qui vaut ; un récit n'est pas une règle |
-| **Exiger que chaque journal soit référencé** | 179 sur 204 ne le sont pas : contrôle **rouge sur 88 % dès sa pose** |
-| **Nommer le dossier `backlog/`** | « un backlog liste ce qui reste à faire » : le nom annonçait l'inverse du contenu, et une session tierce en a déduit le mauvais geste. **Un nom se lit avant l'avertissement qu'il contient** |
-| **Garder « as-tu lu ? »** | impossible à mesurer. Seule l'absence de **déclaration**, ou un **effet** observable, l'est |
-| **Copier le document de référence dans chaque dépôt** | une copie figée fait citer consciencieusement une version périmée. Cas mesuré : copie locale en avance sur le canonique sur **54 fichiers**, enrichissement jamais remonté |
+Sept voies écartées, chacune avec son motif mesuré : `references/essaye-et-ecarte.md`, **à ouvrir
+avant de proposer une organisation documentaire**. Leurs noms, pour reconnaître l'idée quand elle
+revient : supprimer la doctrine ancienne ; tout garder dans le fichier chargé ; ranger la doctrine
+dans les journaux ; exiger que chaque journal soit référencé ; nommer le dossier `backlog/` ;
+garder « as-tu lu ? » ; copier le document de référence dans chaque dépôt.
 
 ## Un contrôle rouge en permanence est un contrôle désactivé
 

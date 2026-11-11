@@ -12,7 +12,7 @@ mesurés sur le plugin à chaque génération :
 | Sub-agents | 15 |
 | Skills métier (hors skill de doctrine) | 14 |
 | Garde-fous (hooks `PreToolUse` et `Stop`) | 5 |
-| Doctrine injectée à chaque session | 49 029 octets, environ 16 200 tokens |
+| Doctrine injectée à chaque session | 49 000 octets, environ 16 200 tokens |
 
 Tokens estimés au ratio de 3,03 octets par token du budget I5 : une estimation, pas un comptage.
 <!-- /GENERE:chiffres -->

@@ -103,7 +103,7 @@
 - En pratique : c'est l'argument le plus solide pour classer une **frontière de service** parmi les décisions coûteuses à inverser. Dans un cadrage, toute frontière qui deviendra un appel réseau ou une base séparée doit être justifiée par un besoin présent : scalabilité mesurée, isolation de sécurité, cadence de déploiement différente.
 
 ### Des retours des microservices au monolithe existent, motivés par le coût, la complexité, la scalabilité, la performance et l'organisation, mais ils restent rares et surtout documentés par la littérature grise
-- Niveau de preuve : N2 faible (revue multivocale ; la quasi-totalité des sources est grise ; 19 articles utiles + 9 par boule de neige dans la version 2023)
+- Niveau de preuve : N4 (préprint lu, la version de revue n'a pas été ouverte : condition de N2 non établie ; revue multivocale ; la quasi-totalité des sources est grise ; 19 articles utiles + 9 par boule de neige dans la version 2023)
 - Source : R. Su, X. Li, D. Taibi, 2023, « Back to the Future: From Microservice to Monolith », préprint arXiv 2308.15281 (étendu en 2024 dans Electronics 13(8) 1452, version non ouverte : MDPI a renvoyé 403), https://arxiv.org/pdf/2308.15281
 - Extrait lu : « there are four cases that switch from microservice back to monolith: Istio [SA2], Amazon Prime Video [SA5], Segment [SA14] and InVision [SA20]. » ; « Such a switch back would require an assessment of whether monolithic is really the best fit for the company's team size, structure, skills, and operational capabilities »
 - Portée / limites : quatre cas seulement. Le terme « trend » repose surtout sur des billets et des débats en ligne. Il n'y a aucune mesure indépendante.

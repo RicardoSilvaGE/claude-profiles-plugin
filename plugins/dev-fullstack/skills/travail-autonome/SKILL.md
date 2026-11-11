@@ -1,11 +1,11 @@
 ---
 name: travail-autonome
-description: "Méthode d'une étape de mission autonome (moteur scripts/travail-autonome/, ADR-0006), en local ou en mode cloud (tâche planifiée Claude Code). Sert aussi en session normale pour écrire une mission (mission.md, contrat 1) et pour répondre à « où en est la mission ? ». Déclencheurs : mission autonome, travail autonome, étape de mission, lanceur.py, etat.json, relancer une mission bloquée. Pas pour : répéter une invite à intervalle (`loop`), ni une tâche planifiée sans `mission.md` ni état sur disque."
+description: "Méthode d'une étape de mission autonome (moteur scripts/travail-autonome/), en local ou en mode cloud (tâche planifiée Claude Code). Sert aussi en session normale pour écrire une mission (mission.md) et pour répondre à « où en est la mission ? ». Déclencheurs : mission autonome, travail autonome, étape de mission, lanceur.py, etat.json, relancer une mission bloquée. Pas pour : répéter une invite à intervalle (`loop`), ni une tâche planifiée sans `mission.md` ni état sur disque."
 ---
 
 # Travail autonome : la méthode d'une étape
 
-> Version 1.4 — 11.11.2026 (renotation : le push en cloud sous `publication = "aucune"` est dit déduit, pas spécifié). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
+> Version 1.5 — 11.11.2026 (§ 7 et § 8 sortis vers `references/session-normale.md`). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
 > Ce fichier est **injecté tel quel** dans chaque étape
 > par `lanceur.py` (`--append-system-prompt-file`), depuis sa copie installée. Contrats complets :
 > `docs/SPEC-travail-autonome.md` du dépôt `claude-profiles`.
@@ -14,7 +14,7 @@ Deux usages, à ne pas confondre :
 
 - **Dans une étape** (une exécution `claude -p` lancée par `lanceur.py`) : § 1 à § 6, à la lettre. Personne n'est
   devant l'écran.
-- **Dans une session normale avec l'utilisateur** : écrire une mission (§ 7), dire où elle en est (§ 8).
+- **Dans une session normale avec l'utilisateur** : écrire une mission, dire où elle en est (§ 7 et 8, en annexe).
 
 **En session cloud**, deux cas :
 
@@ -122,7 +122,8 @@ $ <commande>
 **Déléguer à un sous-agent** (seulement ceux de `sous_agents`) : il démarre sans contexte. Brief en sept points —
 objectif et critère d'acceptation ; périmètre dedans et dehors ; ce qui est établi (fichiers lus, décisions de la
 mission) ; outils et sources, et les interdits ci-dessus ; ce qu'il est autorisé à faire hors du dépôt : rien ;
-livrable attendu et retour court ; ce que l'étape précédente a laissé. Son retour est une affirmation : le vérifier par une commande avant de l'écrire dans `fait`.
+livrable attendu et retour court ; ce que l'étape précédente a laissé. Son retour est une affirmation : le vérifier
+par une commande avant de l'écrire dans `fait`.
 
 ## 6. Si quelque chose ne va pas
 
@@ -131,29 +132,11 @@ livrable attendu et retour court ; ce que l'étape précédente a laissé. Son r
   même chose.
 - Le temps manque : arrêter l'incrément là où il est prouvable, écrire l'état honnêtement (`dette`), finir.
 
-## 7. En session normale : écrire une mission
+## 7 et 8. En session normale : écrire une mission, dire où elle en est
 
-Gabarit commenté : `scripts/travail-autonome/mission.exemple.md` du dépôt `claude-profiles`. En-tête TOML entre deux
-lignes `+++` (une clé inconnue est refusée), corps libre.
-
-- **Une règle qui doit être garantie va dans l'en-tête** (bornes, chemins, publication) : le lanceur l'oppose. Une
-  règle de jugement va dans le corps : elle est lue, pas garantie.
-- `condition_de_fin` **vérifiable sur pièces** ; bornes réalistes (`echeance`, `etapes_max`, `duree_etape_min`) ;
-  `ecrire_dans_le_depot` le plus étroit possible ; `sous_agents` nommés ; `web = false` sauf besoin.
-- `validee_le` n'est posé que par l'utilisateur, après relecture. La mission se commite dans le dépôt cible
-  (`docs/missions/<slug>.md`) **avant** `lanceur.py preparer`.
-
-## 8. En session normale : « où en est la mission ? »
-
-Lire, sans rien modifier : `lanceur.py statut` (copie installée, `%LOCALAPPDATA%\travail-autonome\`), puis
-`etat.json`, la fin de `journal.jsonl`, le dernier `etapes/*/resume.md`, la branche de mission. Rendre : statut
-effectif et pourquoi, dernier incrément prouvé, questions ouvertes avec leur recommandation, part de quota, et le
-geste attendu de l'utilisateur s'il y en a un (`reprendre`, répondre à une question, retirer `STOP`). Ne jamais lancer
-`etape` ni `reprendre` sans sa demande.
-
-En mode cloud, lire la branche de mission sur `origin` : `docs/missions/<slug>/etat.json`, la fin de `journal.md`,
-le dernier `etapes/*/resume.md`. Le geste attendu de l'utilisateur est alors : répondre à une question (en éditant
-`etat.json` sur la branche), retirer `STOP`, ou désactiver la tâche sur claude.ai/code/routines.
+Sans objet dans une étape. En session normale, avant d'écrire un `mission.md` (§ 7) ou de répondre à « où en est la
+mission ? » (§ 8), ouvrir `references/session-normale.md` du dossier du skill. Ne jamais lancer `etape` ni
+`reprendre` sans la demande de l'utilisateur.
 
 ## 9. Mode cloud : ce qui change
 
@@ -199,14 +182,14 @@ sauf l'ouverture d'une PR, et toute écriture sous `.claude/` ou `.github/`.
 - **Commiter puis pousser** (étape 6 du § 2, remplacée) : un seul commit en fin d'étape, qui contient le travail,
   `resume.md`, la ligne de `journal.md` et `etat.json` réécrit en dernier ; puis `git push -u origin <branche>`,
   **quelle que soit `publication`**, `"aucune"` comprise : chaque exécution repart d'un clone neuf, l'état ne vit
-  que sur `origin` (déduit de ce motif : la SPEC cloud ne traite pas `"aucune"`). Push refusé parce que la branche distante a avancé : `git fetch origin <branche>:refs/remotes/origin/<branche>`,
-  lire son `etat.json` ; si son `etape` est ≥ la
-  tienne, une autre exécution a travaillé : **abandonner sans forcer**, finir en le disant. Sinon, `git rebase` puis
-  pousser à nouveau, une fois.
+  que sur `origin` (déduit de ce motif : la SPEC cloud ne traite pas `"aucune"`). Push refusé parce que la branche
+  distante a avancé : `git fetch origin <branche>:refs/remotes/origin/<branche>`, lire son `etat.json` ; si son
+  `etape` est ≥ la tienne, une autre exécution a travaillé : **abandonner sans forcer**, finir en le disant. Sinon,
+  `git rebase` puis pousser à nouveau, une fois.
 - **À `termine`** : si `publication = "pr"`, ouvrir la PR de la branche vers la base par
   `gh api repos/<owner>/<repo>/pulls -X POST -f title=… -f head=<branche> -f base=<base> -f body=…` (`gh pr create`
-  ne marche pas en cloud : le relais GitHub refuse `gh pr`, cf. `docs/SPEC-travail-autonome-cloud.md` du dépôt
-  `claude-profiles`). Si `publication = "branche-seule"` ou `"aucune"`, ne rien ouvrir.
+  ne marche pas en cloud : le relais GitHub refuse `gh pr`, cf. `docs/SPEC-travail-autonome-cloud.md` du
+  28.10.2026, dépôt `claude-profiles`). Si `publication = "branche-seule"` ou `"aucune"`, ne rien ouvrir.
 - Interdits du § 5 inchangés, **sauf** pousser la branche de mission et, à `termine` sous `"pr"`, ouvrir sa PR. Lire
   `.claude/` se fait avec l'outil Read seulement : la garde refuse toute commande qui le nomme.
 - Fin de réponse : une seule ligne `Étape <n> : <statut> — <incrément en une phrase>`.

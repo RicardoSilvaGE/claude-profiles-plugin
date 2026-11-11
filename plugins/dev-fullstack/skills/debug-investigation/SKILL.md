@@ -3,7 +3,7 @@ name: debug-investigation
 description: "Investigation structurée d'un bug : reproduction minimale, isolation, hypothèses falsifiables, instrumentation ciblée, root cause vérifiée, test de non-régression. Déclencheurs : un dysfonctionnement sous n'importe quelle forme (ça plante, marche en dev pas en prod), intermittence, race condition, régression, ou un stack trace soumis. Pas pour : production cassée ou incident en cours (d'abord `release` Mode D, `securite` Mode D si soupçon de compromission), review pré-merge (sub-agent `reviewer`), audit perf (`perf-audit`), audit sécurité (sub-agent `securite`)."
 ---
 
-> Version 1.2 — 11.11.2026 (renotation : le cas non reproductible n'émet plus d'hypothèse avant la lecture). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
+> Version 1.3 — 11.11.2026 (cure de poids : aide-mémoire de stack en `references/`, redites retirées). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
 
 # debug-investigation — Investigation structurée de bug
 
@@ -27,8 +27,6 @@ description: "Investigation structurée d'un bug : reproduction minimale, isolat
 - Service de production cassé ou dégradé, incident en cours → `release` Mode D d'abord (atténuer, restaurer) ; secret fuité ou soupçon de compromission → `securite` Mode D d'abord. Ce skill vient après, pour la cause racine (`ORCHESTRATION.md`, règle 16).
 - Audit préventif de code sain → les audits spécialisés du profil : `securite`, `perf-audit`, `a11y-audit`.
 - Review pré-merge structurelle → sub-agent `reviewer`.
-- Audit performance → `perf-audit`.
-- Audit sécurité → sub-agent `securite`.
 - Refactoring large déclenché par le bug → cadrage par `architecte` en sortie.
 
 ## Workflow (6 phases)
@@ -93,6 +91,8 @@ Tester les hypothèses dans l'ordre du coût croissant. Une hypothèse non testa
 - Off-by-one, regex qui ne couvre pas tous les cas.
 - Variable d'env manquante en prod.
 
+Projet React, Next.js, Supabase ou Vercel et pistes épuisées : `references/aide-memoire-react-next-supabase.md` détaille ces motifs par couche (pistes à vérifier sur la version installée, non sourcées, jamais des faits ; rien sur le socle vanilla ni le back Python).
+
 ### Phase 4 — Instrumentation ciblée
 
 Quand la lecture seule ne suffit pas, instrumenter :
@@ -120,8 +120,20 @@ Une root cause valide remplit ces critères :
 3. **Retirer toute instrumentation temporaire** (logs, breakpoints).
 4. **Documenter** : court paragraphe `cause / fix / prévention` dans le commit ou un fichier `docs/POSTMORTEM-<date>-<slug>.md` si le bug a touché la prod.
 
-## Garde-fous (règles dures)
+**Compte rendu à l'utilisateur**, dans tous les cas, en quatre lignes :
 
+```
+Symptôme   : <ce qui était observé, et la reproduction>
+Cause      : <la root cause en une phrase, fichier:ligne>
+Correctif  : <ce qui a changé> — test <nom>, vu rouge puis vert
+Prévention : <ce qui empêche le retour, ou « rien de plus que le test »>
+```
+
+## Garde-fous (règles dures) — à repasser avant livraison
+
+Un seul point non tenu → corriger avant de livrer.
+
+- Reproduction minimale stable, ou non-reproductibilité documentée (Phase 1).
 - Aucun fix avant root cause vérifiée (les 4 critères Phase 5).
 - Aucune hypothèse émise sans lecture du code (Phase 2 HARD GATE).
 - Aucune affirmation sur le comportement runtime sans l'avoir observé (logs réels ou reproduction).
@@ -139,47 +151,3 @@ Une root cause valide remplit ces critères :
 - **"Ça marche maintenant, je sais pas pourquoi"** — c'est exactement le bug qui reviendra.
 - **Émettre une hypothèse sur le nom d'une variable** sans lire son usage.
 - **Conclure depuis un seul cas de reproduction** sans vérifier 2-3 fois.
-
-## Connaissance domaine métier (debugging React/Next/Supabase)
-
-> Aide-mémoire écrit à la création (21.05.2026), **ni sourcé ni daté ligne par ligne**, et limité à React, Next, Supabase et Vercel : rien sur le socle vanilla ni sur le back Python. Chaque ligne est une **piste à vérifier** sur la version installée du projet (le comportement de Next, en particulier, change d'une version majeure à l'autre), jamais un fait à affirmer. Pour un fait sourcé et daté : skill `ux-preuves`, volet code.
-
-### Bugs React fréquents
-- **Stale closure** : `useEffect(() => { fn(state); }, [])` → `state` capturé à la première render. Fix : ajouter `state` aux deps ou utiliser `useRef`.
-- **Setter en boucle** : `setState` dans le render → infinite loop. React doit hurler, mais parfois silencieux via `useEffect` mal câblé.
-- **Key manquante** sur liste : composants ne se remontent pas correctement → état zombi.
-- **Hydration mismatch** : `Date.now()`, `Math.random()`, ou logique côté client dans un Server Component.
-
-### Bugs Next.js fréquents
-- **`'use client'` oublié** quand on utilise un hook.
-- **Fetch dans Server Component pas mis en cache** (`{ cache: 'no-store' }` involontaire).
-- **Params async non awaités** (Next 15+ : `params` est une Promise).
-- **Env var côté client sans `NEXT_PUBLIC_`** → undefined silencieux.
-
-### Bugs Supabase fréquents
-- **RLS qui bloque sans message clair** : query renvoie `[]` au lieu d'erreur 403.
-- **`service_role` sur le mauvais client** : bypass RLS involontaire en dev.
-- **Realtime subscription pas désabonnée** → memory leak + events doublés.
-- **RPC avec params typés JS qui échouent côté Postgres** (cast implicite raté).
-
-### Bugs Vercel / déploiement fréquents
-- **Var d'env définie en dev pas en prod**.
-- **Build différent en prod** : optim Next.js qui change le comportement de Server Components.
-- **Edge runtime vs Node runtime** : certaines libs marchent dans l'un pas l'autre.
-
-## Auto-check final (avant livraison)
-
-- Phase 0 brief formulé (symptôme + conditions + env + repro + pistes de départ) ?
-- Phase 1 reproduction minimale stable (ou non reproductibilité documentée) ?
-- Phase 2 lecture du code, callers, callees, state, logs effectuée ?
-- Phase 3 hypothèses falsifiables formulées et testées dans l'ordre ?
-- Phase 5 root cause satisfait les 4 critères (explique, explique non-symptômes, prédit, bon niveau) ?
-- Phase 6 test qui reproduit le défaut écrit avant le fix et vu rouge, puis fix minimal et test vert ?
-- Toute instrumentation temporaire retirée ?
-- Si pattern systémique détecté → signalement vers `architecte` ?
-
-Si une seule réponse est non → corriger avant livraison.
-
-## Incidents source
-
-- *(à compléter au fil des incidents — chaque bug investigué qui fait évoluer la connaissance domaine ci-dessus mérite une entrée datée).*

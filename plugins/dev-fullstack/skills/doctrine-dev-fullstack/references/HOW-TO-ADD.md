@@ -1,6 +1,6 @@
 # Comment ajouter un nouveau sub-agent ou skill
 
-> Version 1.8 — 11.11.2026 (un renvoi au registre des clés pointait encore `ORCHESTRATION.md`. Version 1.7 — 11.11.2026 : reçoit d'`ORCHESTRATION.md` le registre des clés de frontmatter, qui sert à écrire une fiche et non à router ; il couvre désormais les deux fiches transverses. Version 1.6 — 02.11.2026 : longueur des descriptions, pas de cible chiffrée.)
+> Version 1.9 — 11.11.2026 (provenance de `publication-store` passée en annexe. Version 1.8 — 11.11.2026 : un renvoi au registre des clés pointait encore `ORCHESTRATION.md`. Version 1.7 — 11.11.2026 : reçoit d'`ORCHESTRATION.md` le registre des clés de frontmatter, qui sert à écrire une fiche et non à router ; il couvre désormais les deux fiches transverses. Version 1.6 — 02.11.2026 : longueur des descriptions, pas de cible chiffrée.)
 > Référence pour l'utilisateur (et pour Claude qui orchestre les modifications).
 
 ## Sub-agent ou skill ?
@@ -158,7 +158,7 @@ Le harness **photographie la liste des agents au moment où le process `claude` 
 
 ## Modèle de SKILL.md à copier
 
-Voir `templates/profiles/dev-fullstack/skills/supabase-toolkit/SKILL.md` ou `skills/publication-store/SKILL.md` (section « D'où vient ce contenu » exemplaire) comme modèles aboutis.
+Voir `templates/profiles/dev-fullstack/skills/supabase-toolkit/SKILL.md` ou `skills/publication-store/SKILL.md` (`references/provenance.md`, « D'où vient ce contenu », exemplaire) comme modèles aboutis.
 
 ## Modèle de sub-agent à copier
 

@@ -100,7 +100,7 @@
 - En code : après génération, une passe dédiée « quelles failles ce code contient-il ? », avec ses constats écrits, puis une correction. Pas seulement un adjectif dans la consigne.
 
 ### Chaque « amélioration » demandée à l'IA peut dégrader la sécurité : relire la sécurité à chaque itération, pas seulement à la première
-- Niveau de preuve : N2 faible (400 échantillons, 40 tours ; conférence IEEE-ISTAS 2025 d'après l'en-tête du PDF)
+- Niveau de preuve : N2 (conférence IEEE-ISTAS 2025 d'après l'en-tête du PDF ; petit banc : 400 échantillons, 40 tours)
 - Source : Shukla, Joshi, Syed, 2025, « Security Degradation in Iterative AI Code Generation: A Systematic Analysis of the Paradox », https://arxiv.org/abs/2506.11022 (PDF v2 lu)
 - Extrait lu : « Our findings show a 37.6% increase in critical vulnerabilities after just five iterations ».
 - Portée / limites :

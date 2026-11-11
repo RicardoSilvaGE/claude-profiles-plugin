@@ -65,6 +65,7 @@
 | `references/qa-instabilite-ci.md` | **Tests.** Tests instables, relancer pour classer contre pour prouver, ordre d'exécution, quarantaine et délais publiés, coût de la CI, sélection de tests, temps et aléa contrôlés |
 | `references/qa-conception-cas.md` | **Tests.** Partitions, valeurs limites à trois points, tables de décision, transitions, combinatoire (NIST), exploratoire, TDD, BDD, test métamorphique, entrées hostiles, RLS qui refuse sans erreur |
 | `references/qa-tests-llm.md` | **Tests.** Tests générés par LLM en industrie, oracles et assertions faibles, agents qui exploitent les tests, tests de reproduction, TDD avec un LLM, séparation de l'auteur du code et des attendus |
+| `references/severite-et-methodes.md` | Sévérité 0-4 de Nielsen, table question → méthode d'évaluation, trois règles de protocole (sorti du `SKILL.md` le 11.11.2026) |
 | `references/mythes.md` | **Transverse.** Les affirmations à ne jamais reproduire, par domaine, chacune renvoyant à la fiche qui la réfute |
 | `references/provenance.md` | **Transverse.** Volumes, sources, lectures sur résumé seul et contrôles par sondage de chaque volet |
 | `references/front-de-recherche.md` | Résultats récents (2022-2026) ou solides et méconnus : lisibilité individualisée, effets mesurés de l'IA sur le travail (productivité, déqualification, sur-confiance), état réel de l'accessibilité, nudges et réplications ratées, passkeys, lecture des graphiques |
@@ -117,10 +118,10 @@ convention sans preuve, contredite) : c'est lui qui range une règle à son nive
 fiches du volet UX n'ont pas de verdict ; `design-front-recent.md` et `redaction-orthotypographie.md` n'ont
 pas de section de ce nom (la seconde finit par « Ce que le profil devrait dire »).
 
-**« N2 faible »**, employé dans quelques fiches, n'est pas un niveau de l'échelle du `SKILL.md`, qui fait
-foi : l'entrée dit entre parenthèses quelle condition de N2 (revue par pairs, ou grand échantillon et
-méthode publiée) n'est pas établie par la page lue. Ne pas la citer comme une N2 pleine : reprendre sa
-réserve avec le niveau. Les bandeaux de
+**« N2 faible »** n'est pas un niveau de l'échelle du `SKILL.md`, qui fait foi. Les entrées qui le
+portaient ont été reclassées le 11.11.2026 (détail : `provenance.md`, version 1.15) ; il en reste deux,
+que leur fiche ne permet pas de trancher (`growth-emails-droit.md`, article de revue lu sur résumé
+seul ; `revue-llm.md`, étude qualitative à 10 participants) : reprendre leur réserve avec le niveau. Les bandeaux de
 tendance (« bento », « glass », typographie géante) n'ont pas d'étude d'effet trouvée : N4 au
 mieux (`design-front-recent.md`).
 

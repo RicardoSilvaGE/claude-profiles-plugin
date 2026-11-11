@@ -5,14 +5,14 @@ description: "Référentiel de preuves vérifiées et datées (niveau de preuve,
 
 # Preuves vérifiées — référentiel du profil
 
-> Version 1.14 — 11.11.2026 (description, verdict de fin de fiche et dates d'instantané corrigés.) Versions 1.0 à 1.13 : `references/provenance.md` § « Versions du skill ».
+> Version 1.15 — 11.11.2026 (table des fiches et sections propres à l'UX sorties en annexe, « N2 faible » reclassé). Versions 1.0 à 1.14 : `references/provenance.md` § « Versions du skill ».
 > Contenu issu d'une **recherche documentaire des 09 et 10.11.2026** : chaque entrée des fiches cite une
 > page effectivement ouverte pendant cette recherche, avec un extrait lu. Cf. § « D'où vient ce contenu ».
 > **C'est un instantané** : § « Quand vérifier en ligne » dit quand il ne suffit plus.
 
 ## Principe directeur
 
-Une recommandation UX vaut ce que vaut sa preuve. « C'est une bonne pratique » n'est pas une
+Une recommandation vaut ce que vaut sa preuve. « C'est une bonne pratique » n'est pas une
 source, et un chiffre sans origine est un chiffre inventé. Chaque recommandation porte donc trois
 choses : **le principe**, **sa preuve** (niveau + source datée), **sa portée** (ce que la source
 ne dit pas : population, tâche, époque).
@@ -29,7 +29,7 @@ de ce skill disent où regarder et quoi éviter ; elles ne remplacent pas l'obse
 | Niveau | Nature | Exemples | Ce qu'il vaut |
 |---|---|---|---|
 | **N1** | Norme, réglementation | WCAG 2.2, EN 301 549, European Accessibility Act, DSA art. 25, ISO 9241 | Exigence. Ne se négocie pas contre une préférence ; son application à un cas précis relève d'un juriste quand elle est légale. |
-| **N2** | Recherche revue par pairs, ou étude empirique à grand échantillon et méthode publiée | ACM CHI / CSCW / TOCHI, Baymard, études NN/g quantitatives, WebAIM Million | Forte **dans son contexte** : population, tâche, date. Une étude ne se généralise pas d'elle-même. |
+| **N2** | Recherche revue par pairs, ou étude empirique à grand échantillon et méthode publiée | ACM CHI / CSCW / TOCHI, WebAIM Million, Baymard et NN/g quand la page lue donne échantillon et méthode (sinon N4) | Forte **dans son contexte** : population, tâche, date. Une étude ne se généralise pas d'elle-même. |
 | **N3** | Guideline officielle d'institution ou de plateforme | GOV.UK Design System, Apple HIG, Material Design, web.dev | Souvent fondée sur des tests internes non publiés. Vaut aussi comme **convention** : s'en écarter coûte en apprentissage. |
 | **N4** | Avis d'expert, article de praticien | billets, conférences, livres de praticiens | Oriente, ne tranche jamais seul. |
 | **N0** | Jugement de conception | ton raisonnement | Légitime **s'il est déclaré** et accompagné du test qui le confirmerait. |
@@ -73,78 +73,34 @@ pour **lire la page** — jamais le seul extrait du moteur) quand :
 d'accessibilité), `eur-lex.europa.eu` (textes européens), `iso.org` (résumés de normes),
 `dl.acm.org` (CHI, CSCW, TOCHI, UIST), `nngroup.com`, `baymard.com`, `webaim.org`, `web.dev`,
 `design-system.service.gov.uk`, `developer.apple.com/design`, `m3.material.io`,
-`measuringu.com` (statistiques de tests). Un agrégateur de « lois UX » est un index, pas une
+`measuringu.com` (statistiques de tests). Cette liste est celle du volet UX ; pour les autres
+volets, repartir des sources que cite la fiche du domaine (ligne « Source » de ses entrées). Un agrégateur de « lois UX » est un index, pas une
 preuve : remonter à l'étude qu'il cite.
 
 **Ce que devient une source lue en veille** : même format qu'une entrée de fiche, marquée
 « veille du <date> », listée à part dans le hand-off pour être versée dans la fiche du domaine.
 Le dépôt est la source ; une trouvaille restée dans une session est perdue.
 
-## Prioriser : sévérité 0-4
+## Prioriser : sévérité 0-4 · De la question à la méthode
 
-L'échelle de Nielsen cote chaque problème par trois facteurs — **fréquence** (combien de
-personnes le rencontrent), **impact** (gêne ou blocage), **persistance** (surmonté une fois
-appris, ou subi à chaque passage) — Nielsen y ajoute l'impact marché. Une cote donnée par **un
-seul** évaluateur est « too unreliable to be trusted » : quand c'est possible, moyenner au moins
-trois évaluateurs ; sinon, le dire. Source : Nielsen 1994, « Severity Ratings for Usability
-Problems » ; détail dans `references/normes-lois-methodes.md`.
-
-| Cote | Sens | Conduite |
-|---|---|---|
-| 4 | Catastrophe d'utilisabilité | Corriger avant livraison |
-| 3 | Problème majeur | Priorité haute |
-| 2 | Problème mineur | Priorité basse |
-| 1 | Cosmétique | Si le temps le permet |
-| 0 | Pas un problème d'utilisabilité | — |
-
-Une cote se justifie par les trois facteurs, en une ligne. Un défaut **N1** (WCAG, légal) qui
-bloque une personne est au moins 3, quelle que soit sa fréquence : bloquer quelqu'un n'est pas
-une affaire de statistique.
-
-## De la question à la méthode
-
-| Question | Méthode | Ce qu'elle ne dit pas |
-|---|---|---|
-| Les gens trouvent-ils l'information ou la fonction ? | Tree testing (arborescence seule), first-click test | Si la page trouvée est comprise |
-| Peuvent-ils accomplir la tâche ? Où butent-ils ? | Test d'utilisabilité modéré, itératif, petit nombre de participants par profil | Une fréquence fiable dans la population |
-| La tâche est-elle perçue comme facile ? | SEQ après chaque tâche ; SUS ou UMUX-Lite en fin de session | Pourquoi ; la cause se voit dans l'observation |
-| Le changement modifie-t-il le comportement à l'échelle ? | Test A/B, taille d'échantillon et durée fixées d'avance | Pourquoi ; et rien sur ce qui n'est pas mesuré |
-| Sert-il l'objectif du produit ? | HEART (Happiness, Engagement, Adoption, Retention, Task success) en Goals → Signals → Metrics | Rien sans une décision à éclairer ; conçu pour du web à fort trafic, peu transposable tel quel à un outil métier à faible audience |
-| Que cherchent-ils à accomplir, au fond ? | Entretiens orientés jobs-to-be-done, observation en contexte | Une validation de solution |
-
-Détail, chiffres de référence (moyenne SUS, taille d'échantillon et ses critiques, pièges des
-tests A/B) et sources : `references/normes-lois-methodes.md`.
-
-**Trois règles de protocole qui évitent la plupart des faux résultats** :
-
-1. **Fixer le seuil de décision avant de mesurer.** Choisir ensuite, c'est lire ce qu'on veut.
-2. **Formuler les tâches sans le vocabulaire de l'interface.** « Trouvez où modifier votre
-   adresse », pas « cliquez sur Profil ».
-3. **Ne pas regarder un A/B en cours pour l'arrêter dès qu'il « gagne ».** Ce test multiple
-   « significantly inflates the type-I error rates » (Kohavi, Deng, Vermeer, KDD 2022) : fixer
-   durée et effectif d'avance, ou employer une méthode séquentielle (`references/normes-lois-methodes.md`).
+Volet UX seulement. Avant de coter un problème d'utilisabilité, de choisir une méthode
+d'évaluation ou de lancer un test (utilisabilité, questionnaire, A/B) : échelle de Nielsen, table
+question → méthode et trois règles de protocole dans `references/severite-et-methodes.md`.
 
 ## Fiches de référence
 
 Lire la fiche du domaine **avant** de recommander. Chaque entrée : règle, niveau, source, extrait
-lu, portée. **Index détaillé** (ce que couvre chaque fiche, et les trois niveaux déclinés par
-domaine) : `references/index.md`.
+lu, portée. **La liste des fiches, ce que couvre chacune et les trois niveaux déclinés par
+domaine** : `references/index.md`, à ouvrir quand le nom de la fiche n'est pas déjà connu.
 
-| Volet | Fiches (`references/`) |
-|---|---|
-| UX | `cognition-chemin-usage.md` (**le chemin logique d'usage**, à ouvrir pour tout parcours), `formulaires-navigation-mobile.md`, `contenus-documents-accessibilite.md`, `ia-ethique-onboarding.md`, `normes-lois-methodes.md`, `front-de-recherche.md` |
-| Design visuel | `design-perception-esthetique.md`, `design-couleur-contraste.md`, `design-typographie-mise-en-page.md`, `design-motion-etats-systemes.md`, `design-front-recent.md` |
-| Rédaction | `redaction-microcopy.md`, `redaction-voix-ton-inclusif.md`, `redaction-i18n-locales.md`, `redaction-orthotypographie.md`, `redaction-traduction-ia.md` |
-| Growth | `growth-science-marketing.md`, `growth-conversion-persuasion.md`, `growth-aso-stores.md`, `growth-emails-droit.md`, `growth-seo-ia-droit-publicite.md` |
-| Frontend | `frontend-performance.md`, `frontend-react-next.md`, `frontend-accessibilite-code.md`, `frontend-qualite-securite.md`, `frontend-code-ia-plateforme.md` |
-| Backend | `backend-securite-api-auth.md`, `backend-donnees-postgres.md`, `backend-fiabilite-contrats-api.md`, `backend-observabilite-tests-donnees.md`, `backend-pile-serveur-code-ia.md` |
-| Architecture | `architecture-decisions-adr.md`, `architecture-qualites-nfr.md`, `architecture-modularite-dette.md`, `architecture-dependances-build-buy.md`, `architecture-risques-estimation-llm.md` |
-| Sécurité | `securite-menaces-priorisation.md`, `securite-outils-detection.md`, `securite-incidents-secrets.md`, `securite-plateforme-deploiement.md`, `securite-llm-agents.md` |
-| Revue de code | `revue-efficacite.md`, `revue-llm.md` |
-| Ingénierie IA | `ia-profils-consignes.md`, `ia-profils-architecture-agents.md`, `ia-profils-routage-chargement.md`, `ia-profils-mesure.md`, `ia-profils-comportements.md` |
-| Mise en production | `release-risque-cadence.md`, `release-progressif-retour-arriere.md`, `release-migrations-sauvegardes.md`, `release-verification-incidents.md`, `release-config-build-agents.md` |
-| Tests | `qa-strategie-allocation.md`, `qa-efficacite-suite.md`, `qa-instabilite-ci.md`, `qa-conception-cas.md`, `qa-tests-llm.md` |
-| Transverse | `index.md` (détail des fiches), `mythes.md` (affirmations à ne jamais reproduire), `provenance.md` (volumes, sources, contrôles, versions) |
+Les noms suivent le volet : `design-*`, `redaction-*`, `growth-*`, `frontend-*`, `backend-*`,
+`architecture-*`, `securite-*`, `revue-*`, `ia-profils-*`, `release-*`, `qa-*` ; le volet UX n'a pas
+de préfixe (`cognition-chemin-usage.md`, **le chemin logique d'usage**, à ouvrir pour tout
+parcours ; `formulaires-navigation-mobile.md`, `contenus-documents-accessibilite.md`,
+`ia-ethique-onboarding.md`, `normes-lois-methodes.md`, `front-de-recherche.md`).
+
+**Une fiche pèse jusqu'à 65 Ko : ne pas la lire en entier.** Chercher le sujet par `Grep` dans ses
+titres `###`, lire les entrées trouvées, puis son verdict de fin quand elle en a un.
 
 ## Trois niveaux pour toute règle
 

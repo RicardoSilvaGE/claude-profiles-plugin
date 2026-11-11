@@ -1,17 +1,13 @@
 ---
 name: a11y-audit
-description: "Audit d'accessibilité WCAG 2.2 AA ex-post sur un composant ou une page existante : labels, focus, tab order, contraste, ARIA, lecteurs d'écran, motion. Rend un rapport priorisé Bloquant/Sérieux/Modéré/Mineur, chaque défaut avec son critère WCAG cité et un fix concret. Déclencheurs : audit a11y, WCAG, RGAA, lecteur d'écran, navigation clavier, contraste, alt text, prefers-reduced-motion. Pas pour : spécifier l'a11y d'une feature à concevoir (sub-agent `ux`), ni corriger un défaut isolé (`debug-investigation`). Toute stack web."
+description: "Audit d'accessibilité WCAG 2.2 AA ex-post sur un composant ou une page existante : labels, focus, contraste, ARIA, motion. Rend un rapport priorisé Bloquant/Sérieux/Modéré/Mineur, critère WCAG et fix par défaut. Déclencheurs : audit a11y, WCAG, lecteur d'écran, navigation clavier, contraste, alt text, prefers-reduced-motion. Pas pour : spécifier l'a11y d'une feature (`ux`), l'audit visuel (`designer`), sourcer un seuil (`ux-preuves`), certifier une conformité RGAA, un défaut isolé (`debug-investigation`). Toute stack web."
 context: fork
 agent: general-purpose
 background: false
 ---
 
-> Version 1.6 — 11.11.2026 (renotation : la région d'erreur du patron de formulaire existe dès le rendu initial ; message urgent en `role="alert"` seul). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
-> **Pas de champ `paths` sur ce skill, et c'est une décision** : il est préchargé dans `frontend`, et les
-> deux mécanismes sont exclusifs (témoin du 17.08.2026). **Ne pas rajouter `paths` ici sans retirer le
-> préchargement dans `agents/frontend.md`.** `context: fork` coexiste avec le préchargement (témoin du
-> 19.08.2026). Motifs et mesures : `CHANGELOG.md` du profil, historique de ce skill — fichier du dépôt
-> `claude-profiles`, non déployé : hors de portée depuis un home ou un plugin.
+> Version 1.7 — 11.11.2026 (cure de poids : patrons de code et outils en annexe, redites retirées, les deux lectures du skill dites). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
+> **Pas de champ `paths`, et c'est une décision** : ce skill est préchargé dans `frontend`, et les deux mécanismes sont exclusifs. Ne pas en rajouter sans retirer le préchargement dans `agents/frontend.md`.
 
 # a11y-audit — Audit d'accessibilité ex-post
 
@@ -21,18 +17,17 @@ background: false
 
 **L'a11y n'est pas une checklist à cocher — c'est l'expérience d'un utilisateur réel qui ne voit pas, ne bouge pas, ou ne comprend pas comme la majorité.** Ce skill teste depuis le point de vue de cet utilisateur, pas depuis une matrice abstraite.
 
+## Deux lectures de ce skill
+
+- **Invoqué comme skill**, il tourne en contexte isolé (`context: fork`) : il ne dialogue pas avec l'utilisateur, et son rapport est son retour à l'orchestrateur.
+- **Préchargé dans le sous-agent `frontend`**, il est lu sans fork, comme une méthode : l'agent l'applique quand il audite ou corrige, et rend le rapport dans son propre hand-off. Un sous-agent ne dialogue pas davantage.
+
+Dans les deux cas : aucune question ni demande de test posée en route ; elles sont **rendues** dans la section « Questions et tests rendus à l'orchestrateur » du rapport.
+
 ## Périmètre
 
 ### Couvert
-- Audit a11y d'un composant ou d'une page existante.
-- 4 piliers WCAG 2.2 : Perceivable, Operable, Understandable, Robust.
-- Navigation clavier complète (Tab, Shift+Tab, Enter, Space, Escape, flèches).
-- Focus management (visible, ordre logique, piégeage dans modale, restauration au close).
-- ARIA approprié (rôles, états, propriétés) — pas l'inverse ARIA partout.
-- Contraste de couleur (WCAG AA : 4.5:1 texte normal, 3:1 texte large + UI).
-- Compatibilité screen reader (annonces dynamiques, structure sémantique).
-- Motion et `prefers-reduced-motion`.
-- Formulaires : labels associés, messages d'erreur annoncés, group fieldset.
+- Audit a11y d'un composant ou d'une page existante, sur les 4 piliers WCAG 2.2 (détail en Phase 2) : clavier, focus, ARIA, contraste, lecteurs d'écran, motion, formulaires.
 
 ### Hors-scope
 - Spécifier l'a11y au design d'une nouvelle feature → sub-agent `ux`.
@@ -52,7 +47,7 @@ Avant toute action, formuler en 5 lignes max :
 4. **Audit existant ?** : a-t-on déjà fait un passage axe-core / Lighthouse ?
 5. **Question ouverte unique** : un seul arbitrage non documenté, si applicable.
 
-Ce skill tourne en contexte isolé (`context: fork`) : il ne dialogue pas avec l'utilisateur. Si la cible est floue, **ne pas poser la question en route** : retenir l'hypothèse la plus plausible, l'écrire dans le brief, auditer sur cette base, et rendre **une seule question groupée** dans la section « Questions et tests rendus à l'orchestrateur » du rapport. Si aucune hypothèse ne tient (cible introuvable), rendre la question seule, sans audit.
+Si la cible est floue : retenir l'hypothèse la plus plausible, l'écrire dans le brief, auditer sur cette base, et rendre **une seule question groupée** dans le rapport. Si aucune hypothèse ne tient (cible introuvable), rendre la question seule, sans audit.
 
 ### Phase 1 — Lecture obligatoire (HARD GATE)
 
@@ -84,49 +79,51 @@ sourcée fait foi.
 
 **Pilier 1 — Perceivable** (l'info doit être perceptible)
 - **Images** : `alt` présent et descriptif (vide si décorative `alt=""`).
-- **Icônes interactives** : `aria-label` ou texte visible (un `<Button><X /></Button>` sans label est un échec).
+- **Icônes interactives** : `aria-label`, `aria-labelledby` ou texte visible (un `<Button><X /></Button>` sans label est un échec).
 - **Contraste** : texte normal ≥ 4.5:1 vs fond. Texte large (≥ 18pt ou 14pt bold) ≥ 3:1. UI controls et focus rings ≥ 3:1.
-- **Couleur non porteuse seule d'info** : pas « les champs en rouge sont obligatoires » sans texte / icône / symbole.
+- **Couleur non porteuse seule d'info** : pas « les champs en rouge sont obligatoires » ni « rouge = erreur » sans texte / icône / symbole.
 - **Structure sémantique** : `<h1>` unique, hiérarchie sans saut (h1 → h2 → h3, pas h1 → h3).
 - **Landmarks** : `<header>`, `<nav>`, `<main>`, `<footer>` présents.
 
 **Pilier 2 — Operable** (tout doit être atteignable et opérable)
-- **Navigation clavier intégrale** : Tab parcourt tout interactif, dans l'ordre visuel.
+- **Navigation clavier intégrale** : Tab parcourt tout interactif, dans l'ordre visuel (Tab, Shift+Tab, Enter, Space, Escape, flèches) ; pas de `tabindex` positif, qui casse l'ordre naturel.
 - **Focus visible** : `focus-visible:` styled, contraste ≥ 3:1 vs fond adjacent.
-- **Pas de keyboard trap** : Escape ferme modale, Tab ne piège pas.
+- **Pas de keyboard trap** : Tab ne piège pas hors modale. **Toute modale** : piège le focus (Tab ne sort pas vers le contenu derrière), le restaure à la fermeture, se ferme sur Escape, a un titre lu par SR.
 - **Skip links** : `<a href="#main">Aller au contenu</a>` en début de page si nav longue.
 - **Targets de clic** : ≥ 24x24 px (WCAG 2.2). Idéal 44x44 sur mobile.
 - **Pas de timeout sans extension possible** sur action critique (sauf justification).
-- **Pas de flash** > 3 par seconde.
+- **Pas de flash** > 3 par seconde ; les animations respectent `prefers-reduced-motion`.
 - **Autres critères A/AA ajoutés par WCAG 2.2**, à parcourir aussi : 2.4.11 Focus Not Obscured (Minimum), 2.5.7 Dragging Movements, 3.2.6 Consistent Help, 3.3.7 Redundant Entry, 3.3.8 Accessible Authentication (Minimum) — liste lue dans `ux-preuves/references/contenus-documents-accessibilite.md` (§ « Viser WCAG 2.2 niveau AA […] », l. 181-185) ; le contenu de chaque critère se lit à sa source, pas ici.
 
 **Pilier 3 — Understandable** (l'interface doit être compréhensible)
-- **Labels associés** : `<label for="X">` ou `aria-labelledby`, pas `placeholder` seul.
-- **Erreurs claires** : message indique quoi corriger ET comment. Annoncé aux SR (live region).
-- **Pas de changement de contexte automatique** au focus / changement d'input.
+- **Labels associés** : tout `<input>` a un `<label for="X">` ou un `aria-labelledby`. `placeholder` seul = BLOQUANT (il disparaît au focus, contraste souvent insuffisant).
+- **Erreurs claires** : message indique quoi corriger ET comment. Annoncé aux SR (live region). Pas de toast d'erreur qui disparaît en 2 s : illisible pour SR ou lecture lente.
+- **Pas de changement de contexte automatique** au focus / changement d'input ; pas d'`autofocus` sur un champ avant que le SR ait annoncé la page.
 - **Cohérence** : mêmes patterns à travers l'app (un bouton "Annuler" est toujours à gauche, ou toujours à droite).
 - **`lang` attribut** sur `<html>` (et `lang` local si segment dans une autre langue).
 
 **Pilier 4 — Robust** (compatible avec les outils d'assistance)
 - **4.1.1 Parsing n'est plus un critère** : retiré de WCAG 2.2 (`ux-preuves/references/contenus-documents-accessibilite.md` l. 184 : « WCAG 2.2 has removed one success criterion, 4.1.1 Parsing » ; rappelé dans `frontend-accessibilite-code.md` l. 316). Ne pas lever de finding « HTML invalide » ou « ID dupliqué » à ce titre ; un ID dupliqué ne se relève que s'il casse un nom ou une relation accessible (`for`, `aria-labelledby`, `aria-describedby`), sous le critère réellement touché.
-- **ARIA approprié** : rôle / état / propriété correspond au comportement. Première règle ARIA : **ne pas utiliser ARIA si HTML natif suffit**.
-- **`<button>` vs `<div onClick>`** : bouton natif sauf raison forte.
-- **Status messages** : `aria-live="polite"` (info) ou `role="alert"` seul (urgent, patron plus bas) sur container qui change dynamiquement.
+- **ARIA approprié** : rôle / état / propriété correspond au comportement. Première règle ARIA : **ne pas utiliser ARIA si HTML natif suffit** — pas d'`aria-label` sur un élément qui a déjà un texte visible, pas de `role="button"` sur un `<button>`.
+- **`<button>` natif** sauf raison forte : un `onClick` sur `<div>` exige `role="button"` + `tabindex="0"` + handler clavier, sinon il est invisible aux SR et inopérable au clavier.
+- **Status messages** : `aria-live="polite"` (info) ou `role="alert"` seul (urgent) sur container qui change dynamiquement.
+
+Patrons de code des fixes (annonce dynamique, formulaire, skip link), état par défaut des composants shadcn et liste des critères le plus souvent en défaut (liste d'usage, **non sourcée**) : `references/patrons-et-outils.md` de ce skill, à ouvrir au moment d'écrire un fix.
 
 ### Phase 3 — Tests pratiques
 
-Ne pas se contenter de lire le code. Exécuter ce que les outils de la session permettent ; tout test qui exige un navigateur réel, un lecteur d'écran ou un réglage de l'OS **n'est pas demandé en route** (contexte isolé) : il est rendu dans le rapport, section « Questions et tests rendus à l'orchestrateur », avec l'outil, les étapes et le résultat attendu, à charge de l'orchestrateur de le faire lancer par l'utilisateur.
+Ne pas se contenter de lire le code. Exécuter ce que les outils de la session permettent ; tout test qui exige un navigateur réel, un lecteur d'écran ou un réglage de l'OS est rendu dans le rapport, avec l'outil, les étapes et le résultat attendu, à charge de l'orchestrateur de le faire lancer par l'utilisateur. Outils par test : `references/patrons-et-outils.md`, § « Outils ».
 
 1. **Navigation clavier intégrale** : depuis le haut de la page, Tab jusqu'au bas. Tout est-il atteint ? L'ordre est-il logique ?
 2. **Test screen reader** : VoiceOver (Mac) ou NVDA (Windows). Au moins :
    - Annonce du titre de page au chargement.
    - Annonce du focus quand on Tab.
    - Annonce des erreurs de formulaire.
-3. **Test contraste** : extension `axe DevTools` ou outil colorimétrique sur les pairs texte/fond suspects.
+3. **Test contraste** : extension `axe DevTools` ou outil colorimétrique sur les pairs texte/fond suspects. Formule du ratio et ses limites : `ux-preuves/references/design-couleur-contraste.md`, § « Connaître la formule WCAG 2 et ses limites ».
 4. **`prefers-reduced-motion`** : activer dans l'OS, recharger, vérifier que les animations sont désactivées ou réduites.
 5. **Zoom 200%** (1.4.4 Resize Text) : texte agrandi à 200 % sans perte de contenu ni de fonction (ni rognage, ni chevauchement). L'absence de défilement horizontal est un **autre** critère, 1.4.10 Reflow, qui se teste à 320 px CSS de large, hors contenus réellement bidimensionnels (`ux-preuves/references/design-typographie-mise-en-page.md` l. 83-95).
 
-Un test non exécuté reste coché « non fait » dans le rapport : jamais « OK » sur lecture du code.
+Un test non exécuté reste coché « non fait » dans le rapport : jamais « OK » sur lecture du code, et aucune affirmation de conformité sans test pratique (clavier ou SR).
 
 ### Phase 4 — Priorisation + livrable
 
@@ -136,11 +133,11 @@ Chaque finding reçoit :
   - **SÉRIEUX** : dégrade fortement l'usage (ex: contraste insuffisant, ordre tab illogique, focus invisible).
   - **MODÉRÉ** : cause de friction (ex: target trop petit, message d'erreur peu clair).
   - **MINEUR** : amélioration recommandée (ex: skip link manquant sur petite page).
-- **Critère WCAG cité** : ex « WCAG 2.2 — 1.4.3 Contrast (Minimum) ».
+- **Critère WCAG cité** : ex « WCAG 2.2 — 1.4.3 Contrast (Minimum) ». Aucun finding sans critère.
 - **Fix concret** : code à modifier, ligne précise.
 - **Vérification post-fix** : comment confirmer (test clavier, axe, screen reader).
 
-Livrable structuré, rendu **comme retour du skill** à l'orchestrateur (contexte isolé) ; aucun fichier n'est écrit dans le dépôt audité sauf demande explicite :
+Livrable structuré, rendu **comme retour du skill** (en fork) ou dans le hand-off de `frontend` (préchargé) ; aucun fichier n'est écrit dans le dépôt audité sauf demande explicite :
 
 ```
 # Audit a11y — <composant ou page> — <date>
@@ -188,110 +185,10 @@ Livrable structuré, rendu **comme retour du skill** à l'orchestrateur (context
 3. ...
 ```
 
-## Garde-fous (règles dures)
-
-- Tout `<input>` a un `<label>` associé. `placeholder` seul = BLOQUANT.
-- Tout `<button>` interactif sans texte visible a un `aria-label` ou `aria-labelledby`.
-- Toute modale doit : trap focus, restaurer focus à la fermeture, fermer sur Escape, avoir un titre lu par SR.
-- Tout `onClick` sur `<div>` doit avoir `role="button"` + `tabindex="0"` + handler clavier. Préférer `<button>` natif.
-- Tout finding cite un critère WCAG.
-- Aucune affirmation de conformité sans test pratique (clavier ou SR), pas juste lecture statique.
-
-## Anti-patterns interdits
-
-- **`placeholder` au lieu de `<label>`** : disparaît au focus, contraste souvent insuffisant.
-- **`<div onClick={...}>` sans rôle ni clavier** : invisible aux SR, inopérable au clavier.
-- **`aria-label` redondant** sur élément qui a déjà un texte visible.
-- **`role="button"` sur `<button>`** : déjà bouton, ARIA redondant.
-- **`tabindex` positif** (> 0) : casse l'ordre naturel.
-- **Animations CSS qui ignorent `prefers-reduced-motion`**.
-- **Couleur seule pour indiquer un état** (rouge = erreur sans icône / texte).
-- **Toast d'erreur qui disparaît en 2s** : illisible pour SR ou lecture lente.
-- **Modale sans focus trap** : Tab sort vers le contenu derrière.
-- **`autofocus` mal placé** : focus sur un champ avant que le SR ait annoncé la page.
-
-## Connaissance domaine métier (a11y React + shadcn + Next.js)
-
-### Composants shadcn — état par défaut
-- `<Dialog>` (Radix) : focus trap intégré, Escape close, restoration focus. **Ne pas casser** en customisant.
-- `<Select>` (Radix) : navigation clavier complète (flèches, première lettre).
-- `<Tabs>` (Radix) : flèches gauche/droite pour changer d'onglet.
-- `<Tooltip>` (Radix) : trigger au focus aussi (pas que hover) — à vérifier après customisation.
-
-### Pattern annonce dynamique
-```jsx
-// Pour annoncer un message après action
-<div role="status" aria-live="polite" aria-atomic="true">
-  {message}
-</div>
-
-// Pour erreurs urgentes : role="alert" seul
-<div role="alert">
-  {error}
-</div>
-```
-Source : `ux-preuves/references/frontend-accessibilite-code.md` l. 156-161 (MDN). `role="alert"` équivaut déjà à `aria-live="assertive"` + `aria-atomic="true"`, et cumuler les deux provoque une double lecture sous VoiceOver iOS ; pour `role="status"`, le `aria-live="polite"` redondant est au contraire conseillé par MDN pour la compatibilité — seule exception à l'anti-pattern « ARIA redondant » ci-dessus.
-
-### Pattern formulaire accessible (react-hook-form + Zod)
-```jsx
-<label htmlFor="email">Email</label>
-<input
-  id="email"
-  type="email"
-  {...register('email')}
-  aria-invalid={!!errors.email}
-  aria-describedby={errors.email ? 'email-error' : undefined}
-/>
-{/* Région présente dès le rendu initial, vide sans erreur : née avec son contenu, elle n'est pas
-    toujours annoncée (ux-preuves/references/frontend-accessibilite-code.md l. 150-154) */}
-<p id="email-error" role="alert" className="text-red-600">
-  {errors.email?.message}
-</p>
-```
-
-### Pattern skip link (Next.js App Router)
-Dans `app/layout.tsx`, avant `<main>` :
-```jsx
-<a
-  href="#main-content"
-  className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 ..."
->
-  Aller au contenu principal
-</a>
-<main id="main-content">{children}</main>
-```
-
-### Outils
-- **axe DevTools** : extension Chrome/Firefox, audit auto.
-- **Lighthouse a11y** : DevTools, score + recommandations.
-- **WebAIM Contrast Checker** : couleur par couleur.
-- **VoiceOver** (Mac, Cmd+F5) : screen reader natif.
-- **NVDA** (Windows, gratuit) : screen reader.
-- **eslint-plugin-jsx-a11y** : lint à l'écriture.
-
-### Critères WCAG les plus violés
-- 1.1.1 Non-text Content (alt manquant)
-- 1.3.1 Info and Relationships (structure sémantique)
-- 1.4.3 Contrast (Minimum)
-- 2.1.1 Keyboard (opérable au clavier)
-- 2.4.7 Focus Visible
-- 3.3.1 Error Identification
-- 3.3.2 Labels or Instructions
-- 4.1.2 Name, Role, Value (rôle / nom accessible)
-
 ## Auto-check final (avant livraison)
 
-- Phase 0 brief formulé (cible + contexte d'usage + niveau cible) ?
-- Phase 1 lecture du composant + primitives + tokens contraste ?
-- Phase 2 4 piliers WCAG parcourus systématiquement ?
-- Phase 3 tests pratiques effectués (clavier + SR + contraste + reduced-motion + zoom 200%) ou rendus « à faire » dans le rapport, avec outil et étapes ?
-- Chaque finding cite un critère WCAG ?
-- Chaque finding a un fix concret + vérification post-fix ?
-- Aucune affirmation de conformité sans test pratique ?
-- Plan de remédiation ordonné BLOQUANT → SÉRIEUX → MODÉRÉ → MINEUR ?
+- Chaque finding porte ses quatre champs (sévérité, critère WCAG, fix à la ligne, vérification post-fix) ?
+- Chaque test non exécuté est « non fait » et rendu avec outil, étapes et résultat attendu ?
+- Les dépendances du composant ont été lues avant de conclure sur lui (Phase 1) ?
 
 Si une seule réponse est non → corriger avant livraison.
-
-## Incidents source
-
-- *(à compléter au fil des audits — chaque pattern récurrent détecté mérite une entrée dans la connaissance domaine).*
