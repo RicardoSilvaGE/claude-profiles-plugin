@@ -1,11 +1,11 @@
 ---
 name: librairie-maison
-description: "Socles de démarrage vérifiés pour ne pas repartir de zéro : jeu VANILLA (PWA hors-ligne, React in-browser sans build, server.js Node, HTTPS local auto-signé, génération docx/PDF) et jeu NEXT-TS (le défaut déclaré du profil, encore VIDE : rien d'éprouvé à en extraire). À charger avant d'écrire le squelette d'une nouvelle application, ou d'ajouter à une application existante un service worker, un serveur local, un export PDF ou un lancement Windows silencieux. Pas pour : générer une SPA Vite complète (`frontend-app-builder`)."
+description: "Socles de démarrage repris de code en service (non rejoués ici, à exécuter avant de s'y fier) : jeu VANILLA (fichiers : HTTPS local auto-signé, conversion docx vers PDF, manifeste PWA, lancement Windows silencieux ; recette : PWA hors-ligne, React in-browser sans build, server.js Node) et jeu NEXT-TS (le défaut déclaré du profil, encore VIDE : rien d'éprouvé à en extraire). À charger avant d'écrire le squelette d'une nouvelle application, ou d'ajouter à une application existante un service worker, un serveur local, un export PDF ou un lancement Windows silencieux. Pas pour : générer une SPA Vite complète (`frontend-app-builder`)."
 ---
 
 # Librairie maison — deux jeux, étiquetés
 
-> Version 1.1 — 05.09.2026 (PR 2.1 de l'audit du 05.09 : le vide de `next-ts/` n'était dit qu'au README du jeu — il est désormais dans la description et dans la table ; auto-check en trois questions ; renvoi croisé vers `frontend-app-builder`.)
+> Version 1.3 — 11.11.2026 (renotation : en-tête de la table des parts corrigé). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
 > Contenu issu d'une **mesure** des dépôts réels, pas d'une
 > idée de ce qu'ils devraient contenir : cf. § « D'où vient ce contenu ».
 
@@ -18,6 +18,12 @@ de librairie.
 |---|---|---|
 | **VANILLA** | `vanilla/` | C'est le **socle réel** de 7 dépôts sur 8. ESM sans bundler, React chargé en navigateur via Babel standalone, `server.js` Node, PWA hors-ligne, outillage Python et PowerShell autour. |
 | **NEXT-TS** | `next-ts/` | C'est le **défaut déclaré du profil** (Next.js App Router + TypeScript strict + Tailwind + shadcn). Un seul dépôt s'en approche aujourd'hui. **Dossier VIDE de fichiers, à dessein** : rien d'éprouvé à en extraire (`next-ts/README.md`) — pour un projet neuf, `create-next-app`. |
+
+**Jeu VANILLA, quoi ouvrir et dans quel ordre :** `vanilla/README.md` d'abord (inventaire, gestes à
+faire à chaque copie, § « Fraîcheur »), puis `vanilla/RECETTE-app-pwa-hors-ligne.md` (le montage
+complet, `sw.js` et `server.js` compris, qui ne sont pas versés en fichiers), puis seulement les
+fichiers à copier : `generer-certificat-https.ps1`, `docx_vers_pdf.py`, `manifest.json`,
+`start-hidden.vbs`.
 
 **Règle de choix, dans cet ordre :**
 
@@ -33,25 +39,25 @@ de librairie.
 
 1. **Le jeu a-t-il été choisi par le dépôt, ou annoncé et validé** (projet neuf) — jamais présumé ?
 2. **Le fichier a-t-il été exécuté dans le projet** avant de conclure qu'il convient — jamais copié et déclaré « ok » sur lecture ?
-3. **La date de fraîcheur du § « Fraîcheur » du jeu a-t-elle été lue**, et l'écart signalé si elle a plus de quelques mois ?
+3. **La date de fraîcheur du § « Fraîcheur » du `README.md` du jeu a-t-elle été lue**, et l'écart signalé si elle a plus de quelques mois ?
 
 ## Ce que cette librairie N'EST PAS
 
-- **Pas une dispense de l'échelle du moindre code.** Elle intervient au barreau 2 (« est-ce déjà
-  quelque part ? »), pas au barreau 1. Un fichier de cette librairie qui ne sert à rien dans le
+- **Pas une dispense de l'échelle du moindre code.** Elle intervient au barreau 2bis (« est-ce déjà
+  dans la librairie maison ? »), pas au barreau 1. Un fichier de cette librairie qui ne sert à rien dans le
   projet reste du code inutile — copier n'est pas moins cher que d'écrire, c'est seulement plus
   rapide.
 - **Pas une dépendance.** Le contenu se **copie** dans le projet, il ne s'y référence pas. Une copie
   se lit, se modifie et se déboguera sur place ; c'est un choix, pas un oubli.
 - **Pas une source de vérité vivante.** Un fichier copié diverge dès le lendemain. Le § « Fraîcheur »
-  de chaque jeu dit ce qui est vérifié et à quelle date.
+  du `README.md` de chaque jeu dit ce qui est vérifié et à quelle date.
 
 ## D'où vient ce contenu
 
 Mesure du 25.08.2026 sur les 8 dépôts applicatifs. Deux fichiers seulement étaient **réellement
 dupliqués** entre projets, après neutralisation du nom de l'application :
 
-| Fichier | Identique à |
+| Fichier | Part de lignes identiques entre dépôts, ou constat |
 |---|---|
 | `scripts/generer-certificat-https.ps1` | **84 %** |
 | `scripts/docx_vers_pdf.py` | **84 %** |
@@ -70,6 +76,6 @@ Les originaux portaient le **prénom et le nom d'utilisateur Windows d'un collè
 chemin de poste en dur. Tout cela est retiré : les copies versées ici sont anonymes, et les chemins
 sont paramétrés.
 
-Les sorties console des `.ps1` sont en outre passées en **ASCII pur** (garde-fou 5bis du profil),
+Les sorties console des `.ps1` sont en outre passées en **ASCII pur** (règle 5bis du skill `garde-fous-powershell`),
 ce que les originaux ne respectaient pas — un script sans BOM dont les messages portent des accents
 s'affiche corrompu sous PowerShell 5.1.

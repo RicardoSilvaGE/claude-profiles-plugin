@@ -1,11 +1,11 @@
 ---
 name: doctrine-de-depot
-description: "Comment un dépôt garde sa doctrine sans l'étouffer : socle chargé à chaque session sous plafond d'octets, index par déclencheur, règles par thème, archives par décision, journal daté, et les gardes documentaires qui tiennent les liens entre ces pièces. À charger quand un CLAUDE.md devient trop gros pour être lu, quand il faut découper de la doctrine sans en perdre, quand une règle écrite n'est pas appliquée, ou avant de porter un système documentaire d'un dépôt vers un autre. Porte aussi ce qui a été ESSAYÉ ET ÉCARTÉ, daté et motivé, pour qu'un autre dépôt ne le réessaie pas."
+description: "Comment un dépôt garde sa doctrine sans l'étouffer : socle chargé à chaque session sous plafond d'octets, index par déclencheur, règles par thème, archives par décision, journal daté, et les gardes documentaires qui tiennent les liens entre ces pièces. À charger quand un CLAUDE.md devient trop gros pour être lu, quand il faut découper de la doctrine sans en perdre, ou avant de porter un système documentaire d'un dépôt vers un autre. Porte aussi ce qui a été ESSAYÉ ET ÉCARTÉ, daté et motivé, pour qu'un autre dépôt ne le réessaie pas. Pas pour : une règle écrite mais pas appliquée, ni l'effet d'un texte sur le modèle (agent `ingenieur-ia`)."
 ---
 
 # La doctrine d'un dépôt : la garder sans l'étouffer
 
-> Version 1.0 — 09.09.2026 (création). **Ce skill n'est pas la source.** Il porte les principes
+> Version 1.2 — 11.11.2026 (renotation : le journal entre dans l'ordre des gestes). Versions antérieures : `CHANGELOG.md` du profil, non déployé. **Ce skill n'est pas la source.** Il porte les principes
 > **généraux** extraits du système documentaire de `<depot-prive>`, écrit le 09.09.2026 sous le
 > nom `docs/systeme-de-doctrine.md`. Ce document-là fait foi, porte la démonstration complète,
 > les mesures et les seuils ; celui-ci porte ce qui se transpose.
@@ -20,6 +20,16 @@ cas. »*
 Ce skill existe donc pour **rendre le système consultable**, pas pour l'imposer. Prendre ses
 **principes** comme grille de lecture : oui. Recopier ses **seuils, ses thèmes et ses noms de
 contrôle** : non — ils se re-dérivent sur le dépôt d'accueil, par la mesure.
+
+**Relu le 11.11.2026.** L'avertissement tient toujours : rien ici n'établit que les trois cas ont
+été vus. Un second cas d'application existe depuis le 18.10.2026 : le dépôt `claude-profiles` a
+ramené son propre `CLAUDE.md` racine à un socle sous plafond d'octets, avec index par déclencheur
+et liens contrôlés dans les deux sens, titre compris (garde : `scripts/tests/test-doctrine-racine.sh`
+du dépôt `claude-profiles`, absent d'un dépôt d'accueil).
+
+**Frontière** (`ORCHESTRATION.md`, règle 15) : ce skill dit **où vit quoi** — la structure
+documentaire. Une règle écrite mais pas appliquée, ou l'effet d'un découpage sur le modèle,
+relève de l'agent `ingenieur-ia`, qui vient **après** ce skill quand un socle est découpé.
 
 ## Le problème
 
@@ -80,6 +90,24 @@ socle ──(index)──> règles par THÈME ──(renvoi)──> archives par
 
 8. **Chaque pièce déclare ce qu'elle NE garde pas.** C'est la règle qui rend un tel document
    utile plutôt que rassurant.
+
+## Devant un socle trop gros : l'ordre des gestes
+
+Déduit des principes ci-dessus, pas recopié de la source :
+
+1. **Mesurer** le socle en octets et en lignes (`wc -c`, `wc -l`) : c'est le chiffre de départ, et
+   celui auquel le plafond se confrontera (principe 5).
+2. **Trier** chaque bloc par le critère du principe 1 : reste au socle ce qui doit être vrai sans
+   qu'on le cherche ; le reste part **verbatim** dans un fichier de thème, et sa démonstration
+   dans une archive (principe 3).
+3. **Écrire l'index** par déclencheur, lien gardé dans les deux sens, titre compris (principe 4).
+4. **Poser le plafond** sur la taille obtenue, opposé mécaniquement (principe 2).
+5. **Éprouver chaque garde** en réinjectant son défaut (principe 7), après avoir mesuré son taux
+   de déclenchement sur le stock (section « Un contrôle rouge… »).
+6. **Ouvrir le journal** daté (principe 6) : chaque bloc déplacé y laisse une ligne, d'où et vers où.
+
+Livrable : le socle réduit, les fichiers de thème, l'index, le journal, la garde et la preuve qu'elle rougit.
+Puis `ingenieur-ia` pour vérifier que le modèle rouvre bien ce qui a été sorti.
 
 ## L'index se libelle par le DÉCLENCHEUR, jamais par le contenu
 
@@ -142,3 +170,9 @@ pratiques quand on pose une garde sur un dépôt existant :
 La démonstration complète — chiffres, contre-épreuves, pièges d'instrument, ce que chaque garde
 ne voit pas — vit dans `docs/systeme-de-doctrine.md` du dépôt `<depot-prive>`. **Le lire là-bas,
 pas ici** : ce skill se périmera, le document sera tenu à jour par les lots qui l'exercent.
+
+`<depot-prive>` n'est pas livré avec le profil et ce skill n'en connaît ni le chemin ni l'adresse.
+**Si la session n'a pas ce dépôt, le document est hors de portée** : s'en tenir aux principes
+ci-dessus, re-dériver tout seuil par la mesure sur le dépôt d'accueil, ne citer aucun chiffre de
+ce skill comme vérifié à sa source, et le dire dans le livrable — ou demander le dépôt à
+l'utilisateur.

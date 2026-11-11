@@ -5,8 +5,7 @@ description: "Publication d'une app web (PWA) sur le Google Play Store via Capac
 
 # Publication store — Android via Capacitor, Play Console
 
-> Version 1.3 — 09.11.2026 (limite du titre Play corrigée : 30 caractères, pas 60 — page officielle « Metadata » de la Play Console, lue le 09.11.2026 ; règles complètes des métadonnées dans `ux-preuves/references/growth-aso-stores.md`.)
-> Version 1.2 — 05.09.2026 (PR 3.1 de l'audit du 05.09, constat D10 : **`paths` retiré**. Mesure du 17.08.2026 (`framework-upgrade` v1.2) : `paths` se déclenche quand un fichier concordant est effectivement manipulé, pas parce que le dépôt en contient un ; or ce skill démarre par une phrase (« prépare la release »), sa Phase 0 précède toute lecture de `capacitor.config.*`, et ses déclencheurs sont tous verbaux. Il risquait de se charger seulement après le geste qu'il veut encadrer. Décision prise sur cette mesure, sans témoin propre à ce skill : la description route déjà, coût I5 nul.)
+> Version 1.5 — 11.11.2026 (renotation : ligne de version allégée). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
 > Contenu issu d'une **mesure sur un dépôt réel** qui a
 > mené une PWA React jusqu'à l'internal testing du Play Store (Capacitor 8, targetSdk 36) —
 > pas d'une idée de ce qu'une publication devrait être. Cf. § « D'où vient ce contenu ».
@@ -34,7 +33,7 @@ dépôt + une checklist manuelle nominative**, jamais « c'est publié ».
 - Build **AAB** (`bundleRelease`) pour le store, APK (`assembleRelease`) pour le sideload de test.
 - Signature : `keystore.properties` hors dépôt, `signingConfigs.release` lue conditionnellement, **Play App Signing**.
 - Play Console : tracks, testeurs, release notes, **Data Safety**, **classification IARC**, limites de la fiche.
-- Assets : captures 1080 × 2400, feature graphic 1024 × 500 — **spécifications**, pas la création.
+- Assets : captures (1080 × 2400 dans le dépôt mesuré), feature graphic 1024 × 500 — **spécifications**, pas la création.
 - **App Links** HTTPS (`autoVerify` + `assetlinks.json`) pour un deep-link natif.
 - Validation sur device et pièges Android 15+ mesurés.
 
@@ -52,7 +51,7 @@ dépôt + une checklist manuelle nominative**, jamais « c'est publié ».
 - Sub-agent `growth` en hand-off pour la copy, `designer` pour les visuels, `securite` avant la première ouverture publique (le dépôt mesuré a fait un audit tous secteurs pré-store, verdict « GO avec réserves », et c'est ce qui a levé deux bloquants ops).
 - Sub-agent `release` pour la partie web du même lancement.
 
-## Workflow (7 phases)
+## Workflow (8 phases, de 0 à 7)
 
 ### Phase 0 — Brief obligatoire
 
@@ -107,6 +106,8 @@ Checklist mesurée sur le dépôt de référence, à passer **avant** de bumper 
 
 ### Phase 4 — Bump, build, signature
 
+**Qui fait quoi** : étapes 1 et 2, le skill ; étapes 3 à 5, **la personne**, sur sa machine (le keystore n'est pas dans le dépôt) ; étape 6, le tag n'est posé qu'après que la personne a confirmé `jar verified.` — par elle, ou par le skill sur sa confirmation explicite.
+
 1. **Bump** dans `android/app/build.gradle` : `versionCode` +1, `versionName` semver ; aligner `package.json.version`. C'est la seule modification autorisée de ce fichier sans SPEC, **parce que la procédure de release est cette demande explicite**.
 2. **Build web + sync** : `npm run build && npx cap sync android` (script `npm run cap:sync`). Le skill peut le faire s'il a l'outillage ; il s'arrête là.
 3. **AAB, pas APK, pour le store** : `gradlew bundleRelease` → `android/app/build/outputs/bundle/release/app-release.aab`. Garder `assembleRelease` dans un script **séparé** pour le sideload de test (`adb install`).
@@ -130,7 +131,7 @@ Checklist mesurée sur le dépôt de référence, à passer **avant** de bumper 
 
 **Limites de la fiche**, à donner à `growth` : titre ≤ 30 (« Your app title must be 30 characters or less », Play Console Help « Metadata », lu le 09.11.2026 ; le « 60 » écrit ici jusqu'à cette date était faux), description courte ≤ 80, description longue ≤ 4 000 caractères, par locale. Pas de superlatif non prouvé, pas de feature absente.
 
-**Assets**, à donner à `designer` : **captures 1080 × 2400** (portrait Pixel 7, 4 claires + 2 sombres dans le dépôt mesuré, sur des **données de démonstration seedées**, jamais des données réelles), **feature graphic 1024 × 500** lisible aussi à 320 × 156 (taille de vignette dans les résultats). Captures depuis un émulateur ou un device (`adb shell screencap`), pas depuis DevTools — la barre système manque.
+**Assets**, à donner à `designer` : **captures** — 1080 × 2400 est le **choix du dépôt mesuré** (portrait Pixel 7, 4 claires + 2 sombres), pas la règle Play, qui est dans `ux-preuves/references/growth-aso-stores.md` l. 62-67 (jusqu'à 8 captures par type d'appareil ; au moins 4 captures ≥ 1080 px pour l'éligibilité aux recommandations ; minimum de publication : deux captures) ; toujours sur des **données de démonstration seedées**, jamais des données réelles ; **feature graphic 1024 × 500** lisible aussi à 320 × 156 (taille de vignette dans les résultats). Captures depuis un émulateur ou un device (`adb shell screencap`), pas depuis DevTools — la barre système manque.
 
 ### Phase 6 — App Links (deep-link natif HTTPS)
 

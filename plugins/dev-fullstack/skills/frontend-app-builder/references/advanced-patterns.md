@@ -158,10 +158,14 @@ export function ThemeToggle() {
 
 ### Configuration Tailwind pour dark mode
 
-```js
-// tailwind.config.js
-export default { darkMode: 'class' }
+Le gabarit monte Tailwind 4 **sans** `tailwind.config.js` : plugin `@tailwindcss/vite` et `@import "tailwindcss"` dans `src/index.css` (cf. `references/architecture-patterns.md` § Configuration Tailwind, qui fait foi). Ne pas créer de fichier de config pour le dark mode : la déclaration qui lie les variants `dark:` à la classe posée sur `<html>` se fait dans `src/index.css`, à côté de l'import :
+
+```css
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 ```
+
+Source : documentation officielle Tailwind CSS, « Dark mode » § « Toggling dark mode manually », https://tailwindcss.com/docs/dark-mode, lue le 11.11.2026 (page de la v4.3). À relire si la version installée est une autre majeure.
 
 ---
 

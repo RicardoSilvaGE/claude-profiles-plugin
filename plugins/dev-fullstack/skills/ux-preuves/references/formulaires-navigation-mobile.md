@@ -20,6 +20,9 @@ Remarque de méthode : les articles NN/g et Baymard sont des synthèses de reche
 propriétaires dont la méthode complète n'est pas publiée dans l'article lu. Ils sont classés N2
 seulement quand l'article lu donne l'échantillon ; sinon N4 (NN/g) ou N2 « faible » (Baymard,
 dont l'échantillon est réel mais non chiffré dans l'article) — c'est dit dans chaque entrée.
+« N2 faible » n'est pas un niveau de l'échelle du `SKILL.md`, qui fait foi : c'est une entrée dont la
+condition de N2 (grand échantillon et méthode publiée) n'est pas établie par la page lue. La citer avec
+cette réserve, jamais comme une N2 pleine.
 
 ---
 

@@ -1,7 +1,7 @@
 # Fiche `ux-preuves` — Mythes à ne pas reproduire
 
-> Liste opposable, sortie du `SKILL.md` le 09.11.2026 pour alléger ce qu'il précharge chez `ux`,
-> `designer`, `redacteur`, `growth`, `frontend`, `backend`, `architecte`, `securite` et `reviewer`. Ces affirmations circulent dans la littérature de
+> Liste opposable, sortie du `SKILL.md` le 09.11.2026 pour alléger ce qu'il précharge chez les agents
+> qui le portent (champ `skills:` de leur fiche ; douze au 11.11.2026). Ces affirmations circulent dans la littérature de
 > praticiens et **ne s'écrivent pas** dans un livrable, sauf pour les réfuter. Chaque réfutation est
 > sourcée dans la fiche indiquée en tête de groupe, à sa section « Mythes et affirmations contestées ».
 

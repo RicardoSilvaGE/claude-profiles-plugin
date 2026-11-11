@@ -16,11 +16,11 @@
 >
 > **Niveaux de preuve.**
 > - N1 : norme ou réglementation.
-> - N2 : recherche revue par les pairs, ou étude empirique dont l'échantillon est cité.
+> - N2 : recherche revue par les pairs, ou étude empirique à grand échantillon et méthode publiée (échelle du `SKILL.md`, qui fait foi).
 > - N3 : guideline officielle d'une institution ou d'une plateforme.
 > - N4 : avis d'expert ou article de praticien.
 >
-> Les articles de Nielsen Norman Group (NN/g) sont classés N4 : c'est un cabinet reconnu, mais il ne s'agit ni d'une revue à comité de lecture ni d'une institution normative. Une étude NN/g dont l'échantillon est indiqué est signalée comme telle dans l'entrée.
+> Les articles de Nielsen Norman Group (NN/g) sont classés N4 : c'est un cabinet reconnu, mais il ne s'agit ni d'une revue à comité de lecture ni d'une institution normative. Une étude NN/g dont l'échantillon est indiqué est signalée comme telle dans l'entrée ; seule une étude NN/g quantitative, à grand échantillon et méthode publiée, relève de N2 au sens de l'échelle.
 >
 > **Total : 34 entrées.**
 

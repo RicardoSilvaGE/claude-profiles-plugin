@@ -1,13 +1,13 @@
 ---
 name: frontend-app-builder
-description: "Génère une application React SPA complète et production-ready depuis un gabarit d'architecture versionné : Vite + TypeScript strict + Tailwind + React Router + Zustand + auth. Déclencheurs : créer une app React, une SPA, un dashboard, un outil web, un frontend pour une API ; ou une demande partielle (ajouter une page, créer le routing) quand le contexte est déjà une SPA du gabarit. Pas pour : une app Next.js, SSR ou SEO-critique (sub-agent `frontend`), le polish d'un composant (`frontend` Mode C), l'identité visuelle (sub-agent `designer`), ni des pièces déjà éprouvées à recopier — HTTPS local, PWA, `server.js` — qui sont dans `librairie-maison`."
+description: "Génère une application React SPA complète depuis un gabarit d'architecture versionné et daté : Vite + TypeScript strict + Tailwind + React Router + Zustand + auth. Déclencheurs : créer une app React, une SPA, un dashboard, un outil web, un frontend pour une API, quand une SPA Vite est demandée ou imposée par le projet ; une demande partielle (ajouter une page, créer le routing) quand le contexte est déjà une SPA du gabarit ; rapprocher une SPA existante du gabarit. Pas pour : une app Next.js, SSR ou SEO-critique (sub-agent `frontend`), le polish d'un composant (`frontend` Mode C), l'identité visuelle (sub-agent `designer`), ni des pièces à recopier (HTTPS local, PWA, `server.js` : `librairie-maison`)."
 ---
 
-> Version 2.2 — 05.09.2026 (audit du 05.09, constat D11 : le gabarit `assets/package-template.json` épinglait `typescript ~5.6.0` avec la mention « les versions épinglées font foi », qui interdisait le courant (`tsc` 6.0.2 dans le conteneur). Gabarit **daté** dans le SKILL.md et dans son champ `description` ; « font foi » restreint à la cohérence entre versions ; passage par `framework-upgrade` avant génération.)
+> Version 2.4 — 11.11.2026 (renotation : déclaration Tailwind 4 du dark mode, lue dans la documentation officielle le 11.11.2026). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
 
 # frontend-app-builder — Génération d'app React SPA sur gabarit
 
-Ce skill génère des applications React complètes, prêtes pour la production, en suivant un **gabarit d'architecture versionné** : scaffolding, routing, state management, authentification, couche API et design system. Le SKILL.md orchestre ; le détail des patterns vit dans `references/`, les templates de configuration dans `assets/`.
+Ce skill génère des applications React complètes en suivant un **gabarit d'architecture versionné** : scaffolding, routing, state management, authentification, couche API et design system. Le SKILL.md orchestre ; le détail des patterns vit dans `references/`, les templates de configuration dans `assets/`.
 
 ## Positionnement
 
@@ -18,7 +18,7 @@ Ce skill génère des applications React complètes, prêtes pour la production,
 
 ## La stack : le projet décide, le skill a un gabarit
 
-Le gabarit par défaut (si le projet n'impose rien) est celui d'`assets/package-template.json` : React 18+, Vite 6+, TypeScript 5+ strict, Tailwind 4+, React Router 6+, Zustand 4+. **Les versions épinglées du template font foi** sur les tableaux indicatifs des références — pour leur **cohérence entre elles**, pas pour leur fraîcheur. Le gabarit a été relevé le **26.08.2026** (TypeScript `~5.6.0`, alors que `tsc` 6.0.2 compilait déjà dans le conteneur cloud au 05.09.2026) : avant de générer, passer `framework-upgrade` sur le gabarit, ou accepter ses versions en le disant dans le livrable. Un gabarit non daté se lit comme courant.
+Le gabarit par défaut (si le projet n'impose rien) est celui d'`assets/package-template.json` : React 18+, Vite 6+, TypeScript 5+ strict, Tailwind 4+, React Router 6+, Zustand 4+. **Les versions épinglées du template font foi** sur les tableaux indicatifs des références — pour leur **cohérence entre elles**, pas pour leur fraîcheur. Le gabarit a été relevé le **26.08.2026** (TypeScript `~5.6.0`, alors que `tsc` 6.0.2 compilait déjà dans le conteneur cloud au 05.09.2026) : avant de générer, passer `framework-upgrade` sur le gabarit (il couvre React, Tailwind et TypeScript ; pour Vite, React Router et Zustand, qu'il ne nomme pas, lire leurs notes de version officielles), ou accepter ses versions en le disant dans le livrable. Un gabarit non daté se lit comme courant.
 
 Si le `CLAUDE.md` du projet impose autre chose (autre state manager, autre lib de routing, zéro dépendance), la contrainte projet s'applique sans rejouer le débat — les principes (TS strict, couche services, selectors, états UI complets) restent obligatoires, les libs ne sont que le défaut.
 
@@ -28,9 +28,9 @@ Si le `CLAUDE.md` du projet impose autre chose (autre state manager, autre lib d
 |---|---|---|
 | `assets/package-template.json` | Base du `package.json` généré (versions épinglées, source de vérité) | Étape 2 (scaffolding) |
 | `assets/tsconfig-template.json` | Base du `tsconfig.json` strict | Étape 2 (scaffolding) |
-| `references/architecture-patterns.md` | Structure `src/`, configs Vite/Tailwind, routing, stores, services, auth, conventions TS, error handling, pièges | Étapes 2 et 5-10 |
-| `references/ui-components.md` | Primitives UI détaillées (Button, Input, Card, Modal, Badge, Table, Tabs, Toast...) | Étape 4 |
-| `references/advanced-patterns.md` | Formulaires, data tables, notifications, dark mode toggle | Étapes 9-11, si la feature le demande |
+| `references/architecture-patterns.md` | Structure `src/`, configs Vite/Tailwind, routing, stores, services, auth, `Button` (primitive de référence), conventions TS, error handling, pièges | Étapes 2 et 4-10 |
+| `references/ui-components.md` | Autres primitives UI : Input, Card, Modal, Badge, Avatar, Table, Tabs, Toast, Sidebar, Header, PageSkeleton | Étapes 4 et 5 |
+| `references/advanced-patterns.md` | Formulaires avec validation, dark mode toggle, pagination, optimistic updates, recherche avec debounce, auth Supabase, WebSocket, upload de fichier | Étapes 9-11, si la feature le demande |
 
 Ne pas paraphraser ces fichiers de mémoire : les **lire** au moment indiqué.
 
@@ -38,7 +38,7 @@ Ne pas paraphraser ces fichiers de mémoire : les **lire** au moment indiqué.
 
 - **Mode A — Génération complète** : nouvelle app from scratch. Workflow intégral (étapes 1 à 11).
 - **Mode B — Extension d'une app existante** conforme au gabarit : nouvelle page, module, store, service ("ajoute une page de login", "crée le routing"). Étapes pertinentes uniquement, en réutilisant l'existant (jamais re-scaffolder).
-- **Mode C — Mise en conformité** : app existante à rapprocher du gabarit (structure `src/`, couche services, selectors). Produit un diagnostic d'écarts puis les correctifs, par priorité.
+- **Mode C — Mise en conformité** : app existante à rapprocher du gabarit (structure `src/`, couche services, selectors). Étapes : Phase 0 (point 5), puis un diagnostic d'écarts en table (point du gabarit, état constaté, correctif, priorité), puis les correctifs par priorité, sans re-scaffolder.
 
 Le mode est déclaré en début de livrable.
 
@@ -59,9 +59,9 @@ Citer en bullets compacts avant toute génération :
 ## Workflow de génération (Mode A — adapter en B/C)
 
 1. **Brief** : pages, données, API backend, auth requise ? Une seule question groupée si une dimension manque.
-2. **Scaffolding** : générer `package.json` (depuis `assets/package-template.json`), `tsconfig.json` (depuis `assets/tsconfig-template.json`), `vite.config.ts`, structure `src/` (cf. `references/architecture-patterns.md` § Architecture).
+2. **Scaffolding** : générer `package.json` (depuis `assets/package-template.json`), `tsconfig.json` (depuis `assets/tsconfig-template.json`), `vite.config.ts`, structure `src/` (cf. `references/architecture-patterns.md` § Architecture de fichiers).
 3. **Design tokens** : couleurs, polices, espacements dans `index.css` (règles de design du `global-CLAUDE.md` : système 4px, neutres + 1 accent, dark mode).
-4. **Composants UI** : Button, Input, Card, Modal — depuis `references/ui-components.md`.
+4. **Composants UI** : Button (depuis `references/architecture-patterns.md` § Design System), Input, Card, Modal (depuis `references/ui-components.md`).
 5. **Layout** : Shell (Sidebar + Header + main), responsive mobile.
 6. **Routes** : `createBrowserRouter`, lazy loading si > 5 pages.
 7. **Stores** : stores Zustand par domaine, selectors granulaires.

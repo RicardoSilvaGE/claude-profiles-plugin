@@ -1,11 +1,11 @@
 ---
 name: travail-autonome
-description: "Méthode d'une étape de mission autonome (moteur scripts/travail-autonome/, ADR-0006), en local ou en mode cloud (tâche planifiée Claude Code). Sert aussi en session normale pour écrire une mission (mission.md, contrat 1) et pour répondre à « où en est la mission ? ». Déclencheurs : mission autonome, travail autonome, étape de mission, lanceur.py, etat.json, rédiger une mission, où en est la mission, relancer une mission bloquée."
+description: "Méthode d'une étape de mission autonome (moteur scripts/travail-autonome/, ADR-0006), en local ou en mode cloud (tâche planifiée Claude Code). Sert aussi en session normale pour écrire une mission (mission.md, contrat 1) et pour répondre à « où en est la mission ? ». Déclencheurs : mission autonome, travail autonome, étape de mission, lanceur.py, etat.json, relancer une mission bloquée. Pas pour : répéter une invite à intervalle (`loop`), ni une tâche planifiée sans `mission.md` ni état sur disque."
 ---
 
 # Travail autonome : la méthode d'une étape
 
-> Version 1.2.6 — 02.11.2026 (audit du 01.11.2026, AC-17 : la `description` ne résume plus la procédure d'une étape, qui reste aux §§ 2 et 3 ; elle route.)
+> Version 1.4 — 11.11.2026 (renotation : le push en cloud sous `publication = "aucune"` est dit déduit, pas spécifié). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
 > Ce fichier est **injecté tel quel** dans chaque étape
 > par `lanceur.py` (`--append-system-prompt-file`), depuis sa copie installée. Contrats complets :
 > `docs/SPEC-travail-autonome.md` du dépôt `claude-profiles`.
@@ -48,7 +48,9 @@ branche de mission et le dossier de l'étape.
 6. **Commiter** sur la branche de mission, message `type(scope): description` en français (types : `fonctionnalite`,
    `correctif`, `entretien`, `doc`, `refonte`, `test`). **Ne pas pousser** : l'étape n'a pas le jeton GitHub. Le
    lanceur publie la branche après l'étape, une fois son contrôle passé, et ouvre la PR à `termine` si la mission
-   dit `publication = "pr"`. Un commit non fait à la fin de l'étape ne sera pas publié.
+   dit `publication = "pr"`. Sous `publication = "aucune"`, le lanceur ne pousse rien et n'ouvre rien : les commits
+   restent dans le clone de travail, le dire dans `resume.md`. Un commit non fait à la fin de l'étape ne sera pas
+   publié.
 7. **Écrire `resume.md`** dans le dossier de l'étape (§ 4).
 8. **Réécrire `etat.json` EN DERNIER**, avec l'outil Write (§ 3). C'est sa date de mise à jour qui dit au lanceur
    que l'étape est allée au bout : l'écrire avant d'avoir fini, c'est mentir au lanceur.
@@ -117,10 +119,10 @@ $ <commande>
 - Modifier `mission.md`, `lanceur.json`, `journal.jsonl`, `STOP` : ils appartiennent au lanceur et à l'utilisateur.
 - Élargir la mission : ce qui est hors objectif va dans `questions` ou `dette`, pas dans le code.
 
-**Déléguer à un sous-agent** (seulement ceux de `sous_agents`) : il démarre sans contexte. Brief en six points —
+**Déléguer à un sous-agent** (seulement ceux de `sous_agents`) : il démarre sans contexte. Brief en sept points —
 objectif et critère d'acceptation ; périmètre dedans et dehors ; ce qui est établi (fichiers lus, décisions de la
-mission) ; outils et sources, et les interdits ci-dessus ; livrable attendu et retour court ; ce que l'étape
-précédente a laissé. Son retour est une affirmation : le vérifier par une commande avant de l'écrire dans `fait`.
+mission) ; outils et sources, et les interdits ci-dessus ; ce qu'il est autorisé à faire hors du dépôt : rien ;
+livrable attendu et retour court ; ce que l'étape précédente a laissé. Son retour est une affirmation : le vérifier par une commande avant de l'écrire dans `fait`.
 
 ## 6. Si quelque chose ne va pas
 
@@ -186,21 +188,25 @@ sauf l'ouverture d'une PR, et toute écriture sous `.claude/` ou `.github/`.
   qu'elle ne sait pas lire (substitution `$(…)`, variable qui compose un nom de commande ou de chemin, heredoc
   ambigu) ; un refus coûte un tour sans rien rapporter. Écrire et modifier les fichiers avec Write et Edit, jamais
   par `printf`, `cat <<` ou `sed -i`. Du code Python de plus d'une instruction s'écrit dans un fichier (Write),
-  puis se lance par `python3 <fichier>.py` : plus lisible, et rejouable par l'étape suivante. **La garde est lue
+  puis se lance par `python3 <fichier>.py` : plus lisible, et rejouable par l'étape suivante. Seule exception, la
+  commande de l'heure du § 3, à lancer telle quelle avec `python3` : la garde actuelle l'accepte ; si une garde
+  périmée la refuse, l'écrire dans un fichier comme le reste. **La garde est lue
   depuis `origin/<base>`** : tant que le `git fetch origin <base>` de la consigne n'a pas tourné, un environnement en
   cache peut servir une garde périmée, plus stricte que l'actuelle. **Jamais de `git fetch origin` nu** : il
   rapatrie toutes les branches, archives comprises ; nommer la branche voulue.
 - `bornes.fenetres`, `notifier` et `methode` sont sans objet. `duree_etape_min` reste la durée visée : une
   exécution qui dépasse l'heure chevauche la suivante.
 - **Commiter puis pousser** (étape 6 du § 2, remplacée) : un seul commit en fin d'étape, qui contient le travail,
-  `resume.md`, la ligne de `journal.md` et `etat.json` réécrit en dernier ; puis `git push -u origin <branche>`.
-  Push refusé parce que la branche distante a avancé : `git fetch origin <branche>:refs/remotes/origin/<branche>`,
+  `resume.md`, la ligne de `journal.md` et `etat.json` réécrit en dernier ; puis `git push -u origin <branche>`,
+  **quelle que soit `publication`**, `"aucune"` comprise : chaque exécution repart d'un clone neuf, l'état ne vit
+  que sur `origin` (déduit de ce motif : la SPEC cloud ne traite pas `"aucune"`). Push refusé parce que la branche distante a avancé : `git fetch origin <branche>:refs/remotes/origin/<branche>`,
   lire son `etat.json` ; si son `etape` est ≥ la
   tienne, une autre exécution a travaillé : **abandonner sans forcer**, finir en le disant. Sinon, `git rebase` puis
   pousser à nouveau, une fois.
 - **À `termine`** : si `publication = "pr"`, ouvrir la PR de la branche vers la base par
   `gh api repos/<owner>/<repo>/pulls -X POST -f title=… -f head=<branche> -f base=<base> -f body=…` (`gh pr create`
-  ne marche pas en cloud). Si `publication = "branche-seule"`, ne rien ouvrir.
+  ne marche pas en cloud : le relais GitHub refuse `gh pr`, cf. `docs/SPEC-travail-autonome-cloud.md` du dépôt
+  `claude-profiles`). Si `publication = "branche-seule"` ou `"aucune"`, ne rien ouvrir.
 - Interdits du § 5 inchangés, **sauf** pousser la branche de mission et, à `termine` sous `"pr"`, ouvrir sa PR. Lire
   `.claude/` se fait avec l'outil Read seulement : la garde refuse toute commande qui le nomme.
 - Fin de réponse : une seule ligne `Étape <n> : <statut> — <incrément en une phrase>`.

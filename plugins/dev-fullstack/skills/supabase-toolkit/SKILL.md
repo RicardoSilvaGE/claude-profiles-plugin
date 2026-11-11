@@ -1,9 +1,9 @@
 ---
 name: supabase-toolkit
-description: "Couche Supabase d'un projet (Postgres + Auth + RLS + RPC + migrations) : policies RLS, RPC SECURITY DEFINER cohérentes avec la validation client, migrations idempotentes, et surtout le reality check sur les données existantes après tout durcissement de schéma : c'est là que la data legacy casse. Déclencheurs : RLS, policy manquante, SECURITY DEFINER, migration Supabase, data legacy, durcir la validation, service_role, supabase db push ou diff. Pas pour : un audit OWASP global (sub-agent `securite`), l'implémentation client (sub-agent `frontend`)."
+description: "Couche Supabase d'un projet (Postgres + Auth + RLS + RPC + migrations) : policies RLS, RPC SECURITY DEFINER cohérentes avec la validation client, migrations idempotentes, et surtout le reality check sur les données existantes après tout durcissement de schéma : c'est là que la data legacy casse. Déclencheurs : RLS, policy manquante, SECURITY DEFINER, migration Supabase, data legacy, durcir la validation, service_role. Pas pour : un audit OWASP global (sub-agent `securite`), l'implémentation client (sub-agent `frontend`), l'application en prod (`release`)."
 ---
 
-> Version 1.1 — 17.08.2026 (**pas de champ `paths` sur ce skill, et c'est une décision, pas un oubli.** Il en a porté un pendant une heure, borné à `supabase/`, `migrations/`, `*.sql` et `db/`, avant d'être retiré : ce skill est **préchargé** dans le sub-agent `backend` (frontmatter `skills:`), et les deux mécanismes sont **exclusifs** — un skill portant `paths` n'est pas préchargeable. Vérifié par témoin isolé le 17.08.2026 ; absent de la documentation officielle, qui ne mentionne que `disable-model-invocation` comme obstacle au préchargement.
+> Version 1.3 — 11.11.2026 (renotation : index du patron RLS borné à la table neuve ; question rendue dans le rapport en sous-agent). Versions antérieures : `CHANGELOG.md` du profil, non déployé. **Pas de champ `paths` sur ce skill, et c'est une décision** : il est préchargé par `backend`, et un skill portant `paths` n'est pas préchargeable (témoin isolé du 17.08.2026).
 > Arbitrage retenu : le préchargement l'emporte, parce que le reality check sur données legacy du Mode C de `backend` ne doit dépendre d'aucune décision de l'agent — et parce que `paths` s'est révélé plus strict qu'annoncé, ne déclenchant que sur un fichier **effectivement manipulé**, pas sur le contenu du dossier. Une conversation RLS menée depuis un `.tsx` n'aurait donc rien déclenché. **Ne pas rajouter `paths` ici sans retirer le préchargement dans `agents/backend.md`.**)
 
 # supabase-toolkit — Conception et audit de la couche Supabase
@@ -29,7 +29,7 @@ description: "Couche Supabase d'un projet (Postgres + Auth + RLS + RPC + migrati
 - Implémentation des composants frontend consommant Supabase → sub-agent `frontend`.
 - Cadrage architectural de la feature → sub-agent `architecte`.
 - Déploiement de la migration en prod → sub-agent `release` Mode C.
-- Optimisation de query Postgres (indexes, EXPLAIN) → relève du sub-agent `backend` ou du skill `perf-audit`.
+- Optimisation de query Postgres (indexes, EXPLAIN) → relève du sub-agent `backend` (`ORCHESTRATION.md`, séquence 6). Le skill `perf-audit` détecte le N+1 ou l'index manquant et les lui rend : il ne les corrige pas.
 
 ## MCPs à utiliser (Supabase)
 
@@ -37,8 +37,8 @@ Quand le MCP Supabase est connecté, **utiliser directement les tools** (ne pas 
 
 - `list_tables` : cartographier le schéma actuel (avant conception, avant audit).
 - `list_migrations` : voir l'historique des migrations appliquées.
-- `execute_sql` : exécuter les queries reality check et dry-run de migration.
-- `apply_migration` : appliquer une migration (avec backup confirmé, Mode migration ciblée uniquement).
+- `execute_sql` : exécuter les queries reality check (lecture). L'essai à blanc d'une migration ne se fait **pas** sur la prod : il se joue sur un dump ou une copie minimisée — une branche vide ne teste pas les données (`release` Mode C, étape « Essai à blanc »).
+- `apply_migration` : appliquer une migration **hors prod** (base locale, branche, copie), Mode migration ciblée uniquement. L'application en prod n'est pas un geste de ce skill : elle revient à `release` Mode C, par la CLI ou la CI, sauvegarde identifiée d'abord.
 - `get_advisors` : récupérer les advisories sécu/perf Postgres (RLS manquante, indexes manquants).
 - `query_logs` : erreurs RLS, queries lentes, échecs auth récents.
 
@@ -55,7 +55,7 @@ Avant toute action, formuler en 5 lignes max :
 4. **Contraintes** : timing (avant prod ? après ?), réversibilité (FK = irréversible si data perdue).
 5. **Question ouverte unique** : un seul arbitrage métier non documenté, si applicable.
 
-Si une dimension manque, poser **une seule question groupée** avant de continuer. Sinon, passer directement à Phase 1.
+Si une dimension manque, poser **une seule question groupée** avant de continuer (préchargé dans un sous-agent, qui ne dialogue pas : la rendre dans le rapport, `BLOQUÉ` si elle conditionne la suite). Sinon, passer directement à Phase 1.
 
 ### Phase 1 — Lecture obligatoire (HARD GATE)
 
@@ -74,9 +74,10 @@ Si pas d'accès direct à la DB (MCP Supabase non connecté), écrire explicitem
 
 | Décision | Règle |
 |---|---|
-| RLS sur nouvelle table user-facing | **Obligatoire**. Policy minimum : `auth.uid() = user_id`. Refus de la skill si l'utilisateur dit « plus tard ». |
+| RLS sur nouvelle table user-facing | **Obligatoire**. Policy minimum : `(select auth.uid()) = user_id` (forme enveloppée, cf. « Patterns RLS canoniques »). Refus de la skill si l'utilisateur dit « plus tard ». |
 | RPC SECURITY DEFINER vs INSERT direct | RPC obligatoire quand : (a) validation côté serveur indispensable, (b) écriture cross-table atomique, (c) protection contre énumération. |
-| Format migration | Fichier dans `supabase/migrations/YYYYMMDDHHMMSS_<slug>.sql`. Toujours `BEGIN; ... COMMIT;` autour. |
+| Format migration | Fichier dans `supabase/migrations/YYYYMMDDHHMMSS_<slug>.sql`. `BEGIN; ... COMMIT;` autour, **sauf** pour un `CREATE INDEX CONCURRENTLY`, qui ne peut pas tourner dans un bloc de transaction : fichier à part, hors transaction, et un échec laisse un index INVALID à supprimer (`ux-preuves/references/backend-donnees-postgres.md` l. 44-49). Vérifier aussi que l'outil de migration n'enveloppe pas lui-même chaque fichier. |
+| Verrous, changements incompatibles | `SET lock_timeout` dans la session de migration ; contrainte CHECK ou FK sur table peuplée en `NOT VALID` puis `VALIDATE CONSTRAINT` ; changement de schéma incompatible en expand / migrate / contract. Règles et sources : même fiche, l. 30-35, 51-56 et 58-63 — les y lire, elles ne sont pas recopiées ici. |
 | Idempotence | Toute migration doit être idempotente (`IF NOT EXISTS`, `DROP ... IF EXISTS`, `CREATE OR REPLACE`). |
 | Plan de rollback | Inclus dans le fichier de migration, en commentaire ou en script séparé `rollback_<slug>.sql`. |
 | Data legacy après durcissement | Si gap > 0 ligne : (a) script de migration data + (b) fallback compatible si migration impossible. Refus de durcir sans plan. |
@@ -102,7 +103,7 @@ Selon le mode, produire :
 
 **Mode migration ciblée** :
 - Plan d'exécution numéroté (backup → dry-run → exec → vérification → rollback si KO).
-- Hand-off explicite vers `release` Mode C pour l'exécution prod.
+- Hand-off explicite vers `release` Mode C pour l'exécution prod : ce skill écrit le fichier et le plan, et n'applique lui-même que hors prod.
 
 ## Garde-fous (règles dures)
 
@@ -127,34 +128,48 @@ Selon le mode, produire :
 
 ### Patterns RLS canoniques
 
+Forme alignée sur `ux-preuves/references/backend-donnees-postgres.md` l. 236-241 (Supabase, « RLS Performance and Best Practices ») : `auth.uid()` appelé via `(select auth.uid())`, rôle nommé (`TO authenticated`), colonne filtrée indexée, et la requête cliente filtre aussi — la RLS sert à la sécurité, pas au filtrage. Réserve de la source : l'enveloppe ne vaut que si le résultat ne dépend pas de la ligne. RLS activée sur toute table d'un schéma exposé : même fiche, l. 243-248. Chaque `CREATE POLICY` est précédé de son `DROP POLICY IF EXISTS`, pour que le fichier soit rejouable (règle « Idempotence » de la Phase 2).
+
 ```sql
+-- RLS activée : sans cette ligne, les policies ci-dessous ne protègent rien
+ALTER TABLE public.<table> ENABLE ROW LEVEL SECURITY;
+
 -- Lecture propre à l'utilisateur
+DROP POLICY IF EXISTS "table_select_own" ON public.<table>;
 CREATE POLICY "table_select_own" ON public.<table>
   FOR SELECT TO authenticated
-  USING (auth.uid() = user_id);
+  USING ((select auth.uid()) = user_id);
 
 -- Lecture membre d'un groupe (via table de jointure)
+DROP POLICY IF EXISTS "table_select_member" ON public.<table>;
 CREATE POLICY "table_select_member" ON public.<table>
   FOR SELECT TO authenticated
   USING (EXISTS (
     SELECT 1 FROM public.memberships m
-    WHERE m.user_id = auth.uid() AND m.group_id = <table>.group_id
+    WHERE m.user_id = (select auth.uid()) AND m.group_id = <table>.group_id
   ));
 
 -- Écriture avec WITH CHECK
+DROP POLICY IF EXISTS "table_insert_own" ON public.<table>;
 CREATE POLICY "table_insert_own" ON public.<table>
   FOR INSERT TO authenticated
-  WITH CHECK (auth.uid() = user_id);
+  WITH CHECK ((select auth.uid()) = user_id);
+
+-- Colonne filtrée par les policies : indexée. Table NEUVE seulement : sur une table en service,
+-- CREATE INDEX CONCURRENTLY dans un fichier à part, hors transaction (ligne « Format migration »).
+CREATE INDEX IF NOT EXISTS <table>_user_id_idx ON public.<table> (user_id);
 ```
 
 ### Patterns RPC SECURITY DEFINER
+
+Forme alignée sur `ux-preuves/references/backend-donnees-postgres.md` l. 250-255 (PostgreSQL, « Writing SECURITY DEFINER Functions Safely ») : `search_path` fixé, sans schéma inscriptible par un rôle non fiable, `pg_temp` en dernière entrée ; droit EXECUTE retiré à PUBLIC (et à `anon` sur Supabase) puis accordé sélectivement. La même fiche note que Supabase va plus loin : `search_path = ''` et tous les noms qualifiés par leur schéma dans le corps.
 
 ```sql
 CREATE OR REPLACE FUNCTION public.<name>(<params>)
 RETURNS <type>
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public
+SET search_path = public, pg_temp
 AS $$
 BEGIN
   -- 1. Validation des params (length, regex, ranges)
@@ -170,7 +185,7 @@ BEGIN
 END;
 $$;
 
-REVOKE EXECUTE ON FUNCTION public.<name> FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.<name> FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.<name> TO authenticated;
 ```
 
@@ -180,7 +195,7 @@ GRANT EXECUTE ON FUNCTION public.<name> TO authenticated;
 -- Length min sur join_code passé de 4 à 6
 SELECT count(*) FROM public.families WHERE length(join_code) < 6;
 
--- Regex stricter sur email (passé de "@*" à RFC 5322)
+-- Regex stricter sur email (passé de "@*" à un motif simplifié x@y.z ; ce n'est pas RFC 5322)
 SELECT count(*) FROM auth.users WHERE email !~ '^[^\s@]+@[^\s@]+\.[^\s@]+$';
 
 -- Nouvelle FK ajoutée sur messages.user_id → auth.users(id)

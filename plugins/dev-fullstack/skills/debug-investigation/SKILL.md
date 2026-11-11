@@ -1,9 +1,9 @@
 ---
 name: debug-investigation
-description: "Investigation structurée d'un bug : reproduction minimale, isolation, hypothèses falsifiables, instrumentation ciblée, root cause vérifiée, test de non-régression. Déclencheurs : un dysfonctionnement sous n'importe quelle forme (ça plante, marche en dev pas en prod), intermittence, race condition, régression, ou un stack trace soumis. Pas pour : review pré-merge (sub-agent `reviewer`), audit perf (`perf-audit`), audit sécurité (sub-agent `securite`)."
+description: "Investigation structurée d'un bug : reproduction minimale, isolation, hypothèses falsifiables, instrumentation ciblée, root cause vérifiée, test de non-régression. Déclencheurs : un dysfonctionnement sous n'importe quelle forme (ça plante, marche en dev pas en prod), intermittence, race condition, régression, ou un stack trace soumis. Pas pour : production cassée ou incident en cours (d'abord `release` Mode D, `securite` Mode D si soupçon de compromission), review pré-merge (sub-agent `reviewer`), audit perf (`perf-audit`), audit sécurité (sub-agent `securite`)."
 ---
 
-> Version 1.0 — 21.05.2026 (création ; entré au repo le 26.05.2026 ; ligne de version ajoutée le 12.06.2026, audit dev-fullstack).
+> Version 1.2 — 11.11.2026 (renotation : le cas non reproductible n'émet plus d'hypothèse avant la lecture). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
 
 # debug-investigation — Investigation structurée de bug
 
@@ -24,6 +24,7 @@ description: "Investigation structurée d'un bug : reproduction minimale, isolat
 - Documentation post-mortem courte (cause / fix / prévention).
 
 ### Hors-scope
+- Service de production cassé ou dégradé, incident en cours → `release` Mode D d'abord (atténuer, restaurer) ; secret fuité ou soupçon de compromission → `securite` Mode D d'abord. Ce skill vient après, pour la cause racine (`ORCHESTRATION.md`, règle 16).
 - Audit préventif de code sain → les audits spécialisés du profil : `securite`, `perf-audit`, `a11y-audit`.
 - Review pré-merge structurelle → sub-agent `reviewer`.
 - Audit performance → `perf-audit`.
@@ -39,7 +40,7 @@ Avant toute action, formuler en 5 lignes max :
 2. **Conditions** : quand ça se produit ? quand ça ne se produit pas ?
 3. **Environnement** : dev / prod, navigateur, OS, build version.
 4. **Reproduction** : étape par étape (ou « non reproductible » explicite).
-5. **Hypothèses initiales** : 2-3 pistes, classées de plus probable à moins.
+5. **Pistes de départ** : 2-3 intuitions, notées comme telles et classées de plus probable à moins. Ce ne sont pas encore des hypothèses : elles ne le deviennent qu'après la lecture de la Phase 2, formulées en Phase 3.
 
 Si une dimension manque (notamment 1 ou 4), poser **une seule question groupée** à l'utilisateur avant de continuer. Sinon Phase 1.
 
@@ -47,13 +48,13 @@ Si une dimension manque (notamment 1 ou 4), poser **une seule question groupée*
 
 Objectif : obtenir un cas qui échoue de manière fiable, le plus petit possible.
 
-1. Reproduire le bug tel quel (1 essai).
+1. Reproduire le bug tel quel, une première fois (la fiabilité se vérifie au critère d'arrêt, point 4).
 2. Réduire l'environnement : retirer ce qui n'est pas nécessaire (dépendances, props, données).
 3. Documenter la **séquence exacte** qui déclenche : entrées, clics, état préalable.
 4. **Critère d'arrêt** : tu sais reproduire à 100% en moins de 30 secondes.
 
 Si non reproductible :
-- Hypothèse : timing, ordre d'événement, état partagé, données spécifiques.
+- Pistes à instrumenter (pas encore des hypothèses) : timing, ordre d'événement, état partagé, données spécifiques.
 - Instrumenter pour capturer le contexte au moment du bug (logs, screenshots, dumps d'état).
 - Attendre une 2e occurrence avec instrumentation active.
 
@@ -66,7 +67,7 @@ Lire avant d'émettre la moindre hypothèse :
 3. Les **callees** immédiats (qu'est-ce que ce code invoque ?).
 4. Le **state global** pertinent (Zustand store, React context, query cache).
 5. Les **logs réels** : console navigateur, logs Vercel, logs Supabase, network tab.
-6. L'historique git récent sur les fichiers concernés (`git log -p <file>` 5 derniers commits).
+6. L'historique git récent sur les fichiers concernés (`git log -p <file>` 5 derniers commits). Pour une **régression** dont on connaît un dernier état sain : `git bisect` entre ce commit et l'état fautif, avec la reproduction de la Phase 1 comme critère bon / mauvais.
 
 **Anti-pattern absolu** : émettre une hypothèse en se basant sur le nom de la fonction sans avoir lu son code.
 
@@ -112,10 +113,10 @@ Une root cause valide remplit ces critères :
 
 **Test ultime** : si tu peux énoncer la cause en une phrase et qu'elle satisfait les 4 critères, c'est bon. Sinon, continuer.
 
-### Phase 6 — Fix + test de non-régression
+### Phase 6 — Test qui reproduit, puis fix
 
-1. **Fix minimal** : modifier le moins de code possible pour adresser la cause.
-2. **Test de non-régression** : un test (unit ou e2e) qui aurait échoué avant le fix et passe après. Sinon, le bug reviendra.
+1. **Test qui reproduit le défaut, d'abord** : un test (unit ou e2e) écrit **avant** le correctif et **vu rouge** (charte de code, règle 10 : rouge d'abord, vert ensuite). Un test qu'on n'a jamais vu échouer ne prouve pas qu'il sait échouer.
+2. **Fix minimal** : modifier le moins de code possible pour adresser la cause, jusqu'à voir ce test passer au vert. Le correctif suit l'étage de cadrage de son ampleur (doctrine § « Règle absolue spec-builder » : elle couvre les bugfixes).
 3. **Retirer toute instrumentation temporaire** (logs, breakpoints).
 4. **Documenter** : court paragraphe `cause / fix / prévention` dans le commit ou un fichier `docs/POSTMORTEM-<date>-<slug>.md` si le bug a touché la prod.
 
@@ -124,7 +125,7 @@ Une root cause valide remplit ces critères :
 - Aucun fix avant root cause vérifiée (les 4 critères Phase 5).
 - Aucune hypothèse émise sans lecture du code (Phase 2 HARD GATE).
 - Aucune affirmation sur le comportement runtime sans l'avoir observé (logs réels ou reproduction).
-- Tout fix est accompagné d'un test de non-régression.
+- Tout fix est précédé du test qui reproduit le défaut, vu rouge avant le fix et vert après.
 - Toute instrumentation temporaire est retirée à la livraison.
 - Si la root cause révèle un pattern systémique → signaler à l'orchestrateur (peut nécessiter un cadrage `architecte`).
 
@@ -140,6 +141,8 @@ Une root cause valide remplit ces critères :
 - **Conclure depuis un seul cas de reproduction** sans vérifier 2-3 fois.
 
 ## Connaissance domaine métier (debugging React/Next/Supabase)
+
+> Aide-mémoire écrit à la création (21.05.2026), **ni sourcé ni daté ligne par ligne**, et limité à React, Next, Supabase et Vercel : rien sur le socle vanilla ni sur le back Python. Chaque ligne est une **piste à vérifier** sur la version installée du projet (le comportement de Next, en particulier, change d'une version majeure à l'autre), jamais un fait à affirmer. Pour un fait sourcé et daté : skill `ux-preuves`, volet code.
 
 ### Bugs React fréquents
 - **Stale closure** : `useEffect(() => { fn(state); }, [])` → `state` capturé à la première render. Fix : ajouter `state` aux deps ou utiliser `useRef`.
@@ -166,12 +169,12 @@ Une root cause valide remplit ces critères :
 
 ## Auto-check final (avant livraison)
 
-- Phase 0 brief formulé (symptôme + conditions + env + repro + hypothèses) ?
+- Phase 0 brief formulé (symptôme + conditions + env + repro + pistes de départ) ?
 - Phase 1 reproduction minimale stable (ou non reproductibilité documentée) ?
 - Phase 2 lecture du code, callers, callees, state, logs effectuée ?
 - Phase 3 hypothèses falsifiables formulées et testées dans l'ordre ?
 - Phase 5 root cause satisfait les 4 critères (explique, explique non-symptômes, prédit, bon niveau) ?
-- Phase 6 fix minimal + test de non-régression présent ?
+- Phase 6 test qui reproduit le défaut écrit avant le fix et vu rouge, puis fix minimal et test vert ?
 - Toute instrumentation temporaire retirée ?
 - Si pattern systémique détecté → signalement vers `architecte` ?
 
