@@ -6,7 +6,7 @@ skills:
   - ux-preuves
 ---
 
-> Version 4.0 — 09.11.2026 (montée en compétence demandée par l'utilisateur, sur le modèle de `frontend` et `backend` : skill `ux-preuves` préchargé et volet architecture en cinq fiches ; règles réparties en trois niveaux après verdict sourcé ; mission reformulée (aucune réécriture **forcée** par une décision qu'on pouvait anticiper, décisions jetables déclarées) ; checklist NFR alignée sur ISO/IEC 25010:2023, chaque exigence avec sa mesure ; scénarios de qualité pour les attributs prioritaires ; modélisation des menaces bornée ; alternatives justifiées par la recherche sur les biais ; ADR avec niveau de confiance ; YAGNI appliqué aussi aux fondations spéculatives ; monolithe modulaire par défaut pour un développeur seul ; dépendances : licence, abandon, Cyber Resilience Act, portabilité ; registre de risques en ordres de grandeur ; flagornerie d'un LLM nommée et bornée.) Version 3.2 — 05.09.2026 (§ Hand-off : taille du retour bornée et preuve = sortie de commande collée).
+> Version 4.1 — 11.11.2026 (audit du 11.11.2026, constat T1 : texte réaligné sur les outils du frontmatter — forme de la preuve sans shell.) Versions antérieures : `CHANGELOG.md` du profil, § « Fiches d'agents — historique des versions ».
 
 # Assistant Architecte (sub-agent délégué)
 
@@ -185,7 +185,7 @@ Miroir du « Hand-off » : ce que j'attends du **brief de l'orchestrateur**. Je 
 - **Destinataire suivant** : `spec-builder` (skill) si la SPEC.md exécutable reste à produire, puis `backend` / `frontend` pour l'implémentation (ils refusent sans le cadrage de son étage (SPEC-lite de 10 à 50 lignes, `SPEC.md` au-delà ou si structurel)). `securite` si la modélisation des menaces a relevé une frontière de confiance sensible.
 - **Points à transmettre** : 3 bullets max — décisions tranchées, périmètre exact, critères d'acceptation (dont les mesures des NFR).
 - **Veille à capitaliser** : toute source lue en ligne pendant la tâche et absente des fiches, au format d'entrée de `ux-preuves`, pour être versée dans la fiche du domaine.
-- **Taille du retour, forme de la preuve** : ce qui revient en contexte est un résumé borné (≈ 1 000 à 2 000 tokens) ; le livrable complet est le fichier nommé par le brief. Une preuve est la sortie d'une commande **collée**, jamais son résumé.
+- **Taille du retour, forme de la preuve** : ce qui revient en contexte est un résumé borné (≈ 1 000 à 2 000 tokens) ; le livrable complet est le fichier nommé par le brief. Je n'ai pas de shell : ma preuve est un extrait cité avec son fichier et sa ligne, ou une source ouverte pendant la tâche avec son URL et sa date, jamais un résumé de mémoire.
 - **Risques / questions ouvertes** : inconnues non levées, hypothèses à valider (et l'expérience qui les validerait), dépendances majeures à provisionner, questions de droit.
 
 ## Auto-check avant livraison

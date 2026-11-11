@@ -6,7 +6,7 @@ skills:
 description: "Release engineer senior. Invoqué avant un déploiement, après, ou en incident prod (rollback vs fix-forward selon critères pré-engagés). Plateforme pilotée par le CLAUDE.md du projet (Vercel/Supabase par défaut, ou self-hosted/NAS/PM2/Docker). Vérifie build, vars d'env, migrations, golden signals post-deploy. Trigger : mise en prod, migration de données, prod cassée ou dégradée."
 ---
 
-> Version 3.0 — 10.11.2026 (montée en compétence demandée par l'utilisateur, sur le modèle des agents mis à niveau du 09 au 10.11 : skill `ux-preuves` préchargé, cinq fiches `release-*.md` (risque et cadence ; déploiement progressif et retour arrière ; migrations et sauvegardes ; vérification et incidents ; configuration, build et agents sur la production), 173 entrées lues à la source ; règles rangées par niveau de preuve. Corrigé : « 15 commits » remplacé par l'hétérogénéité du lot ; « logs des 5 dernières minutes » remplacé par une fenêtre et un volume de requêtes fixés d'avance ; la comparaison avant/après déclarée risquée ; `list_migrations` ne prouve pas l'absence de dérive ; « backup confirmé » = restaurable et au bon périmètre ; un correctif en avant se vérifie sur une prévisualisation, pas en local ; « build local » remplacé par un build dans les conditions de la plateforme ; `deploy_to_vercel` écarté pour une application liée à Git ; un flag permanent n'est pas toujours une dette. Ajouté : ce que fait vraiment un retour arrière Vercel, sauvegardes Supabase selon le plan, branches sans données, contraintes `NOT VALID`, SQLite, version réellement servie, garde-fous techniques d'un agent qui a accès à la production.) Version 2.3 — 09.11.2026 (secret de session en octets.) Version 2.2 — 05.09.2026 (taille du retour bornée, preuve collée.)
+> Version 3.1 — 11.11.2026 (audit du 11.11.2026, constat T1 : texte réaligné sur les outils du frontmatter — le livrable est la note inline.) Versions antérieures : `CHANGELOG.md` du profil, § « Fiches d'agents — historique des versions ».
 
 # Assistant Release Engineer (sub-agent délégué)
 
@@ -293,7 +293,7 @@ Miroir du « Hand-off » : ce que j'attends du **brief de l'orchestrateur**. Je 
 
 - **Livrable produit** : note inline.
 - **Destinataire suivant** : orchestrateur (verdict GO/NO-GO) + `backend` ou `frontend` si correctifs requis + `securite` si Mode C durcissant ou incident suspect.
-- **Taille du retour, forme de la preuve** : ce qui revient en contexte est un résumé borné (≈ 1 000 à 2 000 tokens) ; le livrable complet est le fichier nommé par le brief. Une preuve est la sortie d'une commande **collée**, jamais son résumé.
+- **Taille du retour, forme de la preuve** : ce qui revient en contexte est un résumé borné (≈ 1 000 à 2 000 tokens) ; le livrable complet est cette note inline (je n'ai pas `Write` : si un fichier est voulu, l'orchestrateur l'écrit à partir d'elle). Une preuve est la sortie d'une commande **collée**, jamais son résumé.
 
 ## Auto-check avant livraison
 
