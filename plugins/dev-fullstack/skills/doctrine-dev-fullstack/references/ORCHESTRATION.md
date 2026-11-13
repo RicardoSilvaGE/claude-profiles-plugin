@@ -1,7 +1,7 @@
 # Orchestration des sub-agents
 
 > Source canonique : `templates/profiles/dev-fullstack/agents/ORCHESTRATION.md` (dépôt `claude-profiles`) ; la copie déployée vit dans `agents/` du home actif.
-> Dernière mise à jour : 11.11.2026 (v2.35 — cure de poids des skills : hand-off de `frontend-app-builder` accordé au skill. Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
+> Dernière mise à jour : 13.11.2026 (v2.37 — `graphiste` 2.0 : appareil visé, preuve par le verdict et le JSON des mesures ; skill `atelier-graphiste`. Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
 
 Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les séquences typiques. Il complète le `CLAUDE.md` global et les frontmatters de chaque agent.
 
@@ -15,7 +15,8 @@ Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les
 | `ux`        | Flows utilisateur, états système, audit heuristique sourcé, contenus et documents, plan d'évaluation, a11y | Non     | `docs/UX/` uniquement               |
 | `redacteur` | Microcopy, voix et ton, i18n idiomatique, typographie par locale, relecture de traduction | Oui (locales)   | Fichiers de locales + table de chaînes ; `docs/VOIX-ET-TON.md` (Mode D) |
 | `growth`    | GTM, positionnement, ASO, copy externe d'acquisition, emails, SEO, plan de mesure | Non          | `docs/GTM.md`, `docs/MESURE-*.md` + copy par asset et par locale |
-| `designer`  | Direction visuelle, DS, polish UI, critique structurée sourcée, graphiques | Non        | `docs/DESIGN-*`, configs de tokens (Mode A), assets texte SVG et HTML/CSS (Mode E), inline (Mode C) |
+| `graphiste` | Allure d'une app ou d'un écran neuf : 2 ou 3 variantes sur l'appareil visé (téléphone par défaut), vraies données | Non | canevas Claude Design privé par défaut, copie locale dans `00 - CL\<sujet>\` (planche HTML et son rendu PNG), jamais le dépôt de l'application |
+| `designer`  | Système de la variante choisie, DS, prototype, recette de l'écran construit (Mode G), polish UI, critique structurée sourcée, graphiques | Non        | `docs/DESIGN-*`, configs de tokens (Mode A), assets texte SVG et HTML/CSS (Mode E), inline (Mode C) ; prototype et recette avec les vraies données : `00 - CL\<sujet>\`, jamais le dépôt |
 | `backend`   | Modèles DB, endpoints, validation, auth           | Oui             | Code projet                         |
 | `frontend`  | Pages, composants, intégration backend            | Oui             | Code projet                         |
 | `qa`        | Stratégie de tests (unit/integration/e2e/smoke)   | Non             | `docs/TESTING-*`                    |
@@ -30,16 +31,17 @@ Deux agents **transverses** (`templates/_shared/agents/`, déployés sous tous l
 
 1. **Tâche large ou idée floue** : si le problème est ouvert / mal défini, passer d'abord par `brainstormer` (idéation divergente, 3-5 directions, ne tranche pas) puis `architecte`. Si le besoin est déjà clair, commencer directement par `architecte`. Sans cadrage, on construit sur du sable. **Des options déjà posées à départager** → `architecte` (Mode B, ou C pour une brique de stack) et l'utilisateur ; aucune ne convient → `brainstormer` Mode B, qui rouvre sans choisir. Au démarrage d'un projet ou d'une fonctionnalité neuve, l'étincelle de `muse` passe avant (règle 14).
 2. **Avant toute écriture de code** (`backend`, `frontend`, et `redacteur` quand il écrit des locales ; une Server Action propre à un écran est à `frontend`, le modèle et l'accès aux données qu'elle appelle à `backend`) : le cadrage de son étage doit exister — rien sous 10 lignes, une SPEC-lite de 10 à 50, une `SPEC.md` au-delà ou si structurel. Pour la `SPEC.md` → invoquer le skill `spec-builder` (pas un sub-agent). Règle absolue du 19.05.2026, trois étages depuis le 18.08.2026.
-3. **`ux` et `designer`** peuvent travailler en parallèle après `architecte`. **Frontière** : `ux` pense parcours, états et contenu (ce qui se passe, dans quel ordre) ; `designer` pense rendu (palette, typographie, composants, hiérarchie visuelle). Un écran « qui ne va pas » sans cause connue : parcours qui frictionne → `ux` Mode C ; rendu → `designer` Mode D ; les deux en parallèle si on ne sait pas. Retouche de quelques tokens → `designer` Mode C, ou `frontend` Mode C si elle s'applique telle quelle au composant.
-4. **Avant merge** : `reviewer` systématique sur tout diff — livrables `backend` / `frontend`, code écrit en direct, diff proposé par `ingenieur-ia`. Seule exception : la tâche simple au sens de la doctrine (Phase 1 : premier étage, fichiers déjà lus), dont le filet est le hook de build.
+3. **`graphiste`, `ux` et `designer`** : pour les écrans d'une app ou d'une fonctionnalité visible, ils passent **avant** `architecte`, dans cet ordre : `graphiste` dessine l'allure en 2 ou 3 variantes (`ux` lui apporte le parcours), l'utilisateur choisit, `designer` fait de la variante retenue le système et le prototype que l'utilisateur valide (doctrine § « Interface d'une application »). Ailleurs, `ux` et `designer` peuvent travailler en parallèle après `architecte`. **Frontières** : `ux` pense parcours, états et contenu (ce qui se passe, dans quel ordre) ; `graphiste` propose l'allure (composition, objet principal de l'écran, ambiance) et ne fige rien ; `designer` systématise le rendu (palette, typographie, composants, états, jetons) sans réinventer l'allure choisie. Un écran « qui ne va pas » sans cause connue : parcours qui frictionne → `ux` Mode C ; rendu → `designer` Mode D (critique sourcée, corrections dans l'allure actuelle) ; les deux en parallèle si on ne sait pas. Un écran jugé laid, à redessiner (« on dirait un tableur ») → `graphiste` Mode C, avant / après en variantes. Retouche de quelques tokens → `designer` Mode C, ou `frontend` Mode C si elle s'applique telle quelle au composant.
+4. **Avant merge** : `reviewer` systématique sur tout diff — livrables `backend` / `frontend`, code écrit en direct, diff proposé par `ingenieur-ia`. Seule exception : la tâche simple au sens de la doctrine (Phase 1 : premier étage, fichiers déjà lus), dont le filet est le hook de build. `reviewer` juge le diff, pas l'écran : pour un écran, la recette de `designer` (Mode G) s'y ajoute avant la question de fusion.
 5. **Avant prod** : `release` (pre-deploy check) à chaque mise en production ; `securite` (audit complet) avant la **première** mise en production et après tout changement sensible (auth, paiement, données personnelles, exposition nouvelle).
+   **Dans un dépôt à déploiement continu** (fusion sur `main` = mise en ligne), **la fusion est la mise en production** : cette règle, et pour un écran la recette et l'essai de l'utilisateur, s'appliquent avant `gh pr merge`.
 6. **Après prod** : `release` (post-deploy verification).
 7. **Tout durcissement de validation** (Zod, regex, length min, FK) → signaler à `securite` pour reality check DB.
 8. **Stratégie de tests** : projet sans stratégie → `qa` Mode A ; en début de feature, `qa` Mode B pour définir la matrice, puis `backend` / `frontend` pour écrire les tests avec le code qu'ils possèdent.
 9. *(Retirée le 18.08.2026 : validation d'une stratégie de trading, partie avec l'agent `quant` dans le dépôt qui l'utilise. Le numéro reste pris.)*
 10. **Textes d'interface et i18n** : pour toute microcopy (labels, CTA, erreurs, états vides, onboarding) qui n'est pas une tâche simple au sens de la doctrine (Phase 1), renommage de label, définition du ton/voix de marque, traduction ou synchro entre locales → `redacteur`. Il intervient **après** `ux`/`designer` (qui ont identifié les états et le cadre visuel) et **en amont** de `frontend` (qui câble les chaînes produites). Il **écrit lui-même les fichiers de locales** quand les clés existent déjà (renommage, traduction, synchro) et rend la table de chaînes. Une clé **nouvelle** : il l'écrit aussi dans les locales sous 10 lignes, ou de 10 à 50 avec une SPEC-lite au brief ; au-delà, il rend la table et `frontend` l'intègre avec son cadrage. Dans les deux cas, `frontend` câble la clé dans le composant. Garde-fou i18n : aucune clé dans une seule locale.
 11. **Go-to-market et copy d'acquisition** : pour tout lancement, fiche store / ASO, copy de landing ou de page de vente, emails marketing (cycle de vie, onboarding produit, réactivation), positionnement ou messaging de marque **externe** → `growth`. Il intervient **après** `brainstormer` quand l'angle n'est pas encore choisi, et cadre le GTM ; en aval il fait le **hand-off** vers `designer` (déclinaison visuelle des assets), `redacteur` (cohérence de voix entre copy externe et microcopy interne) et `frontend` (mise en page de la landing). **Frontière à respecter** : `redacteur` = copy **INTERNE** (in-app, microcopy, i18n) ; `growth` = copy **EXTERNE** (acquisition, lancement, store, landing, emails) ; `brainstormer` = **idéation amont** (directions, ne rédige pas). Quand un texte vit à l'intérieur de l'app, c'est `redacteur` ; quand il sert à attirer/convertir/retenir depuis l'extérieur, c'est `growth`. Un e-mail **transactionnel** (réinitialisation de mot de passe, confirmation, reçu) est une notification du produit : `redacteur`.
-12. **Design et Claude Design** (12.10.2026) : la règle vit dans la doctrine du profil (§ « Claude Design n'est pas l'agent `designer` »). Ce qu'elle implique ici : tout brief à `designer` ou `frontend` qui touche l'UI porte le lien et l'essentiel du design system de l'application, ou dit qu'il n'en existe pas ; comparer des variantes avant de coder → canevas Design, l'utilisateur choisit, `frontend` code la variante retenue.
+12. **Design et Claude Design** (12.10.2026) : la règle vit dans la doctrine du profil (§ « Claude Design n'est pas l'agent `designer` »). Ce qu'elle implique ici : tout brief à `designer` ou `frontend` qui touche l'UI porte le lien et l'essentiel du design system de l'application, ou dit qu'il n'en existe pas ; comparer des variantes avant de coder → `graphiste` les dessine (sur un canevas Claude Design privé, par défaut), l'utilisateur choisit, `designer` systématise la variante retenue, `frontend` la code.
 13. **Audit d'une base de code existante** (16.10.2026) : santé, dette technique, maintenabilité, reprise d'un dépôt inconnu, « par où commencer le ménage » → `auditeur`. **Frontières** : `reviewer` juge un **diff** contre une SPEC avant merge, `auditeur` juge l'**état** d'un dépôt sans diff ni SPEC ; `securite` modélise les **menaces**, `auditeur` ne fait qu'un passage d'hygiène (secrets en clair, lockfile, dépendances non maintenues) et lui renvoie le reste ; `perf-audit` et `a11y-audit` restent les audits spécialisés, vers lesquels `auditeur` oriente ; `architecte` décide d'une refonte que l'audit recommande. L'audit ne corrige rien : ses constats partent vers `backend`/`frontend` avec le cadrage de leur étage (§ « Séquences typiques », correctif issu d'un rapport).
 14. **Idée improbable et étincelle** (30.10.2026) : « une idée folle », « sors des sentiers battus », un nom ou un angle neuf, ou un problème sur lequel on tourne en rond → `muse`. Appelable aussi **sans demande**, aux trois moments que nomme la doctrine du profil (§ Phase 1, « Étincelle »). **Frontière avec `brainstormer`** : `brainstormer` ouvre l'espace des options raisonnables et les compare, avec leurs coûts ; `muse` cherche ce qu'aucune option raisonnable n'aurait donné, et bannit d'office ce que `brainstormer` proposerait. Une graine gardée par l'utilisateur part ensuite chez `brainstormer` (ouvrir) ou `architecte` (cadrer) : elle ne saute aucun étage. **Brief** : le sujet, le moment (étincelle, séance, déraillement), ce qui a déjà été dit ou essayé, ce que l'utilisateur a fait des graines précédentes. L'idée d'une étincelle se montre telle quelle, dans un bloc marqué, sans être reformulée : la lisser, c'est la ramener au probable. Ses faits, eux, passent la vérification du retour comme ceux de tout agent : un fait marqué « vérifié » se contrôle, un fait faux se signale sous le bloc (arbitrage de l'utilisateur du 30.10.2026, audit AC-03). **Quand on bute** : un comportement cassé → débogage (règle 16), jamais d'étincelle ; une conception qui bute → étincelle possible ; des options déjà posées, ou aucune qui convienne → règle 1.
 15. **Textes qui pilotent les agents** (10.11.2026) : une règle écrite mais pas appliquée, un agent qui dérape, une description qui ne route pas, un socle qui grossit, un nouvel agent ou skill, un banc de comportement ou de routage à concevoir, un changement de modèle → `ingenieur-ia`. Il propose et mesure ; `mainteneur-profils` ou l'orchestrateur appliquent, `reviewer` relit le diff. Découper ou réorganiser un socle trop gros : skill `doctrine-de-depot` d'abord (où vit quoi), puis `ingenieur-ia` pour l'effet sur le modèle.
@@ -102,6 +104,12 @@ contexte : le livrable long se dépose sur disque, seul le résumé remonte. Un 
 
 **Où se lance la suite de tests (06.11.2026, frottement F06).** La suite complète de la CI lancée en local par un agent s'est arrêtée à 57 % faute de mémoire. Dans `OUTILS`, écrire, quand le dépôt a une CI : « la CI fait foi pour la suite complète ; en local, seulement les fichiers de test touchés ou cités » ; sans CI, nommer la commande de test voulue.
 
+### Choisir le palier et l'effort d'un agent
+
+À l'invocation, sans l'annoncer à l'utilisateur (Phase 1bis retirée de la doctrine le 13.11.2026). L'effort avant le modèle : baisser l'effort garde le jugement, baisser le modèle le perd. Tâche mécanique et volumineuse → le plus économique qui tienne la qualité ; conception, arbitrage, investigation → palier de la session ; erreur qui part en production ou fonde une architecture → jamais en dessous. Un regard différent sur un travail fait est un autre modèle, pas un palier.
+
+Un `model:` épinglé dans un frontmatter s'impose à l'invocation ; seul `brainstormer` en porte un.
+
 ### Ce qu'on vérifie au retour, agent par agent
 
 Un rapport se vérifie sur ce qui est **mécaniquement** vérifiable, avant d'être relayé à l'utilisateur.
@@ -121,6 +129,8 @@ date, et c'est à toi de lancer la commande si le fait en demande une.
 |---|---|
 | `architecte`, `ux`, `designer`, `qa`, `growth`, `brainstormer` | `test -f docs/<fichier annoncé>` (ou `Read`) ; les sections que le brief exigeait s'y trouvent, par leur titre. Livrable rendu en note plutôt qu'en fichier : la note porte les rubriques exigées par le brief, et chaque fait sa ligne citée. **`qa` en plus** : `git status --short` vide de tout fichier hors `docs/TESTING-*` (ses mutants vivent dans un worktree jetable) |
 | `architecte` en plus | chaque NFR du cadrage porte une mesure ou un N/A motivé, chaque risque un signal de détection, chaque ADR une alternative (ou un critère éliminatoire) et un signal de réexamen ; en Mode C, licence et activité de la dépendance vérifiées avec URL et date |
+| `graphiste` | le lien du canevas Claude Design est donné (ou la voie locale était demandée) ; la planche `.png` annoncée s'ouvre (`Read`) et montre 2 ou 3 variantes, mêmes écrans, mêmes données ; le verdict est en tête et le JSON de `mesures.js` collé (sinon « REGARDÉE, NON MESURÉE » ou « PLANCHE NON REGARDÉE », avec la cause) ; les données sont réelles (source citée) ou l'exemple est annoncé en tête de planche ; rien d'écrit dans le dépôt de l'application (`git status --short`) |
+| `designer` Mode G | les captures citées existent (`Read`), chacune en regard de sa planche du prototype ; le verdict CONFORME ou la table des écarts y figure ; un écart de sévérité 3-4 bloque la question de fusion |
 | `ux`, `designer`, `growth` en plus | une recommandation tirée au hasard porte son `[Nx — source]` (ou `[N0 — style du profil]` chez `designer`), et la source se retrouve dans la bibliographie du livrable puis dans `ux-preuves/references/` ou à son URL ; chez `growth`, aucune affirmation « à sourcer » dans une version publiable, et chaque limite de store citée avec sa page officielle et sa date de lecture |
 | `backend`, `frontend` | `git status --short` et `git diff --stat` : les fichiers touchés sont ceux du brief, aucun de « DEHORS » ; `npx tsc --noEmit` ou le script `build`/`check` de `package.json`, sortie collée et code 0 ; `npm test -- <fichier de test cité>` quand un test est annoncé. **`frontend` en plus, depuis la v3.0** : la Phase 0 cite les versions lues dans le lockfile ; toute dépendance ajoutée a sa vérification sur le registre collée (`npm view <nom>`) ; toute fonctionnalité de plateforme récente porte son statut Baseline avec URL et date de lecture. **`backend` en plus, depuis la v4.0** : la Phase 0 cite les versions du lockfile et les données personnelles touchées ; un test d'accès croisé (un appelant n'atteint pas l'objet d'un autre) existe pour chaque endpoint protégé livré ; la migration est fournie non appliquée, sortie de son rejeu sur une base jetable collée |
 | `redacteur` | `grep -c "<clé>" <chaque fichier de locale>` : même compte partout — aucune clé présente dans une seule locale ; **depuis la v3.0** : chaque locale porte son statut de relecture (« à valider par un natif » tant qu'aucun natif ne l'a relue), et une décision tirée au hasard porte son `[Nx — source]` ou `[N0 — voix du projet]` |
@@ -181,6 +191,7 @@ un système qui ne respecte ni l'un ni l'autre. L'ordre pré-engagé, quand le c
 |---|---|
 | `securite` exige une validation que `frontend` juge lourde | `securite`. La friction se traite par l'UX du message, pas par le retrait du contrôle |
 | `designer` veut un contraste que `a11y-audit` refuse | L'accessibilité. Un critère WCAG est une norme, pas une préférence |
+| `designer` voudrait changer l'allure de la variante que l'utilisateur a choisie chez `graphiste` | Le choix de l'utilisateur. `designer` systématise ; un défaut de la variante (contraste, état impossible) se corrige au plus près et se signale, la variante ne se redessine pas |
 | `perf-audit` propose un cache que `backend` juge incohérent | La justesse. Un résultat faux plus vite reste faux |
 | `architecte` cadre une chose, `backend` en implémente une autre | La SPEC. Si elle est fausse, on la corrige d'abord — on ne l'écarte pas en implémentant |
 
@@ -228,11 +239,17 @@ orchestrateur
    ↓
 [muse] → étincelle, due sur une fonctionnalité neuve sauf si la Séquence 0 l'a déjà donnée (une fois par sujet, règle 14 ; coupée par « pas de Muse ») ; idée montrée telle quelle, l'utilisateur garde ou jette
    ↓
-[architecte] → docs/SPEC/<slug>.md + ADR si décision structurante
+[graphiste] → planche de 2 ou 3 variantes des écrans touchés, vraies données ; [ux] apporte le parcours (si la feature change des écrans)
+   ↓
+[l'utilisateur] → choisit une variante
+   ↓
+[designer] → système de la variante retenue + prototype cliquable, vraies données
+   ↓
+[l'utilisateur] → touche le prototype, valide ou corrige
+   ↓
+[architecte] → docs/SPEC/<slug>.md + ADR si décision structurante ; cite le prototype validé
    ↓
 [skill spec-builder] → SPEC.md d'exécution pour le harness
-   ↓
-[ux] + [designer] (parallèle)
    ↓
 [redacteur] → microcopy + i18n (table de chaînes par locale, si la feature a du texte UI)
    ↓
@@ -245,6 +262,10 @@ orchestrateur
 [backend / frontend] → tests selon matrice qa
    ↓
 [reviewer] → verdict MERGE OK / corrections / BLOQUE
+   ↓
+[designer Mode G] → recette : écran construit (captures, vraies données) contre prototype
+   ↓
+[l'utilisateur] → lien d'essai sur son appareil ; « c'est bien »
    ↓
 [securite] → audit, si jamais audité ou si le changement est sensible (règle 5) — avant la mise en production
    ↓
@@ -309,6 +330,8 @@ orchestrateur
 
 ```
 orchestrateur
+   ↓
+[graphiste Mode A] → planche de 2 ou 3 variantes d'allure, vraies données ; l'utilisateur choisit
    ↓
 [architecte] → ADR sur stack UI (Tailwind, shadcn, lib icônes)
    ↓
@@ -549,8 +572,9 @@ Ne sont plus ici depuis le 11.11.2026 : ils servent à **écrire** une fiche, pa
 - ~~`code-audit`~~ : **jamais livré par ce profil** (outil d'un bundle externe). L'audit généraliste est le sub-agent `auditeur` depuis le 16.10.2026 (séquence 12) ; les trois audits spécialisés restent `securite` (OWASP), `perf-audit` et `a11y-audit`, plus `reviewer` en pré-merge.
 - `supabase-toolkit` (créé 21.05.2026) : conception et audit de RLS, RPC, migrations Supabase + reality check data legacy. Hand-off vers `securite` ou `release` Mode C.
 - `perf-audit` (créé 21.05.2026) : Web Vitals + bundle + N+1 + re-renders. Hand-off vers `backend` ou `frontend`.
+- `atelier-graphiste` (créé 13.11.2026) : **préchargé par `graphiste` seul**, jamais appelé en direct — `mesures.js` (contraste, débordements, cibles, polices rendues d'une planche) et les quatre dossiers de recherche sur le beau visuel, indexés par étape de la fiche.
 - `a11y-audit` (créé 21.05.2026) : audit WCAG 2.2 AA ex-post sur composant ou page. Complète le sub-agent `ux`.
-- `ux-preuves` (créé 09.11.2026) : référentiel de preuves sourcées — échelle N0-N4, citation, veille, sévérité 0-4, et des fiches par domaine dont chaque entrée cite une page lue et datée. **Préchargé** par douze agents, chacun avec son volet : `ux`, `designer`, `redacteur`, `growth`, `frontend`, `backend`, `architecte`, `securite`, `reviewer`, `qa`, `release`, `ingenieur-ia` (contenu des volets et versions : `references/provenance.md` du skill). **Frontière avec `a11y-audit`** : `ux-preuves` dit ce que la recherche et les normes établissent, `a11y-audit` vérifie un écran implémenté critère par critère.
+- `ux-preuves` (créé 09.11.2026) : référentiel de preuves sourcées — échelle N0-N4, citation, veille, sévérité 0-4, et des fiches par domaine dont chaque entrée cite une page lue et datée. **Préchargé** par treize agents, chacun avec son volet : `ux`, `designer`, `graphiste` (volet design visuel), `redacteur`, `growth`, `frontend`, `backend`, `architecte`, `securite`, `reviewer`, `qa`, `release`, `ingenieur-ia` (contenu des volets et versions : `references/provenance.md` du skill). **Frontière avec `a11y-audit`** : `ux-preuves` dit ce que la recherche et les normes établissent, `a11y-audit` vérifie un écran implémenté critère par critère.
 - `debug-investigation` (créé 21.05.2026) : investigation structurée bug → cause racine → test qui reproduit le défaut → correctif.
 - ~~`quant-toolkit`~~ : **parti le 18.08.2026** dans `<depot-prive>` avec l'agent `quant`.
 
