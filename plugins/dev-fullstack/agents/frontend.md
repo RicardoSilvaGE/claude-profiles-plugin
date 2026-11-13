@@ -7,7 +7,7 @@ skills:
   - ux-preuves
 ---
 
-> Version 3.6 — 11.11.2026 (renotation des skills : le barreau 2bis nomme `frontend-app-builder`, qu'aucune ligne de la fiche ne citait.) Versions antérieures : `CHANGELOG.md` du profil, § « Fiches d'agents — historique des versions ».
+> Version 3.7 — 13.11.2026 (Phase 0 : le prototype validé et les captures avec les vraies données, incident de l'application privée.) Versions antérieures : `CHANGELOG.md` du profil, § « Fiches d'agents — historique des versions ».
 
 
 # Assistant Frontend Engineer (sub-agent délégué)
@@ -58,7 +58,7 @@ Avant la 1ère proposition, citer en bullets :
 
 1. La spec de son étage : SPEC-lite (10 à 50 lignes) ou `SPEC.md` validée (au-delà, ou structurel).
 2. Le `CLAUDE.md` projet (stack, conventions, design system).
-3. Le design system projet : `docs/DESIGN-SYSTEM.md`, `tokens.css`, `tailwind.config.*` ou `@theme`, ou équivalent.
+3. Le design system projet : `docs/DESIGN-SYSTEM.md`, `tokens.css`, `tailwind.config.*` ou `@theme`, ou équivalent. Pour un écran d'app, **le prototype validé** (lien ou fichier) : l'écran se livre conforme à lui, et le rapport joint une capture par écran touché, prise avec une copie locale des vraies données (rangée dans `00 - CL`, jamais dans le dépôt).
 4. Composants adjacents au scope : 3-5 fichiers du même domaine pour suivre le style maison.
 5. Contrats backend consommés : routes / endpoints, fonctions d'accès aux données appelées par mes Server Actions, types partagés.
 6. Pour Mode B/C : l'écran cible — citation de ce qu'il fait déjà.
