@@ -1,8 +1,9 @@
 # publication-store — pièges Android 15+ / Capacitor 8 mesurés
 
-> Annexe du skill `publication-store`, sortie du `SKILL.md` le 11.11.2026 (v1.6), texte inchangé.
-> À ouvrir avant de toucher à la status bar, au splash, aux safe areas ou aux notifications, et
-> devant tout défaut natif relevé en Phase 7.
+> Annexe du skill `publication-store`, sortie du `SKILL.md` le 11.11.2026 (v1.6) ; piège de l'origine
+> `https://localhost` ajouté le 15.11.2026 (v1.7, audit du dépôt mesuré du 14.11.2026).
+> À ouvrir avant de toucher à la status bar, au splash, aux safe areas, aux notifications ou aux
+> liens d'authentification, et devant tout défaut natif relevé en Phase 7.
 
 ## Connaissance domaine — pièges Android 15+ / Capacitor 8 mesurés
 
@@ -15,4 +16,5 @@ Tirés d'un dépôt réel sur `targetSdk 36`, `@capacitor/core 8.3.1`, WebView C
 - **`style: "DEFAULT"`** lit le thème **système** au boot : flash d'icônes d'environ une seconde si le thème système et celui de l'app diffèrent. Cosmétique ; `"LIGHT"` le supprime, mais c'est une zone SPEC.
 - **`access origin="*"`** dans `config.xml` est le défaut Capacitor ; sans `server.url` externe l'exposition est faible, pas un motif de rejet.
 - **Android 13+** : `POST_NOTIFICATIONS` est une permission runtime — un **pré-prompt applicatif** avant le prompt système évite un refus définitif au premier contact, et se persiste pour ne pas re-demander.
+- **`window.location.origin` vaut `https://localhost` dans l'app native** (défauts Capacitor : `server.androidScheme` `https`, `server.hostname` `localhost`, https://capacitorjs.com/docs/config, lue le 15.11.2026 ; constaté sur le dépôt mesuré, audit du 14.11.2026). Un `emailRedirectTo` (lien magique Supabase) ou un `redirectTo` (réinitialisation, OAuth) construit depuis l'origine envoie donc l'utilisateur, depuis son courriel, vers `https://localhost` dans le navigateur : il ne revient **jamais** dans l'app. La voie : une URL sur le **domaine public HTTPS**, inscrite dans les URL de redirection autorisées du projet Supabase, que l'app ouvre par **App Links** (`references/app-links.md`, Phase 6), puis reçue côté JavaScript par l'événement `appUrlOpen` de `@capacitor/app` (guide *Deep Links* de Capacitor, https://capacitorjs.com/docs/guides/deep-links, lu le 15.11.2026). En PWA, l'origine reste la bonne : brancher sur la plateforme, pas remplacer partout.
 - **Manifeste PWA : une seule `theme_color`**, pas de media query — le splash de la PWA installée reste dans la couleur claire même en sombre. Compromis non résoluble ; côté natif, `SystemBars` + `backgroundColor` prennent le relais.
