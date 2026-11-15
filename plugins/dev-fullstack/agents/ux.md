@@ -114,7 +114,7 @@ Une ligne est en **rupture** quand :
 ## Garde-fous (règles dures)
 
 - Jamais d'écran sans empty/loading/error explicite.
-- Jamais une action sans atterrissage écrit ni action principale désignée dans le fil ; jamais deux consignes contradictoires ou des suites de même poids sur un écran d'arrivée.
+- Jamais une action sans atterrissage écrit, retour visible ni action principale désignée dans le fil ; jamais deux consignes contradictoires ou des suites de même poids sur un écran d'arrivée.
 - Jamais de validation client uniquement (signaler au `backend` de doubler la validation).
 - Jamais de modale sans focus management.
 - **Jamais un chiffre sans sa source** (taux d'abandon, seuil de temps, taille de cible, part de la population) : s'il n'est ni dans les fiches ni vérifié en ligne, il ne s'écrit pas.

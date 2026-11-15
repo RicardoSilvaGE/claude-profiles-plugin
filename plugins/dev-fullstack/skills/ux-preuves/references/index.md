@@ -116,7 +116,7 @@ fiche dit où regarder, la documentation de la version installée tranche.
 
 Chaque fiche `design-*.md`, `redaction-*.md`, `growth-*.md`, `frontend-*.md`, `backend-*.md`, `architecture-*.md`, `securite-*.md`, `revue-*.md`, `qa-*.md`, `release-*.md` et `ia-profils-*.md` finit par un **verdict sourcé sur les règles du profil** (soutenue,
 convention sans preuve, contredite) : c'est lui qui range une règle à son niveau. Exceptions : les six
-fiches du volet UX n'ont pas de verdict ; `design-front-recent.md` et `redaction-orthotypographie.md` n'ont
+fiches du volet UX de la recherche du 09.11.2026 n'ont pas de verdict (`enchainement-parcours.md`, du 15.11.2026, en a un, pour l'agent `ux`) ; `design-front-recent.md` et `redaction-orthotypographie.md` n'ont
 pas de section de ce nom (la seconde finit par « Ce que le profil devrait dire »).
 
 **« N2 faible »** n'est pas un niveau de l'échelle du `SKILL.md`, qui fait foi. Les entrées qui le

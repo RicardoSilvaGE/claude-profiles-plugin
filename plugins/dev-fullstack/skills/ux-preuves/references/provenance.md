@@ -153,6 +153,18 @@ extrait verbatim ; un chiffre dont la source primaire n'a pas été trouvée est
 les guidelines de plateformes ; puis les chiffres d'études de marché (Baymard, WebAIM). Les
 fondements cognitifs (Fitts, Norman, Simons & Chabris) vieillissent le moins.
 
+## Recherche du 15.11.2026 (`enchainement-parcours.md`)
+
+Une recherche, un agent, après la plainte « pas fluide » sur une application privée : **29 entrées**,
+toutes sur une page ouverte le 15.11.2026 (WebFetch ; texte de la même URL extrait par curl ou
+pdftotext quand WebFetch ne rendait qu'un résumé). Niveau en tête d'entrée : N2 sur onze (dont trois « résumé seul
+lu »), N3 sur dix, N4 sur sept, N1 sur une (WCAG 2.4.8, niveau AAA) ; un autre critère WCAG de niveau AAA appuie
+en outre une entrée N3. Sources non lues
+(paywall, 403, site illisible par les outils) : section « Non vérifié » de la fiche. **Contrôles à la
+source** refaits le même jour par l'orchestrateur (GOV.UK Button ; Li et al. 2005, 59 % soit 29 sur
+49 ; Khalid et al., « Interface Design » 3,44 %) et par `reviewer` (Scheibehenne et al. 2010 ;
+Kendrick, NN/g 2020) : cinq sur cinq conformes.
+
 ## Versions du skill
 
 Historique sorti de l'en-tête du `SKILL.md` le 10.11.2026 (v1.9).
