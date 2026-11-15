@@ -5,7 +5,7 @@ description: "Préchargé par `graphiste` : mesure des planches et recherche dat
 
 # Atelier du graphiste
 
-> Version 1.0 — 13.11.2026 (création avec `graphiste` 2.0 : le script de mesure et les quatre dossiers de recherche de l'essai du 13.11.2026, sortis du dossier de travail où ils vivaient).
+> Version 1.1 — 15.11.2026 (avec `graphiste` 2.1 : dossiers 5, sites primés, et 6, applications primées, indexés comme source de règles de création, pas de modèles ; leurs écarts avec la fiche tranchés). Versions antérieures : `CHANGELOG.md` du profil, § « Historiques des versions des fiches et skills ».
 
 ## Le dossier
 
@@ -18,6 +18,8 @@ Son chemin est donné au chargement du skill (« Base directory »). À défaut 
 | `recherche/2-metier-direction-artistique.md` | le métier : thème, point focal, échelle, grille, air, typographie, palette, matière, signes du générique, grille de critique |
 | `recherche/3-methode-de-creation.md` | la méthode : variantes en parallèle, références, quantité, contraintes, critique |
 | `recherche/4-faire-produire-du-beau-a-une-ia.md` | diriger un modèle hors du générique, ce que vaut son regard sur un PNG, la boucle rendre-critiquer |
+| `recherche/5-sites-primes.md` | d'où viennent des règles de création : ce que les jurys du web récompensent et tolèrent, traits communs de 15 lauréats, ce qui se transpose à une app |
+| `recherche/6-applications-primees.md` | d'où viennent des règles de création : traits communs de 18 apps primées, ce que saluent Apple et les équipes, avis d'utilisateurs sur l'UI |
 
 ## `mesures.js`
 
@@ -43,21 +45,22 @@ Testé le 13.11.2026 sous Chrome sans fenêtre : chaque contrôle sur un défaut
 
 ## Recherche — quoi ouvrir, à quelle étape
 
-Chercher par `Grep` dans les titres `###` ; ne pas lire un dossier en entier. Chaque dossier finit par un « Top 8 des consignes pour graphiste ».
+Chercher par `Grep` dans les titres (`^#`) ; ne pas lire un dossier en entier. Chaque dossier finit par un « Top 8 ». Les dossiers 5 et 6 s'ouvrent pour **justifier** une règle de la fiche, jamais pour y chercher un modèle : aucune palette, police, composition ni signature d'un lauréat ne passe sur une planche.
 
 | Étape de la fiche | Dossier, terme à chercher |
 |---|---|
-| Ligne de base, signes du générique | 4 « centre de sa distribution », « parade » ; 2 « Signes du générique » |
+| Ligne de base, signes du générique | 4 « centre de sa distribution », « parade » ; 2 « Signes du générique » ; 5 « contredisent » et 6 « Écarts » (tranchés) |
 | Références | 3 « exemples », « références proches » |
 | Diverger | 3 « premières idées », « persister » ; 4 « Diversité » |
-| Fiche de direction | 2 « thème », « palette », « rampes », « police d'affichage » ; 1 « Couleur » |
-| Composition, héros, air | 2 « point focal », « écarts d'échelle », « grille », « air » |
+| Fiche de direction | 2 « thème », « palette », « rampes », « police d'affichage » ; 1 « Couleur » ; 5 « Se transpose » ; 6 « Traits communs », « Ce que disent les équipes » |
+| Composition, héros, air | 2 « point focal », « écarts d'échelle », « grille », « air » ; 6 « Traits communs » (donnée en image, chiffre héros) |
+| Mouvement | 5 « Ne se transpose pas » ; 2 « toucher et au son » |
 | Objet du domaine, matière | 2 « illustration », « langage de formes », « relief » |
 | Critique, boucle | 2 « Grille de critique » ; 3 « critique utile », « auto-évaluation » ; 4 « juge », « boucle » |
-| Défendre la beauté | 1 « utilisabilité », « mythes » |
+| Défendre la beauté | 1 « utilisabilité », « mythes » ; 5 « Biais documentés » ; 6 « textes d'Apple », « Études publiées » |
 
 ## Lire les niveaux
 
-Échelle de `ux-preuves` : N1 norme, N2 recherche publiée, N3 guide officiel, N4 praticien, N0 jugement déclaré. Une consigne transposée d'une étude sur le web ou sur des produits à un écran de téléphone se cite « appui N2 », pas N2 ; « résumé seul lu » reste écrit. Les sections « Sources non lues » et « Repéré, non lu » ne se citent pas comme faits.
+Échelle de `ux-preuves` : N1 norme, N2 recherche publiée, N3 guide officiel, N4 praticien, N0 jugement déclaré. Une consigne transposée d'une étude sur le web ou sur des produits à un écran de téléphone se cite « appui N2 », pas N2 ; « résumé seul lu » reste écrit. Les sections « Sources non lues » et « Repéré, non lu » ne se citent pas comme faits. Dans les dossiers 5 et 6, un décompte de lauréats est un N0 d'observation (un codeur, échantillon choisi, souvent des visuels de vente) : il décrit ces lauréats, il ne prouve pas qu'un trait fait gagner, et il ne pèse jamais contre un N1.
 
-Le § « Écarts avec les règles de design du profil » du dossier 2 est **tranché** depuis le 13.11.2026 : la doctrine borne ses « Règles de design opposables » aux interfaces d'outil.
+Le § « Écarts avec les règles de design du profil » du dossier 2 est **tranché** depuis le 13.11.2026 : la doctrine borne ses « Règles de design opposables » aux interfaces d'outil. L'entrée 7 du dossier 5 et le § « Écarts » du dossier 6 sont tranchés depuis le 15.11.2026 dans `graphiste` 2.1 (« Signes du générique », « Ce qui rend une planche belle »).
