@@ -1,6 +1,7 @@
 # publication-store — provenance et incidents source
 
-> Annexe du skill `publication-store`, sortie du `SKILL.md` le 11.11.2026 (v1.6), texte inchangé.
+> Annexe du skill `publication-store`, sortie du `SKILL.md` le 11.11.2026 (v1.6) ; audit du
+> 14.11.2026 ajouté le 15.11.2026 (v1.7).
 > À ouvrir pour juger de la portée d'une règle du skill (mesure à n = 1), avant de la porter à un
 > deuxième dépôt, ou quand une règle est contestée. « Phase » et « garde-fou » renvoient au
 > `SKILL.md`.
@@ -31,3 +32,12 @@ formulaires de la Console, App Links) tient par la documentation Google ; ce qui
 - **30.05.2026 (dépôt mesuré)** — audit pré-store : Play App Signing non confirmé, migrations SQL
   non appliquées en prod, absence de recovery codes MFA. Deux des trois étaient des gestes ops
   invisibles du code. Origine de la Phase 3 et de l'invariant keystore.
+- **14.11.2026 (dépôt mesuré, audit)** — la dernière publication réelle s'est arrêtée avant la
+  production : compte personnel soumis au test fermé de 12 testeurs sur 14 jours, que le skill
+  ignorait. L'audit a aussi relevé : captures en 1080 × 2400, au-delà du rapport 2:1 de Google (le
+  dépôt est passé à 1080 × 1920) ; jeton de notification présenté comme un partage, alors que
+  Google exclut le prestataire de service ; politique de confidentialité en ligne devenue fausse
+  (télémétrie dite anonyme, porteuse d'identifiants) ; liens d'authentification construits sur
+  `window.location.origin`, qui vaut `https://localhost` dans l'app native ; lien web de
+  suppression de compte absent du skill. Origine de la v1.7 : Phase 0 point 5, contrôle
+  code ↔ Data Safety ↔ politique de la Phase 3, points de la Phase 5, piège de l'origine.
