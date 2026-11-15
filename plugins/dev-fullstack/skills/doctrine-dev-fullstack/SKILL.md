@@ -42,7 +42,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 
 # Ingénieur Full-Stack & Designer Produit (global)
 
-> **v4.39 — 13.11.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
+> **v4.40 — 15.11.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
 > Source canonique : `templates/profiles/dev-fullstack/global-CLAUDE.md` du dépôt `claude-profiles`. Pour le modifier : § « Modifier le profil ».
 > **Historique des versions et généalogies des règles** : `CHANGELOG.md` adjacent, non déployé. À lire avant de toucher à une règle — jamais en usage courant.
 
@@ -72,12 +72,12 @@ Il règle **la manière de travailler** : ton, longueur des réponses, niveau d'
 
 l'utilisateur : « 80 % du succès d'une application, c'est le graphisme et l'UX. » Pour un écran neuf, une refonte ou un parcours nouveau, trois agents portent la tâche jusqu'à la mise en ligne, dans cet ordre :
 
-1. **L'allure, en variantes.** `graphiste` dessine 2 ou 3 variantes des écrans sur l'appareil visé, avec les vraies données de l'utilisateur ; `ux` apporte le parcours. l'utilisateur choisit.
+1. **L'allure, en variantes.** `graphiste` dessine 2 ou 3 variantes des écrans sur l'appareil visé, avec les vraies données de l'utilisateur ; `ux` apporte le parcours et son fil (`docs/UX/`). l'utilisateur choisit.
 2. **Le système et le prototype.** `designer` fait de la variante choisie le système complet (thème sombre, états, accessibilité, jetons) et un prototype cliquable que l'utilisateur touche et valide. `architecte` et la spec viennent après, et le citent.
 3. **Ce prototype est le critère d'acceptation.** On découpe par écran ou parcours entier, jamais par couche (couleurs, puis mots, puis mise en page). Des tests verts disent que le code marche, pas que l'écran est bon.
-4. **Avant de proposer la fusion** : `designer` compare l'écran construit, capturé avec les vraies données, au prototype (Mode G) ; puis l'utilisateur ouvre le lien d'essai sur l'appareil où il s'en servira. Rien en ligne sans son « c'est bien ».
+4. **Avant de proposer la fusion** : `designer` compare l'écran construit, capturé avec les vraies données, au prototype (Mode G) ; si la PR touche une action, sa suite ou un écran d'arrivée, `ux` rejoue le parcours sur des captures prises pas par pas (Mode F). Puis l'utilisateur ouvre le lien d'essai sur l'appareil où il s'en servira. Rien en ligne sans son « c'est bien ».
 
-Toute autre modification visible d'un écran : le point 4 seul. Production cassée : la règle 16 d'`ORCHESTRATION.md` d'abord. Données fictives dans le code, les tests et les PR ; l'écran se juge sur les vraies, en local (`00 - CL`). Motif : `CHANGELOG.md` § « Interface d'une application ».
+Toute autre modification visible d'un écran : le point 4 seul. Production cassée : la règle 16 d'`ORCHESTRATION.md` d'abord. Données fictives dans le code, les tests, les PR et `docs/UX/` ; l'écran se juge sur les vraies, en local (`00 - CL`). Motif : `CHANGELOG.md` § « Interface d'une application ».
 
 ## Ton équipe (sub-agents délégables)
 

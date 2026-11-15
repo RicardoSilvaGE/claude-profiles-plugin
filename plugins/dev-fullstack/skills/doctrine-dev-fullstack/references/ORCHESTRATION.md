@@ -1,7 +1,7 @@
 # Orchestration des sub-agents
 
 > Source canonique : `templates/profiles/dev-fullstack/agents/ORCHESTRATION.md` (dépôt `claude-profiles`) ; la copie déployée vit dans `agents/` du home actif.
-> Dernière mise à jour : 13.11.2026 (v2.37 — `graphiste` 2.0 : appareil visé, preuve par le verdict et le JSON des mesures ; skill `atelier-graphiste`. Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
+> Dernière mise à jour : 15.11.2026 (v2.38 — `ux` 4.5 : fil du parcours, rejeu du parcours construit (Mode F) avant la fusion, parcours dans `docs/UX/`. Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
 
 Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les séquences typiques. Il complète le `CLAUDE.md` global et les frontmatters de chaque agent.
 
@@ -12,7 +12,7 @@ Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les
 | `muse`      | Idées improbables qui ont du sens, étincelle spontanée | Non   | `docs/MUSE/` sur demande, sinon inline |
 | `brainstormer`| Idéation divergente amont (3-5 directions) | Non | `docs/BRAINSTORM/` uniquement |
 | `architecte`| Cadrage feature/projet, ADR, SPEC                 | Non             | `docs/` uniquement                  |
-| `ux`        | Flows utilisateur, états système, audit heuristique sourcé, contenus et documents, plan d'évaluation, a11y | Non     | `docs/UX/` uniquement               |
+| `ux`        | Flows utilisateur et leur fil (la suite après chaque action), états système, audit heuristique sourcé, rejeu du parcours construit (Mode F), contenus et documents, plan d'évaluation, a11y | Non     | `docs/UX/` uniquement, en données génériques ; captures aux vraies données citées depuis `00 - CL\<sujet>\`, jamais recopiées |
 | `redacteur` | Microcopy, voix et ton, i18n idiomatique, typographie par locale, relecture de traduction | Oui (locales)   | Fichiers de locales + table de chaînes ; `docs/VOIX-ET-TON.md` (Mode D) |
 | `growth`    | GTM, positionnement, ASO, copy externe d'acquisition, emails, SEO, plan de mesure | Non          | `docs/GTM.md`, `docs/MESURE-*.md` + copy par asset et par locale |
 | `graphiste` | Allure d'une app ou d'un écran neuf : 2 ou 3 variantes sur l'appareil visé (téléphone par défaut), vraies données | Non | canevas Claude Design privé par défaut, copie locale dans `00 - CL\<sujet>\` (planche HTML et son rendu PNG), jamais le dépôt de l'application |
@@ -31,8 +31,8 @@ Deux agents **transverses** (`templates/_shared/agents/`, déployés sous tous l
 
 1. **Tâche large ou idée floue** : si le problème est ouvert / mal défini, passer d'abord par `brainstormer` (idéation divergente, 3-5 directions, ne tranche pas) puis `architecte`. Si le besoin est déjà clair, commencer directement par `architecte`. Sans cadrage, on construit sur du sable. **Des options déjà posées à départager** → `architecte` (Mode B, ou C pour une brique de stack) et l'utilisateur ; aucune ne convient → `brainstormer` Mode B, qui rouvre sans choisir. Au démarrage d'un projet ou d'une fonctionnalité neuve, l'étincelle de `muse` passe avant (règle 14).
 2. **Avant toute écriture de code** (`backend`, `frontend`, et `redacteur` quand il écrit des locales ; une Server Action propre à un écran est à `frontend`, le modèle et l'accès aux données qu'elle appelle à `backend`) : le cadrage de son étage doit exister — rien sous 10 lignes, une SPEC-lite de 10 à 50, une `SPEC.md` au-delà ou si structurel. Pour la `SPEC.md` → invoquer le skill `spec-builder` (pas un sub-agent). Règle absolue du 19.05.2026, trois étages depuis le 18.08.2026.
-3. **`graphiste`, `ux` et `designer`** : pour les écrans d'une app ou d'une fonctionnalité visible, ils passent **avant** `architecte`, dans cet ordre : `graphiste` dessine l'allure en 2 ou 3 variantes (`ux` lui apporte le parcours), l'utilisateur choisit, `designer` fait de la variante retenue le système et le prototype que l'utilisateur valide (doctrine § « Interface d'une application »). Ailleurs, `ux` et `designer` peuvent travailler en parallèle après `architecte`. **Frontières** : `ux` pense parcours, états et contenu (ce qui se passe, dans quel ordre) ; `graphiste` propose l'allure (composition, objet principal de l'écran, ambiance) et ne fige rien ; `designer` systématise le rendu (palette, typographie, composants, états, jetons) sans réinventer l'allure choisie. Un écran « qui ne va pas » sans cause connue : parcours qui frictionne → `ux` Mode C ; rendu → `designer` Mode D (critique sourcée, corrections dans l'allure actuelle) ; les deux en parallèle si on ne sait pas. Un écran jugé laid, à redessiner (« on dirait un tableur ») → `graphiste` Mode C, avant / après en variantes. Retouche de quelques tokens → `designer` Mode C, ou `frontend` Mode C si elle s'applique telle quelle au composant.
-4. **Avant merge** : `reviewer` systématique sur tout diff — livrables `backend` / `frontend`, code écrit en direct, diff proposé par `ingenieur-ia`. Seule exception : la tâche simple au sens de la doctrine (Phase 1 : premier étage, fichiers déjà lus), dont le filet est le hook de build. `reviewer` juge le diff, pas l'écran : pour un écran, la recette de `designer` (Mode G) s'y ajoute avant la question de fusion.
+3. **`graphiste`, `ux` et `designer`** : pour les écrans d'une app ou d'une fonctionnalité visible, ils passent **avant** `architecte`, dans cet ordre : `graphiste` dessine l'allure en 2 ou 3 variantes (`ux` lui apporte le parcours), l'utilisateur choisit, `designer` fait de la variante retenue le système et le prototype que l'utilisateur valide (doctrine § « Interface d'une application »). Ailleurs, `ux` et `designer` peuvent travailler en parallèle après `architecte`. **Frontières** : `ux` pense parcours, enchaînement, états et contenu (ce qui se passe, dans quel ordre, et ce qu'on fait ensuite) ; `graphiste` propose l'allure (composition, objet principal de l'écran, ambiance) et ne fige rien ; `designer` systématise le rendu (palette, typographie, composants, états, jetons) sans réinventer l'allure choisie. Un écran « qui ne va pas » sans cause connue : parcours qui frictionne ou « pas fluide » → `ux` Mode C ; rendu → `designer` Mode D (critique sourcée, corrections dans l'allure actuelle) ; les deux en parallèle si on ne sait pas. Un écran jugé laid, à redessiner (« on dirait un tableur ») → `graphiste` Mode C, avant / après en variantes. Retouche de quelques tokens → `designer` Mode C, ou `frontend` Mode C si elle s'applique telle quelle au composant.
+4. **Avant merge** : `reviewer` systématique sur tout diff — livrables `backend` / `frontend`, code écrit en direct, diff proposé par `ingenieur-ia`. Seule exception : la tâche simple au sens de la doctrine (Phase 1 : premier étage, fichiers déjà lus), dont le filet est le hook de build. `reviewer` juge le diff, pas l'écran : pour un écran, la recette de `designer` (Mode G) s'y ajoute avant la question de fusion, et le rejeu de `ux` (Mode F) quand la PR ajoute ou change une action, ce qui la suit ou un écran d'arrivée.
 5. **Avant prod** : `release` (pre-deploy check) à chaque mise en production ; `securite` (audit complet) avant la **première** mise en production et après tout changement sensible (auth, paiement, données personnelles, exposition nouvelle).
    **Dans un dépôt à déploiement continu** (fusion sur `main` = mise en ligne), **la fusion est la mise en production** : cette règle, et pour un écran la recette et l'essai de l'utilisateur, s'appliquent avant `gh pr merge`.
 6. **Après prod** : `release` (post-deploy verification).
@@ -131,6 +131,7 @@ date, et c'est à toi de lancer la commande si le fait en demande une.
 | `architecte` en plus | chaque NFR du cadrage porte une mesure ou un N/A motivé, chaque risque un signal de détection, chaque ADR une alternative (ou un critère éliminatoire) et un signal de réexamen ; en Mode C, licence et activité de la dépendance vérifiées avec URL et date |
 | `graphiste` | le lien du canevas Claude Design est donné (ou la voie locale était demandée) ; la planche `.png` annoncée s'ouvre (`Read`) et montre 2 ou 3 variantes, mêmes écrans, mêmes données ; le verdict est en tête et le JSON de `mesures.js` collé (sinon « REGARDÉE, NON MESURÉE » ou « PLANCHE NON REGARDÉE », avec la cause) ; les données sont réelles (source citée) ou l'exemple est annoncé en tête de planche ; rien d'écrit dans le dépôt de l'application (`git status --short`) |
 | `designer` Mode G | les captures citées existent (`Read`), chacune en regard de sa planche du prototype ; le verdict CONFORME ou la table des écarts y figure ; un écart de sévérité 3-4 bloque la question de fusion |
+| `ux` Mode F | chaque pas du fil a sa capture citée, qui s'ouvre (`Read`), ou est marqué NON JOUÉ ; le verdict CONFORME ou RUPTURES est en tête ; une rupture de sévérité 3-4 bloque la question de fusion ; `docs/UX/` ne recopie aucune donnée réelle (un nom lu sur une capture aux vraies données, cherché par `grep -r` dans `docs/UX/`, ne sort pas) |
 | `ux`, `designer`, `growth` en plus | une recommandation tirée au hasard porte son `[Nx — source]` (ou `[N0 — style du profil]` chez `designer`), et la source se retrouve dans la bibliographie du livrable puis dans `ux-preuves/references/` ou à son URL ; chez `growth`, aucune affirmation « à sourcer » dans une version publiable, et chaque limite de store citée avec sa page officielle et sa date de lecture |
 | `backend`, `frontend` | `git status --short` et `git diff --stat` : les fichiers touchés sont ceux du brief, aucun de « DEHORS » ; `npx tsc --noEmit` ou le script `build`/`check` de `package.json`, sortie collée et code 0 ; `npm test -- <fichier de test cité>` quand un test est annoncé. **`frontend` en plus, depuis la v3.0** : la Phase 0 cite les versions lues dans le lockfile ; toute dépendance ajoutée a sa vérification sur le registre collée (`npm view <nom>`) ; toute fonctionnalité de plateforme récente porte son statut Baseline avec URL et date de lecture. **`backend` en plus, depuis la v4.0** : la Phase 0 cite les versions du lockfile et les données personnelles touchées ; un test d'accès croisé (un appelant n'atteint pas l'objet d'un autre) existe pour chaque endpoint protégé livré ; la migration est fournie non appliquée, sortie de son rejeu sur une base jetable collée |
 | `redacteur` | `grep -c "<clé>" <chaque fichier de locale>` : même compte partout — aucune clé présente dans une seule locale ; **depuis la v3.0** : chaque locale porte son statut de relecture (« à valider par un natif » tant qu'aucun natif ne l'a relue), et une décision tirée au hasard porte son `[Nx — source]` ou `[N0 — voix du projet]` |
@@ -201,7 +202,7 @@ l'utilisateur, avec les deux positions résumées en trois lignes chacune.
 ### Parallélisme et conflits d'écriture
 
 Paralléliser vaut quand les livrables sont **indépendants**. Deux paires sûres :
-`ux` + `designer` après `architecte`, `qa` + `redacteur` sur une feature cadrée.
+`ux` + `designer` après `architecte`, `qa` + `redacteur` sur une feature cadrée ; et avant la fusion, `designer` Mode G + `ux` Mode F sur la même campagne de captures.
 
 **Jamais deux agents qui écrivent dans les mêmes fichiers.** Le second écrase le premier sans que
 rien ne le signale — ni le harness, ni git, qui ne voit qu'un état final cohérent. Quand deux
@@ -239,7 +240,7 @@ orchestrateur
    ↓
 [muse] → étincelle, due sur une fonctionnalité neuve sauf si la Séquence 0 l'a déjà donnée (une fois par sujet, règle 14 ; coupée par « pas de Muse ») ; idée montrée telle quelle, l'utilisateur garde ou jette
    ↓
-[graphiste] → planche de 2 ou 3 variantes des écrans touchés, vraies données ; [ux] apporte le parcours (si la feature change des écrans)
+[graphiste] → planche de 2 ou 3 variantes des écrans touchés, vraies données ; [ux Mode A] apporte le parcours et son fil, dans docs/UX/ (si la feature change des écrans)
    ↓
 [l'utilisateur] → choisit une variante
    ↓
@@ -247,7 +248,7 @@ orchestrateur
    ↓
 [l'utilisateur] → touche le prototype, valide ou corrige
    ↓
-[architecte] → docs/SPEC/<slug>.md + ADR si décision structurante ; cite le prototype validé
+[architecte] → docs/SPEC/<slug>.md + ADR si décision structurante ; cite le prototype validé et le fil de docs/UX/
    ↓
 [skill spec-builder] → SPEC.md d'exécution pour le harness
    ↓
@@ -264,6 +265,7 @@ orchestrateur
 [reviewer] → verdict MERGE OK / corrections / BLOQUE
    ↓
 [designer Mode G] → recette : écran construit (captures, vraies données) contre prototype
+   + [ux Mode F] → rejeu du fil, pas par pas, base vide puis d'usage (si la PR touche une action, ce qui la suit ou un écran d'arrivée)
    ↓
 [l'utilisateur] → lien d'essai sur son appareil ; « c'est bien »
    ↓
@@ -275,6 +277,8 @@ DEPLOY
    ↓
 [release Mode B] → post-deploy verification
 ```
+
+**Captures du Mode F.** L'orchestrateur (ou `frontend`, si son brief le demande) lance l'app en local et joue le fil de `docs/UX/` sur un appareil émulé : Playwright en session cloud, où il est préinstallé ; sur le poste, non vérifié. Une série sur base vide (premier usage), une sur base d'usage. Pour chaque pas : l'action jouée, l'URL atteinte, la capture de l'écran visible (une pleine page en plus si l'écran défile : elle dédouble les barres fixes, constaté sur l'application privée), et les titres, boutons, liens et messages d'état relevés. Le script de rejeu reste hors du dépôt (scratchpad ou `00 - CL`) tant que le projet n'a pas de tests de bout en bout : l'y ajouter est une dépendance à justifier. Les captures aux vraies données vont dans `00 - CL`, celles sur base vide peuvent accompagner la PR.
 
 ### Séquence 2 — Hotfix urgent (< 10 lignes, non structurel)
 

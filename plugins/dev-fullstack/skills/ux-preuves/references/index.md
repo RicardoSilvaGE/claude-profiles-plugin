@@ -9,6 +9,7 @@
 | Fiche | Couvre |
 |---|---|
 | `references/cognition-chemin-usage.md` | Comment une personne agit, cherche, décide, se trompe et apprend : sept étapes de l'action et gouffres d'exécution et d'évaluation, modèles mentaux, fourrage d'information, satisficing et effet du défaut, slips et mistakes, cognitive walkthrough, KLM, attention, habitudes, charge cognitive. **La fiche du chemin logique d'usage** : à ouvrir pour cartographier tout parcours |
+| `references/enchainement-parcours.md` | Ce qui suit une action réussie (confirmation, suite logique, pas d'impasse, erreur post-complétion), une action principale par écran et la concurrence des suites, orientation (où suis-je, retour, étapes, progression), élan (gradient d'objectif), premier usage, reprise d'une tâche interrompue, ce que disent les avis d'applications. **La fiche de l'enchaînement** : à ouvrir pour vérifier un parcours écran par écran |
 | `references/formulaires-navigation-mobile.md` | Formulaires et saisie, checkout, mots de passe ; navigation, architecture d'information, recherche interne ; mobile et tactile ; temps de réponse et performance perçue |
 | `references/contenus-documents-accessibilite.md` | Lecture à l'écran, langage clair (ISO 24495-1), documents longs, PDF et Office, tableaux ; WCAG 2.2, WCAG 3, EAA, RGAA, accessibilité cognitive |
 | `references/ia-ethique-onboarding.md` | Interfaces avec IA et agents (confiance, sur-confiance, incertitude, citations) ; dark patterns et réglementation (DSA, CNIL, FTC) ; onboarding, états vides, notifications, undo contre confirmation |
@@ -115,7 +116,7 @@ fiche dit où regarder, la documentation de la version installée tranche.
 
 Chaque fiche `design-*.md`, `redaction-*.md`, `growth-*.md`, `frontend-*.md`, `backend-*.md`, `architecture-*.md`, `securite-*.md`, `revue-*.md`, `qa-*.md`, `release-*.md` et `ia-profils-*.md` finit par un **verdict sourcé sur les règles du profil** (soutenue,
 convention sans preuve, contredite) : c'est lui qui range une règle à son niveau. Exceptions : les six
-fiches du volet UX n'ont pas de verdict ; `design-front-recent.md` et `redaction-orthotypographie.md` n'ont
+fiches du volet UX de la recherche du 09.11.2026 n'ont pas de verdict (`enchainement-parcours.md`, du 15.11.2026, en a un, pour l'agent `ux`) ; `design-front-recent.md` et `redaction-orthotypographie.md` n'ont
 pas de section de ce nom (la seconde finit par « Ce que le profil devrait dire »).
 
 **« N2 faible »** n'est pas un niveau de l'échelle du `SKILL.md`, qui fait foi. Les entrées qui le

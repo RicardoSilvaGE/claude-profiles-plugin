@@ -5,8 +5,8 @@ description: "Référentiel de preuves vérifiées et datées (niveau de preuve,
 
 # Preuves vérifiées — référentiel du profil
 
-> Version 1.15 — 11.11.2026 (table des fiches et sections propres à l'UX sorties en annexe, « N2 faible » reclassé). Versions 1.0 à 1.14 : `references/provenance.md` § « Versions du skill ».
-> Contenu issu d'une **recherche documentaire des 09 et 10.11.2026** : chaque entrée des fiches cite une
+> Version 1.16 — 15.11.2026 (fiche `enchainement-parcours.md` : la suite après une action, l'action principale, l'orientation, le premier usage, la reprise, les avis d'applications). Versions 1.0 à 1.15 : `references/provenance.md` § « Versions du skill ».
+> Contenu issu d'une **recherche documentaire des 09 et 10.11.2026**, et du 15.11.2026 pour `enchainement-parcours.md` : chaque entrée des fiches cite une
 > page effectivement ouverte pendant cette recherche, avec un extrait lu. Cf. § « D'où vient ce contenu ».
 > **C'est un instantané** : § « Quand vérifier en ligne » dit quand il ne suffit plus.
 
@@ -59,7 +59,7 @@ de ce skill disent où regarder et quoi éviter ; elles ne remplacent pas l'obse
 
 ## Quand vérifier en ligne (veille)
 
-Les fiches sont un instantané des 09 et 10.11.2026. Rechercher (`WebSearch` pour trouver, `WebFetch`
+Les fiches sont un instantané des 09 et 10.11.2026 (15.11.2026 pour `enchainement-parcours.md`). Rechercher (`WebSearch` pour trouver, `WebFetch`
 pour **lire la page** — jamais le seul extrait du moteur) quand :
 
 - **le domaine bouge vite** : interfaces IA et agents, réglementation (EAA, DSA, AI Act, consentement),
@@ -96,7 +96,8 @@ domaine** : `references/index.md`, à ouvrir quand le nom de la fiche n'est pas 
 Les noms suivent le volet : `design-*`, `redaction-*`, `growth-*`, `frontend-*`, `backend-*`,
 `architecture-*`, `securite-*`, `revue-*`, `ia-profils-*`, `release-*`, `qa-*` ; le volet UX n'a pas
 de préfixe (`cognition-chemin-usage.md`, **le chemin logique d'usage**, à ouvrir pour tout
-parcours ; `formulaires-navigation-mobile.md`, `contenus-documents-accessibilite.md`,
+parcours ; `enchainement-parcours.md`, **la suite après chaque action**, à ouvrir pour vérifier un
+parcours écran par écran ; `formulaires-navigation-mobile.md`, `contenus-documents-accessibilite.md`,
 `ia-ethique-onboarding.md`, `normes-lois-methodes.md`, `front-de-recherche.md`).
 
 **Une fiche pèse jusqu'à 65 Ko : ne pas la lire en entier.** Chercher le sujet par `Grep` dans ses
@@ -136,7 +137,7 @@ lire avant de citer un chiffre « connu » : les plus repris sont souvent les mo
 
 ## D'où vient ce contenu
 
-Recherche documentaire des **09 et 10.11.2026**, en volets parallèles par domaine, sous une règle unique :
+Recherche documentaire des **09 et 10.11.2026** (et du 15.11.2026 pour `enchainement-parcours.md`), en volets parallèles par domaine, sous une règle unique :
 **rien de mémoire** — chaque entrée cite une page réellement ouverte et en recopie un extrait ; un
 chiffre sans source primaire trouvée va en « Non vérifié ». Volumes, sources, entrées lues sur
 résumé seul et contrôles par sondage refaits à la source : `references/provenance.md`.

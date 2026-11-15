@@ -153,6 +153,18 @@ extrait verbatim ; un chiffre dont la source primaire n'a pas été trouvée est
 les guidelines de plateformes ; puis les chiffres d'études de marché (Baymard, WebAIM). Les
 fondements cognitifs (Fitts, Norman, Simons & Chabris) vieillissent le moins.
 
+## Recherche du 15.11.2026 (`enchainement-parcours.md`)
+
+Une recherche, un agent, après la plainte « pas fluide » sur une application privée : **29 entrées**,
+toutes sur une page ouverte le 15.11.2026 (WebFetch ; texte de la même URL extrait par curl ou
+pdftotext quand WebFetch ne rendait qu'un résumé). Niveau en tête d'entrée : N2 sur onze (dont trois « résumé seul
+lu »), N3 sur dix, N4 sur sept, N1 sur une (WCAG 2.4.8, niveau AAA) ; un autre critère WCAG de niveau AAA appuie
+en outre une entrée N3. Sources non lues
+(paywall, 403, site illisible par les outils) : section « Non vérifié » de la fiche. **Contrôles à la
+source** refaits le même jour par l'orchestrateur (GOV.UK Button ; Li et al. 2005, 59 % soit 29 sur
+49 ; Khalid et al., « Interface Design » 3,44 %) et par `reviewer` (Scheibehenne et al. 2010 ;
+Kendrick, NN/g 2020) : cinq sur cinq conformes.
+
 ## Versions du skill
 
 Historique sorti de l'en-tête du `SKILL.md` le 10.11.2026 (v1.9).
@@ -173,3 +185,4 @@ Historique sorti de l'en-tête du `SKILL.md` le 10.11.2026 (v1.9).
 - Version 1.13 — 10.11.2026 (volet ingénierie IA : cinq fiches `ia-profils-*.md`, 175 entrées, chacune finie par un verdict sourcé sur les règles du profil ; préchargé par le nouvel agent `ingenieur-ia` ; mythes de l'ingénierie IA.)
 - Version 1.14 — 11.11.2026 (première notation des skills : description complétée des volets tests, revue de code, mise en production et ingénierie IA ; « chaque fiche finit par un verdict » corrigé, les six fiches UX n'en ont pas ; dates d'instantané accordées aux 09 et 10.11.2026 ; échelle du `SKILL.md` rappelée dans `cognition-chemin-usage.md`, `redaction-microcopy.md` et `formulaires-navigation-mobile.md`, « N2 faible » qualifié dans `index.md` sans reclasser les entrées.)
 - Version 1.15 — 11.11.2026 (renotation : table des 61 fichiers retirée du `SKILL.md`, `index.md` la porte ; sévérité 0-4 et choix de méthode sortis verbatim dans `severite-et-methodes.md` ; consigne de lecture d'une grosse fiche ; « N2 faible » reclassé dans l'échelle — en N4 : quatre entrées Baymard de `formulaires-navigation-mobile.md`, quatre prépublications de `revue-llm.md`, un préprint de `design-front-recent.md`, la revue multivocale de `architecture-modularite-dette.md` ; en N2 : « Milliseconds make millions » (`formulaires-navigation-mobile.md`, grand échantillon et méthode décrite) et Shukla et al. (`frontend-code-ia-plateforme.md`, conférence IEEE-ISTAS) ; laissées, la fiche ne tranche pas : Biloš et al. (`growth-emails-droit.md`) et Aðalsteinsson et al. (`revue-llm.md`).)
+- Version 1.16 — 15.11.2026 (fiche `enchainement-parcours.md`, 29 entrées, recherche du 15.11.2026 après la plainte « pas fluide » sur l'application privée : ce qui suit une action réussie, l'action principale et la concurrence des suites, l'orientation, l'élan, le premier usage, la reprise, ce que disent les avis d'applications ; appui de `ux` 4.5.)
