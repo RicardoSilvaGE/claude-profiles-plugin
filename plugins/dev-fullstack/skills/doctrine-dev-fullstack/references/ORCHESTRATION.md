@@ -1,7 +1,7 @@
 # Orchestration des sub-agents
 
 > Source canonique : `templates/profiles/dev-fullstack/agents/ORCHESTRATION.md` (dépôt `claude-profiles`) ; la copie déployée vit dans `agents/` du home actif.
-> Dernière mise à jour : 16.11.2026 (v2.39 — `graphiste` 2.3 : une étincelle de `muse` au plus par planche, jamais une par variante (règle 14) ; `atelier-graphiste` 1.2 et ses outils de rendu et de mesure sur pixels. Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
+> Dernière mise à jour : 16.11.2026 (v2.40 — nouvel agent `architecte-donnees` : modèle de données avant `backend`, audit d'une base, migrations sûres, sécurité des données en base ; règle 17, Séquence 16, Séquences 1, 3, 6 et 12 complétées. Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
 
 Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les séquences typiques. Il complète le `CLAUDE.md` global et les frontmatters de chaque agent.
 
@@ -12,6 +12,7 @@ Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les
 | `muse`      | Idées improbables qui ont du sens, étincelle spontanée | Non   | `docs/MUSE/` sur demande, sinon inline |
 | `brainstormer`| Idéation divergente amont (3-5 directions) | Non | `docs/BRAINSTORM/` uniquement |
 | `architecte`| Cadrage feature/projet, ADR, SPEC                 | Non             | `docs/` uniquement                  |
+| `architecte-donnees` | Modèle de données et son évolution, migrations sûres, audit d'une base existante (lenteur, index, intégrité), sécurité des données en base (RLS, privilèges, conservation) | Non (propose le SQL, ne l'applique pas) | `docs/DONNEES/`, `docs/AUDIT-DONNEES-*`, `docs/decisions/` (ADR de modèle) |
 | `ux`        | Flows utilisateur et leur fil (la suite après chaque action), états système, audit heuristique sourcé, rejeu du parcours construit (Mode F), contenus et documents, plan d'évaluation, a11y | Non     | `docs/UX/` uniquement, en données génériques ; captures aux vraies données citées depuis `00 - CL\<sujet>\`, jamais recopiées |
 | `redacteur` | Microcopy, voix et ton, i18n idiomatique, typographie par locale, relecture de traduction | Oui (locales)   | Fichiers de locales + table de chaînes ; `docs/VOIX-ET-TON.md` (Mode D) |
 | `growth`    | GTM, positionnement, ASO, copy externe d'acquisition, emails, SEO, plan de mesure | Non          | `docs/GTM.md`, `docs/MESURE-*.md` + copy par asset et par locale |
@@ -46,6 +47,7 @@ Deux agents **transverses** (`templates/_shared/agents/`, déployés sous tous l
 14. **Idée improbable et étincelle** (30.10.2026) : « une idée folle », « sors des sentiers battus », un nom ou un angle neuf, ou un problème sur lequel on tourne en rond → `muse`. Appelable aussi **sans demande**, aux trois moments que nomme la doctrine du profil (§ Phase 1, « Étincelle »). **Frontière avec `brainstormer`** : `brainstormer` ouvre l'espace des options raisonnables et les compare, avec leurs coûts ; `muse` cherche ce qu'aucune option raisonnable n'aurait donné, et bannit d'office ce que `brainstormer` proposerait. Une graine gardée par l'utilisateur part ensuite chez `brainstormer` (ouvrir) ou `architecte` (cadrer) : elle ne saute aucun étage. **Brief** : le sujet, le moment (étincelle, séance, déraillement), ce qui a déjà été dit ou essayé, ce que l'utilisateur a fait des graines précédentes. L'idée d'une étincelle se montre telle quelle, dans un bloc marqué, sans être reformulée : la lisser, c'est la ramener au probable. Ses faits, eux, passent la vérification du retour comme ceux de tout agent : un fait marqué « vérifié » se contrôle, un fait faux se signale sous le bloc (arbitrage de l'utilisateur du 30.10.2026, audit AC-03). **Quand on bute** : un comportement cassé → débogage (règle 16), jamais d'étincelle ; une conception qui bute → étincelle possible ; des options déjà posées, ou aucune qui convienne → règle 1. **Vers `graphiste`** : une étincelle au plus par planche, qui fonde une seule variante ; l'orchestrateur n'en joint jamais une par variante (l'utilisateur, 16.11.2026 : « seulement une sur les 3 »).
 15. **Textes qui pilotent les agents** (10.11.2026) : une règle écrite mais pas appliquée, un agent qui dérape, une description qui ne route pas, un socle qui grossit, un nouvel agent ou skill, un banc de comportement ou de routage à concevoir, un changement de modèle → `ingenieur-ia`. Il propose et mesure ; `mainteneur-profils` ou l'orchestrateur appliquent, `reviewer` relit le diff. Découper ou réorganiser un socle trop gros : skill `doctrine-de-depot` d'abord (où vit quoi), puis `ingenieur-ia` pour l'effet sur le modèle.
 16. **Production cassée, incident, bug** : service dégradé ou cassé, après ou hors déploiement → `release` Mode D (évaluer, atténuer selon les critères pré-engagés, restaurer ; déroulé et brief : Séquence 15). Secret fuité, soupçon de compromission, comportement anormal **inexpliqué** en production (accès, données, trafic) → `securite` Mode D (contenir d'abord) ; un incident qui **ressemble** à une compromission va à `securite` d'abord. Un comportement cassé hors incident → skill `debug-investigation` dans le contexte principal (cause racine), puis le correctif, précédé du test qui le reproduit (charte de code, règle 10).
+17. **Données : modèle, base existante, migration** (16.11.2026) : concevoir le schéma d'une fonctionnalité ou son évolution, auditer une base lente ou incohérente, planifier une migration sur des données existantes, concevoir l'accès et la conservation des données en base → `architecte-donnees`, **avant** `backend`. **Frontières** : `architecte` tranche le moteur, le fournisseur, le local-first et la règle de conflit d'une synchro (ADR) ; `architecte-donnees` détaille le modèle dans le moteur choisi et écrit l'ADR d'une décision de modèle ; `backend` écrit la migration, la montée de version et les tests depuis son livrable ; `release` Mode C applique en production ; `securite` audite l'accès comme surface d'attaque et garde le reality check après durcissement (règle 7) ; `perf-audit` mesure la lenteur côté page, `architecte-donnees` celle de la base. Il n'écrit dans aucune base, hors une base jetable qu'il crée sous `AUTORISÉ À`, et ne lit la production que sous `AUTORISÉ À`. Hors de lui : une colonne simple qu'une spec décrit déjà, que `backend` écrit directement.
 
 ## Collaboration orchestrateur ↔ sub-agents
 
@@ -129,6 +131,7 @@ date, et c'est à toi de lancer la commande si le fait en demande une.
 |---|---|
 | `architecte`, `ux`, `designer`, `qa`, `growth`, `brainstormer` | `test -f docs/<fichier annoncé>` (ou `Read`) ; les sections que le brief exigeait s'y trouvent, par leur titre. Livrable rendu en note plutôt qu'en fichier : la note porte les rubriques exigées par le brief, et chaque fait sa ligne citée. **`qa` en plus** : `git status --short` vide de tout fichier hors `docs/TESTING-*` (ses mutants vivent dans un worktree jetable) |
 | `architecte` en plus | chaque NFR du cadrage porte une mesure ou un N/A motivé, chaque risque un signal de détection, chaque ADR une alternative (ou un critère éliminatoire) et un signal de réexamen ; en Mode C, licence et activité de la dépendance vérifiées avec URL et date |
+| `architecte-donnees` | `test -f` du livrable annoncé (`docs/DONNEES/<slug>.md`, `docs/AUDIT-DONNEES-<date>.md`) et des ADR cités ; `git status --short` vide hors de `docs/` ; en Mode B, chaque constat porte sa requête, sa sortie collée et la base où elle a tourné, et le rapport dit la date de départ des statistiques ; en Mode C, chaque étape a son verrou, son retour arrière (une restauration, pas un « down ») et le comptage de ce que l'existant violerait ; aucune donnée personnelle réelle dans `docs/` (une valeur lue dans une sortie, cherchée par `grep -r` dans `docs/`, ne sort pas) ; une règle tirée au hasard porte son `[Nx — source]` |
 | `graphiste` | le lien du canevas Claude Design est donné (ou la voie locale était demandée) ; la planche `.png` annoncée s'ouvre (`Read`) et montre 2 ou 3 variantes, mêmes écrans, mêmes données ; le verdict est en tête et le JSON de `mesures.js` collé (sinon « REGARDÉE, NON MESURÉE » ou « PLANCHE NON REGARDÉE », avec la cause) ; les données sont réelles (source citée) ou l'exemple est annoncé en tête de planche ; rien d'écrit dans le dépôt de l'application (`git status --short`) |
 | `designer` Mode G | les captures citées existent (`Read`), chacune en regard de sa planche du prototype ; le verdict CONFORME ou la table des écarts y figure ; un écart de sévérité 3-4 bloque la question de fusion |
 | `ux` Mode F | chaque pas du fil a sa capture citée, qui s'ouvre (`Read`), ou est marqué NON JOUÉ ; le verdict CONFORME ou RUPTURES est en tête ; une rupture de sévérité 3-4 bloque la question de fusion ; `docs/UX/` ne recopie aucune donnée réelle (un nom lu sur une capture aux vraies données, cherché par `grep -r` dans `docs/UX/`, ne sort pas) |
@@ -250,13 +253,15 @@ orchestrateur
    ↓
 [architecte] → docs/SPEC/<slug>.md + ADR si décision structurante ; cite le prototype validé et le fil de docs/UX/
    ↓
+[architecte-donnees Mode A] → docs/DONNEES/<slug>.md : modèle, contraintes, index, accès et conservation ; Mode C si des données existent déjà (si la feature touche le schéma)
+   ↓
 [skill spec-builder] → SPEC.md d'exécution pour le harness
    ↓
 [redacteur] → microcopy + i18n (table de chaînes par locale, si la feature a du texte UI)
    ↓
 [qa Mode B] → matrice de tests, attendus gelés
    ↓
-[backend] → endpoints + validation + migrations (+ skill supabase-toolkit si Supabase)
+[backend] → endpoints + validation + migrations, depuis docs/DONNEES/ s'il existe (+ skill supabase-toolkit si Supabase)
    ↓
 [frontend] → pages + composants + intégration (câble les chaînes du redacteur)
    ↓
@@ -303,7 +308,7 @@ DEPLOY
 ```
 orchestrateur
    ↓
-[orchestrateur] (+ skill supabase-toolkit si Supabase) → AVANT tout durcissement : compter ce que les données existantes violeraient sous la règle visée
+[orchestrateur] (+ skill supabase-toolkit si Supabase), ou [architecte-donnees Mode C] si le durcissement fait partie d'une évolution de schéma → AVANT tout durcissement : compter ce que les données existantes violeraient sous la règle visée
    ↓
 [orchestrateur] → l'utilisateur décide du sort des données existantes ; cadrage par étage (une contrainte ou une migration est structurelle : SPEC.md)
    ↓
@@ -359,6 +364,7 @@ orchestrateur
    ↓
 selon nature des findings :
    - N+1 SQL / index manquant → [backend] (+ skill supabase-toolkit)
+   - lenteur dans la base sans cause dans le code (plans, index, bloat) → [architecte-donnees Mode B], puis [backend]
    - Re-renders / bundle / lazy load → [frontend]
    - Cache Next.js / ISR (ou l'équivalent de la stack) → [backend] ou [frontend]
    (cadrage par étage)
@@ -469,6 +475,7 @@ selon nature des constats :
    - menace, auth, secret → [securite] (audit dédié)
    - lenteur mesurée → [skill perf-audit] ; accessibilité → [skill a11y-audit]
    - refonte de module recommandée → [architecte] (ADR si > 1 jour)
+   - schéma, index, intégrité ou données incohérentes → [architecte-donnees Mode B]
    - absence de stratégie de tests → [qa] Mode A
    - correctif local → [backend] / [frontend] (cadrage par étage)
    ↓
@@ -538,6 +545,30 @@ Une fois l'incident clos (service rétabli, ou accès contenu), et seulement si 
 Correctif : Séquence 2 s'il tient sous 10 lignes non structurelles, sinon cadrage par étage puis Séquence 1
 ```
 
+### Séquence 16 — Base de données existante : audit, puis migration sûre (16.11.2026)
+
+```
+orchestrateur
+   ↓
+[architecte-donnees Mode B] → docs/AUDIT-DONNEES-<date>.md : advisors, requêtes qui coûtent, index, intégrité, comptages (lecture seule ; production sous AUTORISÉ À)
+   ↓
+[l'utilisateur] → choisit les constats à traiter et le sort des lignes non conformes
+   ↓
+[architecte-donnees Mode C] → docs/DONNEES/<slug>-migration.md : étapes, verrous, comptages, essai sur copie, retour arrière (SQL proposé, non appliqué)
+   ↓
+[skill spec-builder] → spec complète (une migration est structurelle), commitée avant le code
+   ↓
+[backend] (Mode A pour une table neuve, B, ou C si durcissement) → fichier de migration, montée de version, tests ; migration rejouée sur une base jetable, sortie collée
+   ↓
+[securite Mode C] → reality check, si la migration durcit une contrainte (règle 7)
+   ↓
+[reviewer] → relit le diff contre la spec et le plan
+   ↓
+[release Mode C] → sauvegarde identifiée, application en production, vérification
+```
+
+Pour une application hors ligne (IndexedDB, SQLite sur le téléphone), `release` n'a pas de base à migrer : la montée de version part avec la publication de l'application, et l'essai se fait sur un export réel, hors du dépôt (`00 - CL`).
+
 ## Squelette d'une fiche et clés de frontmatter
 
 Ne sont plus ici depuis le 11.11.2026 : ils servent à **écrire** une fiche, pas à router une demande. Le squelette commun des fiches et le registre des clés de frontmatter posées (`skills:`, `disallowedTools:`, `memory: user`, `model:`) sont dans `HOW-TO-ADD.md`, même dossier, § « Pattern obligatoire ». Ce qu'il faut en savoir pour orchestrer : un agent sans `Bash` ne lance rien, un agent sans `Write` rend une note, et aucune de ces clés ne restreint les **chemins** — le champ DEHORS du brief reste la seule barrière sur le *où*.
@@ -574,11 +605,11 @@ Ne sont plus ici depuis le 11.11.2026 : ils servent à **écrire** une fiche, pa
 
 ### Audit / analyse
 - ~~`code-audit`~~ : **jamais livré par ce profil** (outil d'un bundle externe). L'audit généraliste est le sub-agent `auditeur` depuis le 16.10.2026 (séquence 12) ; les trois audits spécialisés restent `securite` (OWASP), `perf-audit` et `a11y-audit`, plus `reviewer` en pré-merge.
-- `supabase-toolkit` (créé 21.05.2026) : conception et audit de RLS, RPC, migrations Supabase + reality check data legacy. Hand-off vers `securite` ou `release` Mode C.
+- `supabase-toolkit` (créé 21.05.2026) : conception et audit de RLS, RPC, migrations Supabase + reality check data legacy. Hand-off vers `securite` ou `release` Mode C. Préchargé par `backend` ; `architecte-donnees` l'invoque à la demande sur un projet Supabase.
 - `perf-audit` (créé 21.05.2026) : Web Vitals + bundle + N+1 + re-renders. Hand-off vers `backend` ou `frontend`.
 - `atelier-graphiste` (créé 13.11.2026) : **préchargé par `graphiste` seul**, jamais appelé en direct — `mesures.js` (contraste, débordements, cibles, polices rendues d'une planche) des outils de rendu et de mesure sur pixels (`outils/` depuis le 16.11.2026 : `releve.js`, `pixels.py`, `aquarelle.py`, `studio3d.html`) et six dossiers de recherche sur le beau visuel (dont, depuis le 15.11.2026, les sites et applications primés, source de règles de création et non de modèles à copier), indexés par étape de la fiche.
 - `a11y-audit` (créé 21.05.2026) : audit WCAG 2.2 AA ex-post sur composant ou page. Complète le sub-agent `ux`.
-- `ux-preuves` (créé 09.11.2026) : référentiel de preuves sourcées — échelle N0-N4, citation, veille, sévérité 0-4, et des fiches par domaine dont chaque entrée cite une page lue et datée. **Préchargé** par treize agents, chacun avec son volet : `ux`, `designer`, `graphiste` (volet design visuel), `redacteur`, `growth`, `frontend`, `backend`, `architecte`, `securite`, `reviewer`, `qa`, `release`, `ingenieur-ia` (contenu des volets et versions : `references/provenance.md` du skill). **Frontière avec `a11y-audit`** : `ux-preuves` dit ce que la recherche et les normes établissent, `a11y-audit` vérifie un écran implémenté critère par critère.
+- `ux-preuves` (créé 09.11.2026) : référentiel de preuves sourcées — échelle N0-N4, citation, veille, sévérité 0-4, et des fiches par domaine dont chaque entrée cite une page lue et datée. **Préchargé** par quatorze agents, chacun avec son volet : `ux`, `designer`, `graphiste` (volet design visuel), `redacteur`, `growth`, `frontend`, `backend`, `architecte`, `securite`, `reviewer`, `qa`, `release`, `ingenieur-ia`, `architecte-donnees` (volet données ; contenu des volets et versions : `references/provenance.md` du skill). **Frontière avec `a11y-audit`** : `ux-preuves` dit ce que la recherche et les normes établissent, `a11y-audit` vérifie un écran implémenté critère par critère.
 - `debug-investigation` (créé 21.05.2026) : investigation structurée bug → cause racine → test qui reproduit le défaut → correctif.
 - ~~`quant-toolkit`~~ : **parti le 18.08.2026** dans `<depot-prive>` avec l'agent `quant`.
 

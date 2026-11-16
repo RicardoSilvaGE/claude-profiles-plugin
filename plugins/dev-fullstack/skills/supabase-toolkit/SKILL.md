@@ -3,7 +3,7 @@ name: supabase-toolkit
 description: "Couche Supabase d'un projet (Postgres + Auth + RLS + RPC + migrations) : policies RLS, RPC SECURITY DEFINER cohérentes avec la validation client, migrations idempotentes, et reality check des données existantes après tout durcissement de schéma : c'est là que la data legacy casse. Déclencheurs : RLS, policy manquante, SECURITY DEFINER, migration Supabase, data legacy, durcir la validation, service_role. Pas pour : un audit OWASP (`securite`), l'implémentation client (`frontend`), requêtes lentes et index (`backend`), l'application en prod (`release`)."
 ---
 
-> Version 1.4 — 11.11.2026 (cure de poids : patrons SQL en annexe, redites retirées, gabarit du Mode audit). Versions antérieures : `CHANGELOG.md` du profil, non déployé. **Pas de champ `paths` sur ce skill, et c'est une décision** : il est préchargé par `backend`, et un skill portant `paths` n'est pas préchargeable (témoin isolé du 17.08.2026). **Ne pas rajouter `paths` ici sans retirer le préchargement dans `agents/backend.md`.**
+> Version 1.5 — 16.11.2026 (hors-scope : nouvel agent `architecte-donnees`, diagnostic d'une base lente). Versions antérieures : `CHANGELOG.md` du profil, non déployé. **Pas de champ `paths` sur ce skill, et c'est une décision** : il est préchargé par `backend`, et un skill portant `paths` n'est pas préchargeable (témoin isolé du 17.08.2026). **Ne pas rajouter `paths` ici sans retirer le préchargement dans `agents/backend.md`.**
 
 # supabase-toolkit — Conception et audit de la couche Supabase
 
@@ -27,8 +27,9 @@ description: "Couche Supabase d'un projet (Postgres + Auth + RLS + RPC + migrati
 - Audit OWASP complet → sub-agent `securite`.
 - Implémentation des composants frontend consommant Supabase → sub-agent `frontend`.
 - Cadrage architectural de la feature → sub-agent `architecte`.
+- Concevoir le modèle de données, planifier une migration de données ou auditer une base au-delà de la couche Supabase → sub-agent `architecte-donnees`, qui invoque ce skill.
 - Déploiement de la migration en prod → sub-agent `release` Mode C.
-- Optimisation de query Postgres (indexes, EXPLAIN) → relève du sub-agent `backend` (`ORCHESTRATION.md`, séquence 6). Le skill `perf-audit` détecte le N+1 ou l'index manquant et les lui rend : il ne les corrige pas.
+- Optimisation de query Postgres (indexes, EXPLAIN) → diagnostic : sub-agent `architecte-donnees` (Mode B) ; correctif : sub-agent `backend` (`ORCHESTRATION.md`, séquence 6). Le skill `perf-audit` détecte le N+1 ou l'index manquant et les lui rend : il ne les corrige pas.
 
 ## MCPs à utiliser (Supabase)
 
