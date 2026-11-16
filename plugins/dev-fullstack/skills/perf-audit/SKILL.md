@@ -6,7 +6,7 @@ agent: general-purpose
 background: false
 ---
 
-> Version 1.6 — 11.11.2026 (cure de poids : seuils, outils et patrons en annexe, redites retirées, sévérité rapportée à la part du finding). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
+> Version 1.7 — 16.11.2026 (hors-scope : diagnostic d'une base lente à `architecte-donnees`). Versions antérieures : `CHANGELOG.md` du profil, non déployé.
 > **Ce skill ne porte pas de champ `paths`, et c'est nécessaire** : un skill borné par `paths`
 > n'atteint jamais un sous-agent, les deux mécanismes s'excluent.
 
@@ -30,7 +30,7 @@ background: false
 - Config Next.js / Vercel relative à la perf (cache, ISR, edge vs node, image opt).
 
 ### Hors-scope
-- Optimisation Postgres bas niveau (EXPLAIN, indexes complexes) → relève du sub-agent `backend`.
+- Optimisation Postgres bas niveau (EXPLAIN, indexes complexes) → diagnostic : sub-agent `architecte-donnees` ; correctif : sub-agent `backend`.
 - Refacto structurelle large → cadrage par `architecte`.
 - Audit sécurité → sub-agent `securite`.
 - Bug isolé → skill `debug-investigation`.

@@ -7,7 +7,7 @@ skills:
   - ux-preuves
 ---
 
-> Version 4.4 — 11.11.2026 (troisième notation du 11.11.2026 : Mode D : confinement dit geste prescrit, post-mortem rendu au livrable et non écrit dans la fiche, « comportement anormal inexpliqué » comme la règle 16 ; phrase sur la mémoire réécrite, elle se lisait à l'envers.) Versions antérieures : `CHANGELOG.md` du profil, § « Fiches d'agents — historique des versions ».
+> Version 4.5 — 16.11.2026 (nouvel agent `architecte-donnees` : la conception de l'accès et de la conservation en base lui revient, j'en audite le résultat.) Versions antérieures : `CHANGELOG.md` du profil, § « Fiches d'agents — historique des versions ».
 
 # Assistant Sécurité (sub-agent délégué)
 
@@ -27,7 +27,7 @@ Le mode est déclaré explicitement en début de livrable.
 ## Quand NE PAS m'invoquer
 
 - Implémenter les correctifs d'un finding -> `backend` / `frontend` (j'audite et priorise, je ne code pas le fix).
-- Conception RLS / RPC SECURITY DEFINER / migration Supabase isolée, sans audit OWASP -> skill `supabase-toolkit` en direct.
+- Conception RLS / RPC SECURITY DEFINER / migration Supabase isolée, sans audit OWASP -> skill `supabase-toolkit` en direct ; conception de l'accès et de la conservation des données d'une base (politiques, privilèges, durées, effacement) -> `architecte-donnees`, dont j'audite ensuite le résultat.
 - Re-audit d'un périmètre déjà audité récemment sans changement sensible (auth, secrets, validation, déploiement) -> inutile, s'appuyer sur le dernier `docs/SECURITY-AUDIT-*.md`.
 - Audit de santé générale du code (maintenabilité, dette, hotspots, tests, hygiène des dépendances hors vulnérabilités) -> `auditeur`, qui me renvoie ce qui relève d'un threat model.
 - Bug fonctionnel sans dimension sécurité (comportement faux, crash, état) -> skill `debug-investigation`.

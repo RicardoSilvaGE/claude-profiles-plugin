@@ -165,6 +165,19 @@ source** refaits le même jour par l'orchestrateur (GOV.UK Button ; Li et al. 20
 49 ; Khalid et al., « Interface Design » 3,44 %) et par `reviewer` (Scheibehenne et al. 2010 ;
 Kendrick, NN/g 2020) : cinq sur cinq conformes.
 
+## Recherche du 16.11.2026 (`donnees-conception-audit.md`)
+
+Une recherche, un agent, pour le nouvel agent `architecte-donnees` : **30 entrées**, toutes sur
+une page ouverte le 16.11.2026 (WebFetch ; `pdftotext` pour l'extrait PDF de Karwin ; registre npm
+interrogé par `curl` pour les versions de `dexie` et `@capacitor-community/sqlite`), environ 45 URL
+distinctes. Documentation PostgreSQL lue : 18.7. Niveau en tête d'entrée : N3 sur vingt-six (dont
+six appuyées aussi par un N4 et une par un N2 renvoyé), N4 sur trois, N1 sur une (RGPD) ; aucune
+entrée sur résumé seul. La fiche ne double pas `backend-donnees-postgres.md`,
+`release-migrations-sauvegardes.md` ni `backend-observabilite-tests-donnees.md` § 5 et 6 : elle y
+renvoie. Sources non lues (chapitres de Karwin sur l'EAV, pages AWS en 404, nLPD sur fedlex rendue
+en JavaScript) : section « Non vérifié » de la fiche. **Contrôles à la source** : trois citations
+revérifiées le même jour par l'orchestrateur, conformes.
+
 ## Versions du skill
 
 Historique sorti de l'en-tête du `SKILL.md` le 10.11.2026 (v1.9).
@@ -186,3 +199,4 @@ Historique sorti de l'en-tête du `SKILL.md` le 10.11.2026 (v1.9).
 - Version 1.14 — 11.11.2026 (première notation des skills : description complétée des volets tests, revue de code, mise en production et ingénierie IA ; « chaque fiche finit par un verdict » corrigé, les six fiches UX n'en ont pas ; dates d'instantané accordées aux 09 et 10.11.2026 ; échelle du `SKILL.md` rappelée dans `cognition-chemin-usage.md`, `redaction-microcopy.md` et `formulaires-navigation-mobile.md`, « N2 faible » qualifié dans `index.md` sans reclasser les entrées.)
 - Version 1.15 — 11.11.2026 (renotation : table des 61 fichiers retirée du `SKILL.md`, `index.md` la porte ; sévérité 0-4 et choix de méthode sortis verbatim dans `severite-et-methodes.md` ; consigne de lecture d'une grosse fiche ; « N2 faible » reclassé dans l'échelle — en N4 : quatre entrées Baymard de `formulaires-navigation-mobile.md`, quatre prépublications de `revue-llm.md`, un préprint de `design-front-recent.md`, la revue multivocale de `architecture-modularite-dette.md` ; en N2 : « Milliseconds make millions » (`formulaires-navigation-mobile.md`, grand échantillon et méthode décrite) et Shukla et al. (`frontend-code-ia-plateforme.md`, conférence IEEE-ISTAS) ; laissées, la fiche ne tranche pas : Biloš et al. (`growth-emails-droit.md`) et Aðalsteinsson et al. (`revue-llm.md`).)
 - Version 1.16 — 15.11.2026 (fiche `enchainement-parcours.md`, 29 entrées, recherche du 15.11.2026 après la plainte « pas fluide » sur l'application privée : ce qui suit une action réussie, l'action principale et la concurrence des suites, l'orientation, l'élan, le premier usage, la reprise, ce que disent les avis d'applications ; appui de `ux` 4.5.)
+- Version 1.17 — 16.11.2026 (fiche `donnees-conception-audit.md`, 30 entrées, recherche du 16.11.2026 : modélisation, audit d'une base existante, stockage local sur téléphone, migrations au-delà des verrous, privilèges, chiffrement, effacement ; préchargé aussi par le nouvel agent `architecte-donnees`.)

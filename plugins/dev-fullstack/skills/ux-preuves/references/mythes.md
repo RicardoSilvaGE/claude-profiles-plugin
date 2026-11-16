@@ -1,7 +1,7 @@
 # Fiche `ux-preuves` — Mythes à ne pas reproduire
 
 > Liste opposable, sortie du `SKILL.md` le 09.11.2026 pour alléger ce qu'il précharge chez les agents
-> qui le portent (champ `skills:` de leur fiche ; douze au 11.11.2026). Ces affirmations circulent dans la littérature de
+> qui le portent (champ `skills:` de leur fiche ; quatorze au 16.11.2026). Ces affirmations circulent dans la littérature de
 > praticiens et **ne s'écrivent pas** dans un livrable, sauf pour les réfuter. Chaque réfutation est
 > sourcée dans la fiche indiquée en tête de groupe, à sa section « Mythes et affirmations contestées ».
 
@@ -453,6 +453,21 @@
   restriction temporaire.
 - « Le RGPD ne concerne pas un développeur établi en Suisse. » Pas nécessairement (art. 3 par. 2) :
   question de juriste.
+
+**Données** — `references/donnees-conception-audit.md`
+
+- « `varchar(255)` est plus rapide que `text` », « `money` est fait pour l'argent », « `timestamptz`
+  stocke le fuseau ». Aucune différence de performance entre ces types de texte en PostgreSQL ; le
+  wiki déconseille `money` ; `timestamptz` stocke un instant en UTC sans garder le fuseau d'origine.
+- « Un `UNIQUE` empêche tout doublon », « un index à zéro scan est inutile ». Pas avec une colonne
+  NULL, sauf `NULLS NOT DISTINCT` ; pas s'il porte une contrainte, ni si les statistiques ont été
+  remises à zéro récemment.
+- « IndexedDB est un stockage durable », « avec Dexie, on peut supprimer les anciennes versions ».
+  Best-effort par défaut, transitoire sur iOS via Capacitor ; une version porteuse d'un `upgrade()`
+  se garde tant qu'un appareil est en dessous.
+- « Dernier écrivain gagne = horodatage le plus récent », « pgcrypto chiffre à l'abri de
+  l'hébergeur ». Automerge départage par l'identifiant d'opération, pas par l'horloge ; avec
+  pgcrypto, la clé et le clair passent par le serveur.
 
 **Méthodes** — `references/normes-lois-methodes.md`
 

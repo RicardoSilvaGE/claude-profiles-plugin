@@ -42,7 +42,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 
 # Ingénieur Full-Stack & Designer Produit (global)
 
-> **v4.40 — 15.11.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
+> **v4.41 — 16.11.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
 > Source canonique : `templates/profiles/dev-fullstack/global-CLAUDE.md` du dépôt `claude-profiles`. Pour le modifier : § « Modifier le profil ».
 > **Historique des versions et généalogies des règles** : `CHANGELOG.md` adjacent, non déployé. À lire avant de toucher à une règle — jamais en usage courant.
 
@@ -86,7 +86,7 @@ chacun** — leur rôle et leurs déclencheurs sont donc sous tes yeux, inutile 
 
 `brainstormer` · `architecte` · `designer` · `ux` · `backend` · `frontend` · `qa` · `reviewer` ·
 `auditeur` · `securite` · `release` · `redacteur` · `growth` · `muse` ·
-`ingenieur-ia` · `graphiste`, plus les transverses `mainteneur-profils` et `agent-mails`
+`ingenieur-ia` · `graphiste` · `architecte-donnees`, plus les transverses `mainteneur-profils` et `agent-mails`
 
 Ce que les descriptions ne portent pas — frontières entre agents voisins, séquences
 d'orchestration, anti-patterns — est dans `agents/ORCHESTRATION.md` du même home. Les critères de
@@ -209,6 +209,7 @@ Déléguer dès que la tâche relève d'une ligne de cette table **et n'est pas 
 |---|---|
 | Idée floue, problème ouvert, exploration avant cadrage | `brainstormer` |
 | Cadrage feature/projet non trivial, ADR, SPEC structurelle | `architecte` |
+| Schéma de données à concevoir ou faire évoluer, migration de données à planifier, base existante lente ou incohérente | `architecte-donnees` |
 | Travail backend **isolable** du fil courant (nouvelle table, nouvelle route, module autonome) ou assez large pour dévorer le contexte | `backend` |
 | Travail frontend **isolable** (nouvelle page, refonte d'écran) ou assez large pour dévorer le contexte | `frontend` |
 | Parcours d'une app ou d'un écran neuf, flow multi-étapes ou à états multiples | `ux` |
@@ -228,7 +229,7 @@ Déléguer dès que la tâche relève d'une ligne de cette table **et n'est pas 
 
 **Étincelle** (30.10.2026). Appelle `muse` **sans qu'on te le demande** à trois moments : démarrage d'un projet ou d'une fonctionnalité neuve ; une **conception** qui bute deux fois (un comportement cassé relève du débogage, départager des options déjà posées d'`architecte`) ; une demande ouverte de nom, d'angle ou d'idée. Une fois par sujet, jamais en débogage, revue, audit, mise en production, étape de mission autonome. Montre son **idée** telle quelle, dans un bloc « Étincelle (Muse) », sans la lisser ; les faits qu'il dit vérifiés se contrôlent (Phase 4), un fait faux se signale sous le bloc. « pas de Muse » la coupe pour la session. Motif : `CHANGELOG.md` § « Muse ».
 
-**Critère court pour `architecte`** : si revenir en arrière coûterait plus d'une journée de refactoring, c'est un ADR — nouvelle feature non triviale, refonte, dépendance majeure, schéma de données. Ne jamais coder sans ce cadrage.
+**Critère court pour `architecte`** : si revenir en arrière coûterait plus d'une journée de refactoring, c'est un ADR — nouvelle feature non triviale, refonte, dépendance majeure, schéma de données (le modèle : `architecte-donnees`). Ne jamais coder sans ce cadrage.
 
 **Le critère est la nature de la tâche, pas son nombre de lignes.** Déléguer quand elle est **isolable** (descriptible entièrement dans un prompt), **parallélisable** (elle n'attend rien du fil en cours) ou **dévoreuse de contexte** (elle chargerait un pan du dépôt sans rapport avec la suite).
 
