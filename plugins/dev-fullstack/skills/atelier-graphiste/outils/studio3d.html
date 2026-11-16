@@ -1,0 +1,180 @@
+<!doctype html>
+<!--
+studio3d.html -- skill atelier-graphiste, version 1.0 (16.11.2026). Registre « profondeur et lumiere ».
+Un studio three.js qui rend en PNG une image fixe pour un cadre de telephone : fond en couches (studio
+neutre par defaut ; un ciel seulement si le sujet le porte), brume (perspective atmospherique), disque
+solaire et halo sur option (?soleil=1), environnement pour les reflets, ombres douces, ombre de contact,
+profondeur de champ, eclat (bloom), surechantillonnage. Tire du rendu B de l'essai du 16.11.2026,
+sans son objet : la fonction objet() porte un volume d'essai, a remplacer par l'objet du domaine
+(modele en primitives three, textures dessinees sur canvas). Aucun modele ni texture telecharge.
+
+Dependance : three 0.180.0, epingle, installe a cote : npm install --prefix vendor three@0.180.0
+Rendu (dossier de ce fichier, sans serveur) :
+  chrome-headless-shell --no-sandbox --hide-scrollbars --allow-file-access-from-files \
+    --use-angle=swiftshader --enable-unsafe-swiftshader --ignore-gpu-blocklist \
+    --virtual-time-budget=20000 --window-size=1170,2532 --screenshot=img/fond3d.png \
+    "file:///<dossier>/studio3d.html?ss=3"
+  (fenetre = 390*ss x 844*ss ; puis <img src="img/fond3d.png" style="width:390px"> dans la planche).
+  Position a l'ecran de points de la scene (pour poser le HTML par-dessus) : meme URL avec --dump-dom,
+  JSON du <pre id="info">, en px CSS du cadre.
+Parametres d'URL : l (largeur CSS, 390), h (hauteur CSS, 844), ss (surechantillonnage, 3), dof=0 (sans
+profondeur de champ), ap (ouverture, .0009), soleil=1 (disque et halo dans le fond ; sans lui, la lumiere
+principale eclaire quand meme d'en haut).
+
+Ce qu'il ne fait pas (limites constatees le 16.11.2026) : pas d'eclairage global (la lumiere ne rebondit
+que par l'environnement et une lampe de rebond posee a la main) ; pas d'usure ni de salissure : un objet
+neuf et propre a l'air d'une image de synthese tant qu'on ne lui dessine pas d'accidents ; une scene vide
+reste vide (deux ou trois jalons d'echelle aident) ; ombre douce par defaut (penombre de 8 px CSS au bord le
+plus net, mesuree le 16.11.2026 sur le volume d'essai a ss=3 ; 1,3 px avec une carte de 4096 texels), a regler (ombreFlou, ombreTexels) et a verifier sur une
+decoupe agrandie, l'ombre dure etant interdite ; image fixe seulement (environ 10 s a ss=3 sous
+SwiftShader, mesure le 16.11.2026 dans un conteneur Linux ; non essaye sous Windows) : aucune 3D en
+direct dans l'app. Le texte reste en HTML par-dessus, mesure sur le pire pixel (pixels.py).
+-->
+<html><head><meta charset="utf-8">
+<style>html,body{margin:0;background:#000;overflow:hidden}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"./vendor/node_modules/three/build/three.module.js","three/addons/":"./vendor/node_modules/three/examples/jsm/"}}</script>
+</head><body>
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+const q = new URLSearchParams(location.search);
+const W = +(q.get('l') || 390), H = +(q.get('h') || 844), SS = +(q.get('ss') || 3);
+const AVEC_SOLEIL = q.get('soleil') === '1';
+
+// ---------- reglages : tout ce qui fait l'atmosphere est ici ----------
+const R = {
+  camera: { pos: [0, 2.6, 14], vise: [0, 2.6, 0], fov: 44, decalage: 0.2 },  // decalage : verticales droites, horizon plus bas
+  soleil: [3.9, 7.6, -46],                // position du disque, s'il est demande (?soleil=1)
+  lumiere: [4.6, 9, -1.0],                 // direction de la lumiere principale (peut tricher avec le disque)
+  // fond, de l'horizon au haut du cadre (sRGB) : cinq couches. Studio neutre par defaut ; les remplacer par
+  // celles du monde de l'objet (cave, atelier, ciel, mer...) : ce sont elles qui font le lieu et l'heure.
+  ciel: ['#ece7df', '#e6e1d8', '#dcd6cc', '#d0c9be', '#c4bdb1'],
+  brume: { couleur: '#EDE7D8', densite: 0.0062 },
+  sol: { couleur: '#d6c7a6', grain: 'rgba(150,136,110,.35)' },
+  // ombre : taille de la carte d'ombre (texels) et flou VSM ; une carte trop fine donne un bord dur
+  exposition: 1.02, eclat: 0.32, ombreTexels: 512, ombreFlou: 24,
+};
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(W * SS, H * SS);
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = R.exposition;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.VSMShadowMap;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(new THREE.Color(R.brume.couleur), R.brume.densite);
+
+// ---------- ciel : degrade en couches + lueur du soleil (shader) ----------
+const lin = h => { const c = new THREE.Color(h); return new THREE.Vector3(c.r, c.g, c.b); };   // Color convertit en lineaire
+const sunDir = new THREE.Vector3(...R.soleil).sub(new THREE.Vector3(...R.camera.pos)).normalize();
+const sky = new THREE.Mesh(new THREE.SphereGeometry(400, 64, 32), new THREE.ShaderMaterial({
+  side: THREE.BackSide, depthWrite: false, fog: false,
+  uniforms: { sunDir: { value: sunDir }, halo: { value: AVEC_SOLEIL ? 1 : 0 }, c0: { value: lin(R.ciel[0]) }, c1: { value: lin(R.ciel[1]) }, c2: { value: lin(R.ciel[2]) }, c3: { value: lin(R.ciel[3]) }, c4: { value: lin(R.ciel[4]) } },
+  vertexShader: `varying vec3 vDir; void main(){ vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }`,
+  fragmentShader: `varying vec3 vDir; uniform vec3 sunDir, c0, c1, c2, c3, c4; uniform float halo;
+    void main(){
+      float e = clamp(vDir.y, 0., 1.);
+      vec3 c = mix(c0, c1, smoothstep(0., .008, e));
+      c = mix(c, c2, smoothstep(.006, .035, e));
+      c = mix(c, c3, smoothstep(.03, .10, e));
+      c = mix(c, c4, smoothstep(.07, .19, e));
+      float d = max(dot(normalize(vDir), sunDir), 0.);
+      c += halo * vec3(1., .86, .54) * (pow(d, 6000.) + pow(d, 2200.) * .22 + pow(d, 300.) * .05);
+      if (vDir.y < 0.) c = c0;
+      gl_FragColor = vec4(c, 1.);
+      #include <tonemapping_fragment>
+      #include <colorspace_fragment>
+    }`
+}));
+sky.position.set(...R.camera.pos); scene.add(sky);
+const sun = new THREE.Mesh(new THREE.SphereGeometry(.95, 48, 24), new THREE.MeshBasicMaterial({ color: new THREE.Color(4.2, 3.6, 2.4), fog: false }));
+sun.position.set(...R.soleil); if (AVEC_SOLEIL) scene.add(sun);
+
+// environnement (reflets) : le ciel, le sol et deux grandes surfaces claires, comme en studio
+const pmrem = new THREE.PMREMGenerator(renderer), env = new THREE.Scene();
+env.add(sky.clone());
+const solEnv = new THREE.Mesh(new THREE.CircleGeometry(390, 32), new THREE.MeshBasicMaterial({ color: R.sol.couleur }));
+solEnv.rotation.x = -Math.PI / 2; solEnv.position.y = -2; env.add(solEnv);
+[[-26, 30, 40, 40, 18, 1.7], [-42, 7, 12, 34, 10, 1.9]].forEach(([x, y, z, w, h, k]) => {
+  const p = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(k, k * .97, k * .91), side: THREE.DoubleSide }));
+  p.position.set(x, y, z); p.lookAt(0, 1, 0); env.add(p);
+});
+scene.environment = pmrem.fromScene(env, 0.02).texture; scene.environmentIntensity = .85;
+
+// ---------- textures dessinees sur canvas ----------
+function textureCanvas(w, h, dessiner, couleur = true) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h; dessiner(c.getContext('2d'), w, h);
+  const t = new THREE.CanvasTexture(c); if (couleur) t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
+}
+const alea = (s => () => (s = (s * 16807) % 2147483647) / 2147483647)(7);
+
+// ---------- sol ----------
+const solTex = textureCanvas(1024, 1024, (g, w, h) => {
+  g.fillStyle = R.sol.couleur; g.fillRect(0, 0, w, h); g.fillStyle = R.sol.grain;
+  for (let i = 0; i < 60000; i++) g.fillRect(alea() * w, alea() * h, 1 + alea() * 1.6, 1 + alea() * 1.6);
+});
+solTex.wrapS = solTex.wrapT = THREE.RepeatWrapping; solTex.repeat.set(60, 60);
+const sol = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), new THREE.MeshStandardMaterial({ map: solTex, roughness: 1 }));
+sol.rotation.x = -Math.PI / 2; sol.receiveShadow = true; scene.add(sol);
+
+// ---------- l'objet du domaine : a remplacer ----------
+function objet() {
+  const g = new THREE.Group();
+  // Volume d'essai seulement. Modeler l'objet source avec des primitives (RoundedBoxGeometry, Cylinder, Lathe,
+  // Extrude), lui donner ses matieres (MeshPhysicalMaterial : clearcoat pour un vernis, sheen pour une toile)
+  // et ses accidents (coins uses, taches, plis) : c'est l'usure qui l'eloigne de l'image de synthese.
+  const m = new THREE.Mesh(new RoundedBoxGeometry(1.5, 2.2, .36, 4, .03),
+    new THREE.MeshPhysicalMaterial({ color: '#7a8a8f', roughness: .6, clearcoat: .4, clearcoatRoughness: .3 }));
+  m.position.y = 1.1; m.castShadow = m.receiveShadow = true; g.add(m);
+  g.rotation.y = -0.6;
+  return { groupe: g, empreinte: [1.5, .36] };   // empreinte au sol (largeur, profondeur) pour l'ombre de contact
+}
+const { groupe, empreinte } = objet(); scene.add(groupe);
+
+// ombre de contact : la ou l'objet touche le sol, l'ombre est la plus noire (sans elle, il flotte)
+const contactTex = textureCanvas(256, 256, (g, w, h) => {
+  const r = g.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2);
+  r.addColorStop(0, 'rgba(30,26,20,.75)'); r.addColorStop(.45, 'rgba(30,26,20,.35)'); r.addColorStop(1, 'rgba(30,26,20,0)');
+  g.fillStyle = r; g.fillRect(0, 0, w, h);
+}, false);
+const contact = new THREE.Mesh(new THREE.PlaneGeometry(empreinte[0] * 1.55, empreinte[1] * 3.2), new THREE.MeshBasicMaterial({ map: contactTex, transparent: true, depthWrite: false }));
+contact.rotation.x = -Math.PI / 2; contact.rotation.z = groupe.rotation.y; contact.position.set(groupe.position.x, .004, groupe.position.z); scene.add(contact);
+
+// ---------- lumieres : ciel + sol (hemisphere), soleil (ombres douces), rebond chaud du sol ----------
+scene.add(new THREE.HemisphereLight('#cfe2f2', '#d9c49c', 1.15));
+const dl = new THREE.DirectionalLight('#fff3df', 3.4);
+dl.position.set(...R.lumiere); dl.castShadow = true;
+dl.shadow.mapSize.set(R.ombreTexels, R.ombreTexels); dl.shadow.radius = R.ombreFlou; dl.shadow.blurSamples = 24; dl.shadow.bias = -0.0004; dl.shadow.normalBias = .02;
+Object.assign(dl.shadow.camera, { left: -6, right: 6, top: 6, bottom: -6, near: 1, far: 30 });
+scene.add(dl, dl.target);
+const rebond = new THREE.DirectionalLight('#f0dcb4', .55); rebond.position.set(-2, .4, 6); scene.add(rebond);
+
+// ---------- camera, puis passes : profondeur de champ, eclat, sortie ----------
+const cam = new THREE.PerspectiveCamera(R.camera.fov, W / H, .1, 1000);
+cam.position.set(...R.camera.pos); cam.lookAt(...R.camera.vise);
+cam.setViewOffset(W * SS, H * SS, 0, R.camera.decalage * H * SS, W * SS, H * SS);
+const comp = new EffectComposer(renderer);
+comp.addPass(new RenderPass(scene, cam));
+if (q.get('dof') !== '0') comp.addPass(new BokehPass(scene, cam, { focus: cam.position.distanceTo(groupe.position), aperture: +(q.get('ap') || .0009), maxblur: .006 }));
+comp.addPass(new UnrealBloomPass(new THREE.Vector2(W * SS, H * SS), R.eclat, .35, .95));
+comp.addPass(new OutputPass());
+comp.render();
+
+// ---------- ou tombent les points de la scene, en px CSS du cadre ----------
+const proj = v => { const p = v.clone().project(cam); return [+((p.x + 1) / 2 * W).toFixed(1), +((1 - p.y) / 2 * H).toFixed(1)]; };
+const bb = new THREE.Box3().setFromObject(groupe), coins = [];
+for (const x of [bb.min.x, bb.max.x]) for (const y of [bb.min.y, bb.max.y]) for (const z of [bb.min.z, bb.max.z]) coins.push(proj(new THREE.Vector3(x, y, z)));
+const info = {
+  objet: { x0: Math.min(...coins.map(p => p[0])), x1: Math.max(...coins.map(p => p[0])), y0: Math.min(...coins.map(p => p[1])), y1: Math.max(...coins.map(p => p[1])) },
+  pied: proj(groupe.position), soleil: AVEC_SOLEIL ? proj(sun.position) : null, horizon: proj(new THREE.Vector3(0, 0, -390))[1],
+};
+const pre = document.createElement('pre'); pre.id = 'info'; pre.hidden = true; pre.textContent = JSON.stringify(info); document.body.appendChild(pre);
+</script>
+</body></html>
