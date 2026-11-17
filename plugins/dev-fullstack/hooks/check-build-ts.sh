@@ -94,10 +94,21 @@ CWD="$(lire '.cwd')"; [ -n "$CWD" ] || CWD="$PWD"
 if [ -f "$CWD/tsconfig.json" ]; then BRANCHE=ts; else BRANCHE=autre; fi
 
 # ---- 5. Des sources ont-elles bouge ? ---------------------------------------------------------------
-STATUT="$(git -C "$CWD" status --porcelain --untracked-files=all 2>/dev/null)" || exit 0
+# Lecture NUL : git ne cite alors jamais un nom (espace, accent), et un renommage donne sa destination puis son
+# ancien nom, a sauter. Sortie : lignes "XY chemin", comme le format porcelain d'origine. Un git en echec laisse
+# STATUT vide, donc sortie 0 plus bas.
+statut_z() {
+    local entree code
+    while IFS= read -r -d '' entree; do
+        code="${entree:0:2}"
+        case "$code" in R?|?R|C?|?C) IFS= read -r -d '' _ ;; esac
+        printf '%s\n' "$entree"
+    done < <(git -C "$CWD" status --porcelain -z --untracked-files=all 2>/dev/null)
+}
+STATUT="$(statut_z)"
 [ -n "$STATUT" ] || exit 0
 # Chemins des lignes de statut (hors suppressions ; un renommage garde sa destination).
-CHEMINS="$(printf '%s\n' "$STATUT" | grep -Ev '^ ?D' | sed -E 's/^.. //; s/^.* -> //; s/^"(.*)"$/\1/' \
+CHEMINS="$(printf '%s\n' "$STATUT" | grep -Ev '^ ?D' | sed -E 's/^.. //' \
     | grep -Ev '(^|/)(node_modules|dist|build|vendor)/' | grep -Eiv '\.min\.js$')"
 if [ "$BRANCHE" = ts ]; then
     TOUCHES="$(printf '%s\n' "$STATUT" | grep -Ei '\.(ts|tsx|mts|cts)$' | grep -Eiv '\.d\.ts$')"
@@ -126,7 +137,7 @@ fi
 # qu'une suppression change l'etat). Sans outil d'empreinte, etat constant : retour au marqueur de
 # session, plutot que de recompiler a chaque stop.
 if [ "$BRANCHE" = ts ]; then
-    FICHIERS_ETAT="$(printf '%s\n' "$TOUCHES" | sed -E 's/^.. //; s/^.* -> //; s/^"(.*)"$/\1/')"
+    FICHIERS_ETAT="$(printf '%s\n' "$TOUCHES" | sed -E 's/^.. //')"
     ENTETE_ETAT="$TOUCHES"
 else
     FICHIERS_ETAT="$(printf '%s\n%s\n' "$TOUCHES_JS" "$TOUCHES_PY" | grep .)"
