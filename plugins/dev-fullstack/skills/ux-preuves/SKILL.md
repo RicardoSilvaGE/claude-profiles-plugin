@@ -5,7 +5,7 @@ description: "Référentiel de preuves vérifiées et datées (niveau de preuve,
 
 # Preuves vérifiées — référentiel du profil
 
-> Version 1.17 — 16.11.2026 (fiche `donnees-conception-audit.md` : modélisation, audit d'une base, stockage local, migrations, privilèges et chiffrement ; préchargé aussi par `architecte-donnees`). Versions 1.0 à 1.16 : `references/provenance.md` § « Versions du skill ».
+> Version 1.18 — 17.11.2026 (`growth-aso-stores.md` : captures Play au rapport 2:1 au plus, veille du 17.11.2026). Versions 1.0 à 1.17 : `references/provenance.md` § « Versions du skill ».
 > Contenu issu d'une **recherche documentaire des 09 et 10.11.2026**, du 15.11.2026 pour `enchainement-parcours.md` et du 16.11.2026 pour `donnees-conception-audit.md` : chaque entrée des fiches cite une
 > page effectivement ouverte pendant cette recherche, avec un extrait lu. Cf. § « D'où vient ce contenu ».
 > **C'est un instantané** : § « Quand vérifier en ligne » dit quand il ne suffit plus.
