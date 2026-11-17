@@ -1,7 +1,7 @@
 # Orchestration des sub-agents
 
 > Source canonique : `templates/profiles/dev-fullstack/agents/ORCHESTRATION.md` (dépôt `claude-profiles`) ; la copie déployée vit dans `agents/` du home actif.
-> Dernière mise à jour : 17.11.2026 (v2.41 — captures Play Store de la séquence de publication alignées sur `publication-store` : rapport ≤ 2:1, 1080 × 1920 dans le dépôt mesuré, au lieu de 1080×2400 (proposition N003 de `labo-profils`). Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
+> Dernière mise à jour : 17.11.2026 (v2.42 — § « Qui fait quoi » : la matrice des activités, propriétaire, apports et contrôle, chaque ligne renvoyant à sa règle ; une case nomme le propriétaire, pas l'exécution, qui suit la grille par forme de la doctrine ; Séquence 0 alignée sur la règle 3. Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
 
 Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les séquences typiques. Il complète le `CLAUDE.md` global et les frontmatters de chaque agent.
 
@@ -27,6 +27,44 @@ Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les
 | `release`   | Pre-deploy, post-deploy, migrations, incident prod | Non (commandes) | Note inline                         |
 | `ingenieur-ia` | Conception, révision et mesure des textes qui pilotent les agents (doctrine, fiches, skills, descriptions, briefs) ; fonctionnalités d'IA à terme | Non (propose des diffs) | Note inline ou `docs/IA-*` |
 Deux agents **transverses** (`templates/_shared/agents/`, déployés sous tous les profils) n'ont pas de ligne ici, parce qu'ils ne sont d'aucune séquence de développement : `mainteneur-profils` (cohérence de l'écosystème de profils ; reçoit le hand-off « appliquer un diff relu » de la règle 15 et les leçons d'incident qui dépassent un projet) et `agent-mails` (boîte Outlook locale, brouillons seulement).
+
+## Qui fait quoi (17.11.2026)
+
+Le cahier des charges de l'équipe, par activité courante (les modes plus rares sont dans les fiches). Chaque ligne **résume** une règle d'invocation ou une séquence de ce fichier, citée en dernière colonne : la règle fait foi, la ligne y renvoie. Une ligne qui contredit sa règle, ou la fiche d'un agent, est un défaut à corriger (`/lc-bug-profil`), pas un choix à faire.
+
+- **Fait** : propriétaire du livrable. Pour cadrer, implémenter et tester un même code, ce n'est pas un ordre de lancer un sous-agent : qui exécute suit la grille par forme de la doctrine (§ Phase 1). Une relecture, une recette ou un audit restent à l'agent nommé : on ne relit pas son propre code.
+- **Apporte** : ce qui doit être remis avant, et par qui. **Contrôle** : qui relit, recette ou décide ensuite.
+- Chaque fiche garde ses propres frontières (« Quand NE PAS m'invoquer », « Frontières », « Hand-off ») : un sous-agent ne lit que la sienne, sur contexte vierge.
+
+| Activité | Fait | Apporte | Contrôle | Règle |
+|---|---|---|---|---|
+| Idée improbable, étincelle | `muse` | — | l'utilisateur garde ou jette | 14 |
+| Problème ouvert, options à ouvrir | `brainstormer` | étincelle de `muse` (projet ou fonctionnalité neuve) | l'utilisateur choisit une direction | 1, S0 |
+| Cadrer une feature, ADR, choix de stack, départager des options | `architecte` | directions de `brainstormer` si le problème était ouvert ; pour des écrans, prototype validé de `designer` et fil de `ux` | l'utilisateur tranche ; aucune option ne convient : retour à `brainstormer` Mode B | 1, 3, S1 |
+| Allure d'écrans neufs ou à redessiner, en variantes | `graphiste` | parcours de `ux` ; une étincelle de `muse` au plus par planche | l'utilisateur choisit une variante | 3, 12, 14 |
+| Parcours, fil, états d'un écran | `ux` (A, B) | — | `ux` Mode F rejoue l'écran construit (si le diff touche une action, sa suite ou un écran d'arrivée) | 3, 4 |
+| Système visuel, design system, prototype | `designer` (A, B) | variante choisie chez `graphiste`, parcours de `ux` | l'utilisateur valide le prototype | 3 |
+| Modèle de données, plan de migration, audit d'une base | `architecte-donnees` | moteur et fournisseur tranchés par `architecte` | l'utilisateur choisit les constats et le sort des lignes non conformes ; `securite` Mode C si durcissement ; `reviewer` relit la migration écrite par `backend` | 17, S16 |
+| SPEC exécutable | skill `spec-builder` (contexte principal) | cadrage d'`architecte`, livrable d'`architecte-donnees` | l'utilisateur valide | 2 |
+| Stratégie et matrice de tests | `qa` | SPEC | `reviewer` relit les tests contre la matrice | 8 |
+| Microcopy, voix et ton, i18n | `redacteur` | états de `ux`, cadre de `designer` | locuteur natif ; `reviewer` si du code change | 10 |
+| Copy externe : lancement, store, landing, e-mails marketing | `growth` | angle choisi après `brainstormer` | `redacteur` pour la voix et les traductions | 11, S10 |
+| Code serveur, migration écrite, tests du code serveur | `backend` | SPEC de l'étage, livrable d'`architecte-donnees`, matrice de `qa` | `reviewer` ; `securite` (durcissement, auth, paiement, upload, données sensibles) | 2, 5, 7, 8 |
+| Code client, Server Action d'un écran, câblage des chaînes, tests | `frontend` | SPEC de l'étage, états de `ux`, système de `designer`, chaînes de `redacteur`, matrice de `qa` | `reviewer` ; pour un écran, `designer` Mode G, et `ux` Mode F si une action est touchée | 2, 4 |
+| Relire un diff avant fusion | `reviewer` | diff complet et sa SPEC | corrections par l'auteur du diff | 4 |
+| Écran existant qui ne va pas | parcours : `ux` Mode C ; rendu : `designer` Mode D ; les deux en parallèle si on ne sait pas ; à redessiner : `graphiste` Mode C | — | l'utilisateur choisit les corrections | 3 |
+| Retouche de quelques tokens, polish | `designer` Mode C, ou `frontend` Mode C si elle s'applique telle quelle | — | `reviewer` si du code change | 3 |
+| Recette de l'écran construit | `designer` Mode G ; `ux` Mode F si une action, sa suite ou un écran d'arrivée change | captures aux vraies données, par l'orchestrateur ou `frontend` | l'utilisateur : « c'est bien » sur son appareil | 4, S1 |
+| Audit de santé d'un code existant | `auditeur` | — | l'orchestrateur répartit le plan ; correctifs par `backend` / `frontend` | 13, S12 |
+| Audit de sécurité, menaces | `securite` (A, B) | passage d'hygiène d'`auditeur`, quand un audit de code a eu lieu | re-audit ciblé de `securite` | 5, 13, S4 |
+| Reality check après un durcissement | `securite` Mode C | durcissement de `backend`, comptages d'`architecte-donnees` Mode C | `reviewer` vérifie le plan legacy | 7, S3 |
+| Mise en production : avant, après, migration en prod | `release` (A, B, C) | plan d'`architecte-donnees` pour une migration | l'utilisateur autorise ; fusion = mise en production en déploiement continu | 5, 6, S16 |
+| Production cassée | `release` Mode D ; compromission ou secret fuité : `securite` Mode D d'abord | critère d'atténuation, autorisation d'agir | post-mortem dans le Mode D | 16, S15 |
+| Bug sans cause connue | skill `debug-investigation` (contexte principal) | — | correctif par `backend` / `frontend`, précédé du test qui reproduit | 16 |
+| Lenteur, accessibilité d'un écran livré | skills `perf-audit`, `a11y-audit` | — | correctifs par `backend` / `frontend`, puis re-mesure | S6, S7 |
+| Contenu ou document que personne ne lit | `ux` Mode D | — | `redacteur` réécrit ; `ux` Mode E pour le tester | S13 |
+| Publication sur le Play Store | skill `publication-store` | audit de `securite`, fiche de `growth`, assets de `designer` Mode E | l'utilisateur signe, envoie et promeut | S11 |
+| Texte qui pilote un agent | `ingenieur-ia` (propose et mesure) | trace du symptôme | `reviewer` relit le diff ; `mainteneur-profils` ou l'orchestrateur applique | 15, S14 |
 
 ## Règles d'invocation
 
@@ -220,6 +258,8 @@ en cours produit une review du brouillon.
 
 **Correctif issu d'un rapport** (audit, finding, constat) : son cadrage suit les trois étages de la règle 2, comme tout code. Rien sous 10 lignes ; de 10 à 50, le finding tient lieu de SPEC-lite **s'il nomme objectif, périmètre et vérification** ; au-delà de 50 lignes ou dès que c'est structurel (schéma, auth, migration, contrat d'API), une `SPEC.md`. Les séquences ci-dessous écrivent « cadrage par étage » pour ce renvoi.
 
+**Une case `[agent]` nomme le propriétaire de l'étape, pas son mode d'exécution** : comme dans le § « Qui fait quoi », des phases séquentielles du même code (cadrer, implémenter, tester) restent dans le contexte principal, sauf isolation voulue (doctrine, § Phase 1, grille par forme, qui prime).
+
 ### Séquence 0 — Idéation amont (problème ouvert / idée floue)
 
 ```
@@ -231,9 +271,9 @@ orchestrateur
    ↓
 [orchestrateur] → pose les questions ouvertes via AskUserQuestion ; l'utilisateur choisit une direction
    ↓
-[architecte] → convertit la direction retenue en ADR + SPEC
+[architecte] → convertit la direction retenue en ADR + SPEC ; si elle touche des écrans, après `graphiste`, `ux` et `designer` (règle 3)
    ↓
-(enchaîne sur Séquence 1)
+(enchaîne sur Séquence 1 après son `architecte` : étincelle, variantes, prototype et cadrage sont faits)
 ```
 
 ### Séquence 1 — Nouvelle feature dans projet existant
@@ -640,14 +680,15 @@ Ne sont plus ici depuis le 11.11.2026 : ils servent à **écrire** une fiche, pa
 
 ## Mise à jour de ce fichier
 
-Quand un agent est ajouté, retiré ou change de périmètre, six pièces de ce fichier le nomment :
+Quand un agent est ajouté, retiré ou change de périmètre, sept pièces de ce fichier le nomment :
 
 1. Le tableau d'inventaire (contrôlé par `test-conformite-fiches-agents.sh`, R16).
 2. Les règles d'invocation, frontières avec les voisins comprises.
 3. Le tableau « Ce qu'on vérifie au retour ».
 4. La ou les séquences où il intervient, avec le bon Mode.
 5. « Skills associées », s'il précharge ou remplace un skill.
-6. La date et la version en tête ; la version remplacée part dans `CHANGELOG.md` du profil.
+6. Le § « Qui fait quoi », pour chaque activité courante qu'il fait, apporte ou contrôle.
+7. La date et la version en tête ; la version remplacée part dans `CHANGELOG.md` du profil.
 
 Hors de ce fichier : le registre des clés de `HOW-TO-ADD.md` si le frontmatter en pose une, et la doctrine du profil (`global-CLAUDE.md`, § « Ton équipe » et table de la Phase 1) si la règle d'orchestration change.
 
