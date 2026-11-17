@@ -66,6 +66,13 @@ Niveaux de preuve : N1 règle opposable (politique de store, loi) · N2 recherch
 - Portée / limites : les règles d'écran Wear OS interdisent cadres d'appareil et texte ajouté ; pour téléphone, Google recommande seulement d'éviter le texte en petite police. Le texte alternatif (≤ 140 caractères) est recommandé pour chaque capture.
 - En growth : les trois premières captures doivent montrer l'interface réelle ; les accroches en surimpression doivent être localisées.
 
+### Captures Play : le grand côté ne dépasse pas deux fois le petit (rapport ≤ 2:1), côtés de 320 à 3 840 px, JPEG ou PNG 24 bits sans transparence ; recommandations en 9:16 (≥ 1080 × 1920) ou 16:9 (veille du 17.11.2026)
+- Niveau de preuve : N1 (format exigé du fichier) / N3 (formats 9:16 et 16:9, conditions d'éligibilité aux recommandations)
+- Source : Google, Play Console Help, consulté le 17.11.2026, « Add preview assets to showcase your app », https://support.google.com/googleplay/android-developer/answer/9866151?hl=en
+- Extrait lu : « JPEG or 24-bit PNG (no alpha) » ; « Minimum dimension: 320px » ; « Maximum dimension: 3840px » ; « The maximum dimension of your screenshot can't be more than twice as long as the minimum dimension. » ; « These should be 16:9 for landscape (minimum 1920x1080px) screenshots and 9:16 for portrait screenshots (minimum 1080x1920px). »
+- Portée / limites : entrée ajoutée après l'audit du 14.11.2026 du dépôt mesuré par `publication-store`, qui produisait ses captures en 1080 × 2400 (2400 / 1080 ≈ 2,22, au-delà du rapport) et est passé à 1080 × 1920. Ce que fait la Console d'une capture hors rapport (refus à l'envoi ou autre) n'a pas été vérifié.
+- En growth : une capture brute d'un téléphone récent en 20:9 dépasse le rapport ; la recadrer ou la rendre en 9:16 (1080 × 1920) avant de la confier à la fiche.
+
 ### Vidéo Play : une seule URL YouTube, monétisation désactivée, lecture automatique muette jusqu'à 30 s
 - Niveau de preuve : N1 (conditions d'affichage) / N3 (recommandations)
 - Source : Google, Play Console Help, consulté 2026, « Add preview assets to showcase your app », https://support.google.com/googleplay/android-developer/answer/9866151?hl=en
