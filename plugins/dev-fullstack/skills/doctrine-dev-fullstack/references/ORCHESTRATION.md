@@ -1,7 +1,7 @@
 # Orchestration des sub-agents
 
 > Source canonique : `templates/profiles/dev-fullstack/agents/ORCHESTRATION.md` (dépôt `claude-profiles`) ; la copie déployée vit dans `agents/` du home actif.
-> Dernière mise à jour : 17.11.2026 (v2.42 — § « Qui fait quoi » : la matrice des activités, propriétaire, apports et contrôle, chaque ligne renvoyant à sa règle ; une case nomme le propriétaire, pas l'exécution, qui suit la grille par forme de la doctrine ; Séquence 0 alignée sur la règle 3. Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
+> Dernière mise à jour : 17.11.2026 (v2.43 — règle 18 : la chaîne CI a un propriétaire, `backend` ; § « Qui fait quoi » complété par la CI, la documentation technique, les priorités produit et le coût d'exploitation, ces trois derniers repris de règles existantes. Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
 
 Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les séquences typiques. Il complète le `CLAUDE.md` global et les frontmatters de chaque agent.
 
@@ -30,7 +30,7 @@ Deux agents **transverses** (`templates/_shared/agents/`, déployés sous tous l
 
 ## Qui fait quoi (17.11.2026)
 
-Le cahier des charges de l'équipe, par activité courante (les modes plus rares sont dans les fiches). Chaque ligne **résume** une règle d'invocation ou une séquence de ce fichier, citée en dernière colonne : la règle fait foi, la ligne y renvoie. Une ligne qui contredit sa règle, ou la fiche d'un agent, est un défaut à corriger (`/lc-bug-profil`), pas un choix à faire.
+Le cahier des charges de l'équipe, par activité courante (les modes plus rares sont dans les fiches). Chaque ligne **résume** une règle d'invocation, une séquence ou un paragraphe de ce fichier ou de la doctrine, cité en dernière colonne (« Arbitrer » : § « Arbitrer deux agents qui se contredisent », dernier alinéa) : la règle fait foi, la ligne y renvoie. Une ligne qui contredit sa règle, ou la fiche d'un agent, est un défaut à corriger (`/lc-bug-profil`), pas un choix à faire.
 
 - **Fait** : propriétaire du livrable. Pour cadrer, implémenter et tester un même code, ce n'est pas un ordre de lancer un sous-agent : qui exécute suit la grille par forme de la doctrine (§ Phase 1). Une relecture, une recette ou un audit restent à l'agent nommé : on ne relit pas son propre code.
 - **Apporte** : ce qui doit être remis avant, et par qui. **Contrôle** : qui relit, recette ou décide ensuite.
@@ -51,6 +51,8 @@ Le cahier des charges de l'équipe, par activité courante (les modes plus rares
 | Copy externe : lancement, store, landing, e-mails marketing | `growth` | angle choisi après `brainstormer` | `redacteur` pour la voix et les traductions | 11, S10 |
 | Code serveur, migration écrite, tests du code serveur | `backend` | SPEC de l'étage, livrable d'`architecte-donnees`, matrice de `qa` | `reviewer` ; `securite` (durcissement, auth, paiement, upload, données sensibles) | 2, 5, 7, 8 |
 | Code client, Server Action d'un écran, câblage des chaînes, tests | `frontend` | SPEC de l'étage, états de `ux`, système de `designer`, chaînes de `redacteur`, matrice de `qa` | `reviewer` ; pour un écran, `designer` Mode G, et `ux` Mode F si une action est touchée | 2, 4 |
+| Chaîne CI : mettre en place, modifier, réparer | `backend` | ce qu'elle lance : `qa` Mode A | `securite` (secrets, permissions, actions tierces) ; `reviewer` ; `release` refait build et tests au pre-deploy | 18 |
+| Documentation technique : README, docs d'état, ADR | l'auteur de la livraison, dans la même livraison ; les ADR : `architecte`, `architecte-donnees` | chaque agent signale une divergence doc ↔ réalité : le brief le lui demande toujours, aucun ne le fait de lui-même | l'orchestrateur avant de clore ; une doc seule se relit en direct, pas par `reviewer` | doctrine § « Documentation des repos » |
 | Relire un diff avant fusion | `reviewer` | diff complet et sa SPEC | corrections par l'auteur du diff | 4 |
 | Écran existant qui ne va pas | parcours : `ux` Mode C ; rendu : `designer` Mode D ; les deux en parallèle si on ne sait pas ; à redessiner : `graphiste` Mode C | — | l'utilisateur choisit les corrections | 3 |
 | Retouche de quelques tokens, polish | `designer` Mode C, ou `frontend` Mode C si elle s'applique telle quelle | — | `reviewer` si du code change | 3 |
@@ -65,6 +67,8 @@ Le cahier des charges de l'équipe, par activité courante (les modes plus rares
 | Contenu ou document que personne ne lit | `ux` Mode D | — | `redacteur` réécrit ; `ux` Mode E pour le tester | S13 |
 | Publication sur le Play Store | skill `publication-store` | audit de `securite`, fiche de `growth`, assets de `designer` Mode E | l'utilisateur signe, envoie et promeut | S11 |
 | Texte qui pilote un agent | `ingenieur-ia` (propose et mesure) | trace du symptôme | `reviewer` relit le diff ; `mainteneur-profils` ou l'orchestrateur applique | 15, S14 |
+| Priorités produit : quoi construire, dans quel ordre | l'utilisateur | directions de `brainstormer`, plans de mesure de `growth` Mode D et `ux` Mode E, plan d'`auditeur` ; les options résumées en trois lignes chacune | — | Arbitrer |
+| Coût d'exploitation : hébergement, quotas d'API | l'utilisateur arbitre | exigence de coût au cadrage d'`architecte` (NFR) ; les options résumées en trois lignes chacune | — | Arbitrer |
 
 ## Règles d'invocation
 
@@ -86,6 +90,7 @@ Le cahier des charges de l'équipe, par activité courante (les modes plus rares
 15. **Textes qui pilotent les agents** (10.11.2026) : une règle écrite mais pas appliquée, un agent qui dérape, une description qui ne route pas, un socle qui grossit, un nouvel agent ou skill, un banc de comportement ou de routage à concevoir, un changement de modèle → `ingenieur-ia`. Il propose et mesure ; `mainteneur-profils` ou l'orchestrateur appliquent, `reviewer` relit le diff. Découper ou réorganiser un socle trop gros : skill `doctrine-de-depot` d'abord (où vit quoi), puis `ingenieur-ia` pour l'effet sur le modèle.
 16. **Production cassée, incident, bug** : service dégradé ou cassé, après ou hors déploiement → `release` Mode D (évaluer, atténuer selon les critères pré-engagés, restaurer ; déroulé et brief : Séquence 15). Secret fuité, soupçon de compromission, comportement anormal **inexpliqué** en production (accès, données, trafic) → `securite` Mode D (contenir d'abord) ; un incident qui **ressemble** à une compromission va à `securite` d'abord. Un comportement cassé hors incident → skill `debug-investigation` dans le contexte principal (cause racine), puis le correctif, précédé du test qui le reproduit (charte de code, règle 10).
 17. **Données : modèle, base existante, migration** (16.11.2026) : concevoir le schéma d'une fonctionnalité ou son évolution, auditer une base lente ou incohérente, planifier une migration sur des données existantes, concevoir l'accès et la conservation des données en base → `architecte-donnees`, **avant** `backend`. **Frontières** : `architecte` tranche le moteur, le fournisseur, le local-first et la règle de conflit d'une synchro (ADR) ; `architecte-donnees` détaille le modèle dans le moteur choisi et écrit l'ADR d'une décision de modèle ; `backend` écrit la migration, la montée de version et les tests depuis son livrable ; `release` Mode C applique en production ; `securite` audite l'accès comme surface d'attaque et garde le reality check après durcissement (règle 7) ; `perf-audit` mesure la lenteur côté page, `architecte-donnees` celle de la base. Il n'écrit dans aucune base, hors une base jetable qu'il crée sous `AUTORISÉ À`, et ne lit la production que sous `AUTORISÉ À`. Hors de lui : une colonne simple qu'une spec décrit déjà, que `backend` écrit directement.
+18. **Chaîne d'intégration continue (CI)** (17.11.2026) : mettre en place, modifier ou réparer le pipeline qui lance build, tests et contrôles (`.github/workflows/` ou équivalent) → `backend`, parce que c'est du code du dépôt, sous le cadrage de son étage (règle 2). `qa` dit ce qu'elle doit lancer et comment elle traite l'instabilité (Mode A) ; `securite` relit ses secrets, ses permissions et ses actions tierces ; `reviewer` relit le diff ; `release` ne la construit pas : il refait build et tests dans les conditions de la plateforme au pre-deploy (Mode A, étape 2). Une CI rouge sans cause connue → skill `debug-investigation` d'abord (règle 16).
 
 ## Collaboration orchestrateur ↔ sub-agents
 
