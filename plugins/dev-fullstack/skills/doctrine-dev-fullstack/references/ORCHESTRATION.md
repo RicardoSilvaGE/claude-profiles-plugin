@@ -1,7 +1,7 @@
 # Orchestration des sub-agents
 
 > Source canonique : `templates/profiles/dev-fullstack/agents/ORCHESTRATION.md` (dépôt `claude-profiles`) ; la copie déployée vit dans `agents/` du home actif.
-> Dernière mise à jour : 16.11.2026 (v2.40 — nouvel agent `architecte-donnees` : modèle de données avant `backend`, audit d'une base, migrations sûres, sécurité des données en base ; règle 17, Séquence 16, Séquences 1, 3, 6 et 12 complétées. Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
+> Dernière mise à jour : 17.11.2026 (v2.41 — captures Play Store de la séquence de publication alignées sur `publication-store` : rapport ≤ 2:1, 1080 × 1920 dans le dépôt mesuré, au lieu de 1080×2400 (proposition N003 de `labo-profils`). Versions antérieures : `CHANGELOG.md` § « ORCHESTRATION.md — historique des versions ».)
 
 Ce fichier décrit le graphe d'invocation des sub-agents, leurs hand-offs et les séquences typiques. Il complète le `CLAUDE.md` global et les frontmatters de chaque agent.
 
@@ -450,7 +450,7 @@ orchestrateur
    ↓
 hand-off parallèle :
    ├─ [growth Mode B] → copy de la fiche par locale, notes de release — avec les LIMITES données par le skill
-   └─ [designer Mode E] → spécification des captures (1080×2400 : choix du dépôt mesuré, règle Play dans `ux-preuves` ; données de démonstration) et du feature graphic 1024×500,
+   └─ [designer Mode E] → spécification des captures (rapport ≤ 2:1, 1080 × 1920 dans le dépôt mesuré : `publication-store` ; données de démonstration) et du feature graphic 1024×500,
       assets texte (SVG, HTML/CSS) ; la capture réelle et le bitmap reviennent à `frontend` ou à l'utilisateur
    ↓
 [skill publication-store] Phase 4 → bump versionCode/versionName, build web + cap sync, checklist nominative
