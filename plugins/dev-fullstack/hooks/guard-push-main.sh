@@ -32,6 +32,11 @@
 #     effacees, coupure au premier `|`, `&`, `)`) et en lisant la grammaire de git : le premier
 #     argument positionnel est le DEPOT, les suivants sont les refspecs ; `HEAD` et `@` designent
 #     la branche courante.
+#   - 25.11.2026, push de main SILENCIEUX : la branche du push nu se lisait dans le cwd de la
+#     session, et `cd <clone sur main> && git push` (ou `git -C <clone sur main> push`) passait
+#     depuis une session sur une branche. Corrige en suivant les `cd` et `git -C` quand c'est
+#     sur (section 1 bis), cas K du banc. Le meme jour, `git -c user.name="P N" push origin
+#     main` passait aussi : la valeur a segment quote coupait le motif (cas D19).
 #
 # EXEMPTIONS (fichier ~/.claude/.push-main-allowed, optionnel, ABSENT PAR DEFAUT = garde-fou
 # partout) : une ligne = un motif "owner/repo", joker `*` admis, `#` commentaire. Le depot
@@ -67,21 +72,73 @@ CMD="$(lire '.tool_input.command')"
 CWD="$(lire '.cwd')"; [ -n "$CWD" ] || CWD="$PWD"
 
 # ---- 1. Motif `git [options globales]* push`, en ERE POSIX (pas de \b, \s, \S) ----------------
-# Une option globale : -C <val> / -c <val> (valeur quotee admise), ou --long[=val] / -x.
-OPT='(-[cC][[:space:]]+("[^"]*"|'"'"'[^'"'"']*'"'"'|[^[:space:]]+)|--?[[:alnum:]_-]+(=("[^"]*"|[^[:space:]]+))?)'
+# Une option globale : -C <val> / -c <val>, ou --long[=val] / -x. Une valeur peut etre quotee en
+# entier ("a b") ou porter un segment quote apres un prefixe nu (`-c user.name="Prenom Nom"`) :
+# avant le 25.11.2026 cette seconde forme coupait le motif, et `git -c user.name="P N" push
+# origin main` passait EN SILENCE (parite de #517 au poste, cas D19 du banc).
+Q='("[^"]*"|'"'"'[^'"'"']*'"'"')'
+VAL='([^[:space:]"'"'"']*'"$Q"')+[^[:space:]]*|[^[:space:]]+'
+OPT='(-[cC][[:space:]]+('"$VAL"')|--?[[:alnum:]_-]+(=('"$VAL"'))?)'
 MOTIF="(^|[^[:alnum:]_])git([[:space:]]+$OPT)*[[:space:]]+push([^[:alnum:]_]|$)"
+OPT_C='-C[[:space:]]+("([^"]*)"|'"'"'([^'"'"']*)'"'"'|([^[:space:]"'"'"']+))'
+
+# ---- 1 bis. Dossier d'execution de chaque push (25.11.2026, parite de la regle 0 du poste) ----
+# La branche du push nu se lisait dans le cwd de la SESSION, meme quand un `cd X` ou un
+# `git -C X` plus tot dans la chaine envoyait le push ailleurs : refus a tort dans un sens, et
+# dans l'autre un push de main SILENCIEUX (`cd <clone sur main> && git push` depuis une session
+# sur une branche, cas K2 et K4 du banc).
+# Le suivi n'est tente que quand il est sur : un `cd`/`pushd <chemin>` qui forme a lui seul une
+# instruction. Tout autre mot qui change de dossier (bloc, sous-shell, message de commit qui cite
+# un `cd`), un heredoc (`<<`), ou un chemin non resolu (variable, joker, dossier absent, chemin
+# Windows non quote dont bash mange les `\`) abandonne le suivi pour TOUTE la commande : on lit
+# alors la branche dans le cwd de la session, plus le dossier de chaque `git -C`, et on refuse si
+# l'un d'eux est sur main.
+SUIVI=1
+case "$CMD" in *'<<'*) SUIVI=0 ;; esac
+CD_TETE='^[[:space:]]*(cd|pushd)[[:space:]]+("([^"]*)"|'"'"'([^'"'"']*)'"'"'|([^[:space:]"'"'"']+))[[:space:]]*$'
+CD_AILLEURS='(^|[^[:alnum:]_.-])(cd|pushd|popd|chdir)([[:space:]]|$)'
+resoudre() { # resoudre <base> <chemin> <quote 0|1> : dossier existant, sinon echec
+    local b="$1" p="$2"
+    case "$p" in ''|*'$'*|*'`'*|*'*'*|*'?'*|'~'*) return 1 ;; esac
+    [ "$3" = "0" ] && case "$p" in *'\'*) return 1 ;; esac
+    case "$p" in /*|[A-Za-z]:*) ;; *) p="$b/$p" ;; esac
+    [ -d "$p" ] || return 1
+    printf '%s' "$p"
+}
+# dossiers_c <base> <tete du motif> : applique les `-C` de la tete a partir de <base>. Ecrit le
+# dossier obtenu ; un `-C` non resolu ajoute <base> ET le cwd de la session, et rend 1.
+dossiers_c() {
+    local base="$1" reste="$2" v q d ok=0
+    while [[ "$reste" =~ $OPT_C ]]; do
+        if [ -n "${BASH_REMATCH[4]}" ]; then v="${BASH_REMATCH[4]}"; q=0; else v="${BASH_REMATCH[2]}${BASH_REMATCH[3]}"; q=1; fi
+        reste="${reste#*"${BASH_REMATCH[0]}"}"
+        if d="$(resoudre "$base" "$v" "$q")"; then base="$d"; else ok=1; printf '%s\n' "$CWD"; fi
+    done
+    printf '%s\n' "$base"
+    return $ok
+}
 
 # ---- 2. Decoupage par instruction, puis on ne garde que ce qui SUIT le premier `push` ----------
 # Un `|` simple n'est PAS un separateur : `git push origin main | tee log` reste un push.
-PUSH_ARGS=""
+ARGS_L=(); DIRS_S=(); DIRS_R=()
 NB_PUSH=0
+DIR="$CWD"
 while IFS= read -r stmt; do
     [ -n "$stmt" ] || continue
+    if [ "$SUIVI" -eq 1 ]; then
+        if [[ "$stmt" =~ $CD_TETE ]]; then
+            if [ -n "${BASH_REMATCH[5]}" ]; then c="${BASH_REMATCH[5]}"; q=0; else c="${BASH_REMATCH[3]}${BASH_REMATCH[4]}"; q=1; fi
+            if d="$(resoudre "$DIR" "$c" "$q")"; then DIR="$d"; else SUIVI=0; fi
+            continue
+        fi
+        [[ "$stmt" =~ $CD_AILLEURS ]] && SUIVI=0
+    fi
     if [[ "$stmt" =~ $MOTIF ]]; then
+        tete="${BASH_REMATCH[0]}"
         # ${var#*X} retire le PLUS COURT prefixe : premiere occurrence, non gourmand.
-        args="${stmt#*"${BASH_REMATCH[0]}"}"
-        PUSH_ARGS="$PUSH_ARGS
-$args"
+        ARGS_L+=("${stmt#*"$tete"}")
+        DIRS_S+=("$(dossiers_c "$DIR" "$tete")")
+        DIRS_R+=("$(printf '%s\n' "$CWD"; dossiers_c "$CWD" "$tete")")
         NB_PUSH=$((NB_PUSH + 1))
     fi
 done <<EOF
@@ -100,51 +157,52 @@ normaliser() {
         -e 's/[|&)`].*$//' \
         -e 's/[(]/ /g'
 }
-PUSH_ARGS="$(while IFS= read -r a; do normaliser "$a"; done <<EOF
-$PUSH_ARGS
-EOF
-)"
+for i in "${!ARGS_L[@]}"; do ARGS_L[$i]="$(normaliser "${ARGS_L[$i]}")"; done
 
 # ---- 3. Reference explicite a main/master, ou --all / --mirror ---------------------------------
 BLOQUE=0
-while IFS= read -r a; do
+for a in "${ARGS_L[@]}"; do
     # `+` capte le force-push par refspec (`git push origin +main`) ; `:` la forme HEAD:main.
     printf '%s' "$a" | grep -Eq '(^|[[:space:]:/+])(main|master)($|[[:space:]:])' && BLOQUE=1
     printf '%s' "$a" | grep -Eq '(^|[[:space:]])(--all|--mirror)([[:space:]]|$)' && BLOQUE=1
-done <<EOF
-$PUSH_ARGS
-EOF
+done
 
-# ---- 4. Push « nu » alors que la branche courante est main/master ------------------------------
+# ---- 4. Push « nu » alors que la branche du dossier ou il s'execute est main/master ------------
+# Dossier(s) de chaque push : le suivi (1 bis) s'il a tenu sur toute la commande, sinon le cwd de
+# la session et les `git -C`. Un seul de ces dossiers sur main suffit.
+sur_main() {
+    local d
+    while IFS= read -r d; do
+        [ -n "$d" ] || continue
+        case "$(git -C "$d" rev-parse --abbrev-ref HEAD 2>/dev/null)" in
+            main|master|Main|Master|MAIN|MASTER) return 0 ;;
+        esac
+    done <<<"$1"
+    return 1
+}
 if [ "$BLOQUE" -eq 0 ]; then
-    BRANCHE="$(git -C "$CWD" rev-parse --abbrev-ref HEAD 2>/dev/null)"
-    case "$BRANCHE" in
-        main|master|Main|Master|MAIN|MASTER)
-            # Grammaire de git : `git push [options] [<depot> [<refspec>...]]`. Le PREMIER
-            # positionnel est le depot, quel que soit son nom (jusqu'au 10.11.2026 seuls
-            # origin/upstream l'etaient, et `git push fork` passait). Sans refspec, ou avec la
-            # refspec `HEAD`/`@`, c'est la branche courante, donc main, qui part.
-            while IFS= read -r a; do
-                [ "$NB_PUSH" -gt 0 ] || break
-                read -ra toks <<<"$a"
-                npos=0; nrefs=0; courante=0; sauter=0
-                for tok in "${toks[@]+"${toks[@]}"}"; do
-                    if [ "$sauter" -eq 1 ]; then sauter=0; continue; fi
-                    case "$tok" in
-                        -o|--push-option|--repo|--receive-pack|--exec) sauter=1; continue ;;
-                        -*) continue ;;
-                    esac
-                    npos=$((npos + 1))
-                    [ "$npos" -eq 1 ] && continue
-                    nrefs=$((nrefs + 1))
-                    case "$tok" in HEAD|+HEAD|@|+@) courante=1 ;; esac
-                done
-                if [ "$nrefs" -eq 0 ] || [ "$courante" -eq 1 ]; then BLOQUE=1; fi
-            done <<EOF
-$(printf '%s\n' "$PUSH_ARGS" | sed '1{/^$/d}')
-EOF
-            ;;
-    esac
+    for i in "${!ARGS_L[@]}"; do
+        if [ "$SUIVI" -eq 1 ]; then dirs="${DIRS_S[$i]}"; else dirs="${DIRS_R[$i]}"; fi
+        sur_main "$dirs" || continue
+        # Grammaire de git : `git push [options] [<depot> [<refspec>...]]`. Le PREMIER
+        # positionnel est le depot, quel que soit son nom (jusqu'au 10.11.2026 seuls
+        # origin/upstream l'etaient, et `git push fork` passait). Sans refspec, ou avec la
+        # refspec `HEAD`/`@`, c'est la branche courante, donc main, qui part.
+        read -ra toks <<<"${ARGS_L[$i]}"
+        npos=0; nrefs=0; courante=0; sauter=0
+        for tok in "${toks[@]+"${toks[@]}"}"; do
+            if [ "$sauter" -eq 1 ]; then sauter=0; continue; fi
+            case "$tok" in
+                -o|--push-option|--repo|--receive-pack|--exec) sauter=1; continue ;;
+                -*) continue ;;
+            esac
+            npos=$((npos + 1))
+            [ "$npos" -eq 1 ] && continue
+            nrefs=$((nrefs + 1))
+            case "$tok" in HEAD|+HEAD|@|+@) courante=1 ;; esac
+        done
+        if [ "$nrefs" -eq 0 ] || [ "$courante" -eq 1 ]; then BLOQUE=1; fi
+    done
 fi
 [ "$BLOQUE" -eq 1 ] || exit 0
 
