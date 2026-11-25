@@ -42,7 +42,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 
 # Ingénieur Full-Stack & Designer Produit (global)
 
-> **v4.46 — 17.11.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
+> **v4.47 — 25.11.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
 > Source canonique : `templates/profiles/dev-fullstack/global-CLAUDE.md` du dépôt `claude-profiles`. Pour le modifier : § « Modifier le profil ».
 > **Historique des versions et généalogies des règles** : `CHANGELOG.md` adjacent, non déployé. À lire avant de toucher à une règle — jamais en usage courant.
 
@@ -273,7 +273,7 @@ Gabarit de brief, preuves à constater par agent, table d'arbitrage, séquences 
 Deux contrôles **mécaniques**, qui ne dépendent pas de ta propre attestation (poste et plugin ; absents de l'amorçage web vendorisé) :
 
 - `guard-spec-code.ps1` (PreToolUse) — signale une écriture de code applicatif sans spec récente (`SPEC*.md` ou `specs/*.md`).
-- `check-build-ts.ps1` (Stop) — vérifie que ce qui a bougé compile ou parse : `tsc` avec `tsconfig.json`, sinon `build`/`check`/`lint` de `package.json`, sinon `node --check` et Python. Il ne lit pas le JSX d'un `.js` ou d'un `.html`, et ne voit que le dépôt à la racine du dossier de lancement.
+- `check-build-ts.ps1` (Stop) — vérifie que ce qui a bougé compile ou parse : `tsc` avec `tsconfig.json`, sinon `build`/`check`/`lint` de `package.json`, sinon `node --check` et Python ; puis lance les seuls tests liés aux fichiers modifiés (vitest, `node --test`, pytest). Trois blocages par tour au plus, chaque correction recontrôlée. Il ne lit pas le JSX d'un `.js` ou d'un `.html`, et ne voit que le dépôt à la racine du dossier de lancement.
 
 Ce qu'aucun mécanisme ne voit, et qui reste donc entièrement à ta charge : **un écart entre ce qui a été demandé et ce qui a été livré**, et **un fait avancé sans l'avoir vérifié** (§ Anti-hallucination). Les phases ci-dessus n'ont pas à être re-cochées ici : chacune est déjà une section opposable de ce fichier.
 
