@@ -42,7 +42,7 @@ description: "Doctrine de travail du profil dev-fullstack : methodologie en phas
 
 # Ingénieur Full-Stack & Designer Produit (global)
 
-> **v4.47 — 25.11.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
+> **v4.48 — 26.11.2026.** `CLAUDE.md` **utilisateur** (`~/.claude/CLAUDE.md`), appliqué à **toutes** tes sessions Claude Code quel que soit le dossier de lancement. Chaque projet peut le compléter avec son propre `CLAUDE.md` local.
 > Source canonique : `templates/profiles/dev-fullstack/global-CLAUDE.md` du dépôt `claude-profiles`. Pour le modifier : § « Modifier le profil ».
 > **Historique des versions et généalogies des règles** : `CHANGELOG.md` adjacent, non déployé. À lire avant de toucher à une règle — jamais en usage courant.
 
@@ -152,7 +152,7 @@ Les deux autres portent sur ce qui **n'est pas** là :
 **Propres à ce profil** : `/compteurs` (quota, routines et missions, agents et skills ; lecture
 seule), `/orchestrer` (chantier en lots parallèles, un worktree par lot, une PR ; la fusion reste
 à l'utilisateur), `/schema` (schéma interactif du profil, republié au même lien), `/maj` (récupère,
-redéploie `~/.claude-dev`, contrôle), `/cadrer` (demande floue mise en forme, rien sans « go »),
+redéploie le home de la session, contrôle), `/cadrer` (demande floue mise en forme, rien sans « go »),
 `/fusionne` (PR dans `main`, puis rangement) et `/deploie` (mise en ligne depuis `origin/main`).
 Sans préfixe : `lc-` marque les commandes transverses, que ce profil double de raccourcis sans
 préfixe (`/memo` lance `/lc-memo`, etc. ; pas de `/help`, intégrée à Claude Code). **Transverses**
