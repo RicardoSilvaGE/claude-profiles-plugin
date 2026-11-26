@@ -113,7 +113,7 @@ Celles de la spec complète sont dans le canevas, là où elles s'écrivent. Val
 
 ## Livraison — où écrire la spec
 
-**Dans un dépôt git : `<racine-du-dépôt>/specs/YYYY-MM-DD-slug.md`.** C'est le défaut, et il prime. Ce fichier est ce que les agents (`backend`, `frontend`, `ORCHESTRATION.md`) et la doctrine appellent, au troisième étage, « la `SPEC.md` » ou « la spec complète » ; le hook `guard-spec-code` l'accepte (`specs/*.md`, doctrine Phase 5). Une spec d'`architecte` déjà présente (`docs/SPEC/<slug>.md`) est une entrée de la Phase 1, pas le livrable : en reprendre décisions et critères sans les rediscuter, la citer dans `## Contexte`, écrire quand même le fichier de `specs/`.
+**Dans un dépôt git : `<racine-du-dépôt>/specs/YYYY-MM-DD-slug.md`.** C'est le défaut, et il prime. Ce fichier est ce que les agents (`backend`, `frontend`, `ORCHESTRATION.md`) et la doctrine appellent, au troisième étage, « la `SPEC.md` » ou « la spec complète » ; le hook de garde (`guard-spec-code.ps1` au poste, `guard-spec-code.sh` en plugin) l'accepte (`specs/*.md`, doctrine Phase 5). Une spec d'`architecte` déjà présente (`docs/SPEC/<slug>.md`) est une entrée de la Phase 1, pas le livrable : en reprendre décisions et critères sans les rediscuter, la citer dans `## Contexte`, écrire quand même le fichier de `specs/`.
 
 - `YYYY-MM-DD` : date ISO **dans le nom** (tri) ; le contenu garde le format suisse `jj.mm.aaaa` (ligne « Date : »). Ne pas uniformiser.
 - `slug` : celui de la branche retenue (`## Branche cible` en spec complète), sans son préfixe
