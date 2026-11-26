@@ -24,8 +24,8 @@ Tout nouveau sub-agent ou skill suit ces 13 sections. Ce squelette est un planch
    > le composant couvre. **Ce qu'on n'y met jamais** : une règle que le composant fait
    > respecter, ni un résumé de son workflow.
    >
-   > **Mesuré, pas supposé** (banc C1, 24.08.2026). La description de `spec-builder` énonce les
-   > trois étages de cadrage **mot pour mot**. Une cellule qui ne gardait qu'elle — doctrine
+   > **Mesuré, pas supposé** (banc C1, 24.08.2026). La description de `spec-builder` énonçait alors
+   > (jusqu'à sa v1.5) les trois étages de cadrage **mot pour mot**. Une cellule qui ne gardait qu'elle — doctrine
    > résidente ablatée, description intacte et chargée — a **violé la règle 3 fois sur 3**, là où
    > la cellule témoin la respectait 3 fois sur 3. Une règle en `description` est **lue, pas
    > obéie**.

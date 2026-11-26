@@ -24,7 +24,7 @@ Le fichier livré contient **exactement** ces 13 sections, dans cet ordre, avec 
 - <liste explicite de ce qui n'est PAS traité, pour éviter le scope creep>
 
 ## Branche cible
-`claude/<slug-explicite>`
+`<branche>` (celle de l'appelant ou du dépôt ; à défaut `feat/<slug>`, cf. Phase 2 du skill)
 
 <Justification courte du slug si non évident.>
 
@@ -37,7 +37,7 @@ Le fichier livré contient **exactement** ces 13 sections, dans cet ordre, avec 
 
 ## Contraintes et règles à respecter
 - **Source : CLAUDE.md §<X>** — <règle reprise textuellement ou paraphrasée>
-- **Source : règle qualité §<X>** — <règle qualité applicable>
+- **Source : règle de qualité §<X>** (canevas, ou « Règles de qualité des deux étages » du `SKILL.md`) — <règle qualité applicable>
 - **Inventaire exhaustif** — <si la tâche touche une famille d'éléments, lister TOUS les éléments concernés ici>
 - **Préservation des erreurs existantes** — les codes d'erreur natifs (ENOENT, 4xx, etc.) continuent de remonter sans être avalés
 - **Nettoyage des ressources** — timers, listeners, connexions libérés dans tous les chemins (succès, échec, timeout, unmount)
@@ -73,8 +73,8 @@ Si aucune décision n'est anticipée pour une SPEC particulière, écrire « Auc
 
 ## Pull request vers main
 ```bash
-git push -u origin claude/<slug-explicite>
-gh pr create --base main --head claude/<slug-explicite> --title "<type>(<scope>): <description>"
+git push -u origin <branche>
+gh pr create --base main --head <branche> --title "<type>(<scope>): <description>"
 ```
 
 La fusion sur `main` passe toujours par la PR, jamais par un push de la session ni par un merge local. Elle se fait **sur demande explicite de l'utilisateur** (« fusionne », « merge ») : Claude Code pousse la branche, ouvre la PR (par `gh` ou par l'outil GitHub de la session), rend son lien et s'arrête là.
@@ -113,15 +113,15 @@ Réponses oui / non applicable avec justification factuelle pour chaque question
 
 1. **Inventaire exhaustif** : la tâche touche-t-elle une famille d'éléments (ex: toutes les opérations X, tous les composants Y) ? Si oui, la spec exige-t-elle un inventaire exhaustif dans `## Périmètre` ? `[oui — section "## X" : "<extrait>" / non applicable — <raison>]`
 
-2. **Préservation des comportements existants** : la modification peut-elle casser des comportements existants (erreurs natives, API publiques, edge cases) ? Si oui, la spec impose-t-elle leur préservation dans `## Contraintes` ? `[oui — section "## X" : "<extrait>" / non applicable — <raison>]`
+2. **Préservation des comportements existants** : la modification peut-elle casser des comportements existants (erreurs natives, API publiques, edge cases) ? Si oui, la spec impose-t-elle leur préservation dans `## Contraintes et règles à respecter` ? `[oui — section "## X" : "<extrait>" / non applicable — <raison>]`
 
 3. **Nettoyage des ressources créées** : la modification crée-t-elle des ressources (timers, listeners, connexions, subscriptions, intervals) ? Si oui, la spec exige-t-elle leur nettoyage dans TOUS les chemins (succès / échec / timeout / exception / unmount) ? `[oui — section "## X" : "<extrait>" / non applicable — <raison>]`
 
-4. **3 groupes de tests** : la section `## Vérifications` contient-elle les 3 groupes obligatoires (Happy path / Non-régression / Edge cases) ? `[oui — section "## X" : "<extrait>" / non applicable — <raison>]`
+4. **3 groupes de tests** : la section `## Vérifications avant fin de tâche` contient-elle les 3 groupes obligatoires (Happy path / Non-régression / Edge cases) ? `[oui — section "## X" : "<extrait>" / non applicable — <raison>]`
 
 5. **Gestion d'erreur précise** : les cas d'erreur sont-ils spécifiés (codes/exceptions retournés, messages, logs) ? Pour les contextes HTTP, distinguer 4xx (métier) / 5xx (infra). Pas de try/catch vide ? `[oui — section "## X" : "<extrait>" / non applicable — <raison>]`
 
-6. **Critères vérifiables indépendants** : chaque case à cocher de `## Vérifications` est-elle testable séparément, avec sortie attendue claire ? `[oui — section "## X" : "<extrait>" / non applicable — <raison>]`
+6. **Critères vérifiables indépendants** : chaque case à cocher de `## Vérifications avant fin de tâche` est-elle testable séparément, avec sortie attendue claire ? `[oui — section "## X" : "<extrait>" / non applicable — <raison>]`
 
 7. **CLAUDE.md intégré dans les Contraintes** : toutes les règles absolues et conventions du `CLAUDE.md` du projet cible sont-elles reportées dans `## Contraintes et règles à respecter`, avec source citée ? `[oui — section "## X" : "<extrait>" / non applicable — <raison>]`
 
@@ -131,7 +131,7 @@ Réponses oui / non applicable avec justification factuelle pour chaque question
 - [ ] Section `## Contexte` présente, avec cadrage de l'origine.
 - [ ] Section `## Objectif` présente, 1 phrase factuelle.
 - [ ] Section `## Périmètre` présente, avec « Dans le scope » ET « Hors scope (explicitement) ».
-- [ ] Section `## Branche cible` présente, avec slug `claude/[...]`.
+- [ ] Section `## Branche cible` présente, avec la branche retenue (appelant, dépôt, sinon `feat/<slug>`).
 - [ ] Section `## Plan d'exécution` présente, étapes numérotées, chemins exacts.
 - [ ] Section `## Contraintes et règles à respecter` présente, avec sources citées.
 - [ ] Section `## Décisions à prendre en cours d'exécution` présente.
